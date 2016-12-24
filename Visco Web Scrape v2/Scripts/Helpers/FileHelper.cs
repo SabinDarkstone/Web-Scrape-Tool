@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
@@ -8,13 +7,10 @@ namespace Visco_Web_Scrape_v2.Scripts.Helpers {
 
 	public static class FileHelper {
 
-		private static string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Replace(@"\", "/");
-
+		private const string FileLocation = "Settings.bin";
 
 		public static Configuration LoadConfiguration() {
-			var dir = directory.Substring(6, directory.Length - 6);
-			MessageBox.Show(dir);
-			var stream = CheckForFile(dir + @"/Settings.bin");
+			var stream = CheckForFile(FileLocation);
 			if (stream.Length == 0) {
 				return null;
 			} else {
@@ -26,15 +22,14 @@ namespace Visco_Web_Scrape_v2.Scripts.Helpers {
 		}
 
 		public static void SaveConfiguration(Configuration config) {
-			var dir = directory.Substring(6, directory.Length - 6);
-//			MessageBox.Show(dir);
-			var stream = CheckForFile(dir + @"/Settings.bin");
+			var stream = CheckForFile(FileLocation);
 			IFormatter formatter = new BinaryFormatter();
 			formatter.Serialize(stream, config);
 			stream.Close();
 		}
 
 		private static Stream CheckForFile(string filename) {
+			LogHelper.Debug(filename);
 			if (!File.Exists(filename)) {
 				var dialog = MessageBox.Show("No settings file was found, would you like to create a new one?",
 					"Settings Load Error", MessageBoxButtons.YesNo, MessageBoxIcon.Error);

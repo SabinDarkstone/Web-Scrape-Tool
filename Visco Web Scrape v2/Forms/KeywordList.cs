@@ -36,10 +36,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 			// Loop through keywords in current list and check to see if anything matches the current name
 			foreach (var keyword in CurrentKeywords) {
-				// If a match is found, remove the old one and replace it with the new one
 				if (keyword.Text.Equals(myKeyword.Text)) {
-					CurrentKeywords.Remove(keyword);
-					CurrentKeywords.Add(myKeyword);
 					alreadyExists = true;
 				}
 			}
