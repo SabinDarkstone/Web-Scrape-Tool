@@ -36,16 +36,6 @@ namespace Visco_Web_Scrape.Operations {
 			LogHelper.Debug("Event handler registration completed successfully");
 		}
 
-		private void ScanDocument(HtmlDocument document) {
-			foreach (var keyword in crawlSettings.Keywords) {
-				if (keyword.Type == Keyword.KeywordType.Relevance) {  // Is it the right kind of keyword?
-					if (document.DocumentNode.InnerText.Contains(keyword.Text)) {  // Is that keyword in the document?
-
-					}
-				}
-			}
-		}
-
 		private void crawler_OnPageCrawlStartingAsync(object sender, PageCrawlStartingArgs e) {
 			var pageToCrawl = e.PageToCrawl;
 			LogHelper.Crawl("Starting crawl on " + pageToCrawl.Uri.AbsoluteUri);
@@ -65,9 +55,6 @@ namespace Visco_Web_Scrape.Operations {
 				LogHelper.Crawl("Page has no content " + crawledPage.Uri.AbsoluteUri);
 				return;
 			}
-
-			var document = crawledPage.HtmlDocument;
-			ScanDocument(document);
 		}
 
 		private void crawler_OnPageCrawlDisallowedAsync(object sender, PageCrawlDisallowedArgs e) {
