@@ -20,6 +20,13 @@ namespace Visco_Web_Scrape_v2.Forms {
 		}
 
 		private void ExportToFile() {
+			// Initialize progress bar settings
+			int count = 0;
+			foreach (var entry in config.Results) {
+				count++;
+			}
+			progressbar.Maximum = count;
+
 			// Indicate the program is saving the file
 			btnStatusClose.Text = "Saving...";
 			btnStatusClose.Enabled = false;
@@ -32,12 +39,13 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 			// Start new excel application
 			excel = new Excel.Application();
-			excel.Visible = true;
+			excel.Visible = false;
 
 			// Get a new workbook
 			Excel._Workbook workbook = excel.Workbooks.Add(Missing.Value);
 
 			foreach (var entry in results) {
+				progressbar.Value += 1;
 				var currentRow = 1;
 				try {
 					// Get a new worksheet
@@ -50,7 +58,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 						currentRow++;
 						foreach (var hit in entry.ResultList) {
 							if (hit.Keywords.Contains(keyword)) {
-//								sheet.Cells[currentRow, 1] = hit.Url;
+								// sheet.Cells[currentRow, 1] = hit.Url;
 								var rng = sheet.Cells[currentRow, 1] as Excel.Range;
 								rng.Hyperlinks.Add(rng, hit.Url, Missing.Value, "Click to open", hit.Url);
 								currentRow++;
@@ -73,6 +81,8 @@ namespace Visco_Web_Scrape_v2.Forms {
 			// Indicate the program is finished saving
 			btnStatusClose.Text = "Close";
 			btnStatusClose.Enabled = true;
+
+			excel.Visible = true;
 		}
 
 		private void btnStatusClose_Click(object sender, EventArgs e) {

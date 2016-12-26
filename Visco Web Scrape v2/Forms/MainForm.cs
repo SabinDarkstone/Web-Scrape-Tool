@@ -2,7 +2,6 @@
 using System.Windows.Forms;
 using Visco_Web_Scrape_v2.Scripts;
 using Visco_Web_Scrape_v2.Scripts.Helpers;
-using Visco_Web_Scrape_v2.Search;
 using Visco_Web_Scrape_v2.Search.Process;
 
 namespace Visco_Web_Scrape_v2.Forms {
@@ -69,6 +68,16 @@ namespace Visco_Web_Scrape_v2.Forms {
 			// Open result viewer window
 			var resultViewer = new ResultViewer(MasterConfig);
 			resultViewer.ShowDialog();
+		}
+
+		private void btnHelp_Click(object sender, EventArgs e) {
+			// Open about window
+			var about = new AboutHelp();
+			about.ShowDialog();
+		}
+
+		private void MainForm_Load(object sender, EventArgs e) {
+			lblVersion.Text = Reference.Version;
 		}
 	}
 

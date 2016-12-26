@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
 using Visco_Web_Scrape_v2.Scripts;
-using Visco_Web_Scrape_v2.Search;
 using Visco_Web_Scrape_v2.Search.Items;
 using Visco_Web_Scrape_v2.Search.Process;
 
@@ -42,6 +41,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 			lblResultsFound.Text = progress.RelevantPageCount == null
 				? lblResultsFound.Text
 				: progress.RelevantPageCount.ToString();
+			lblPagesSkippedCount.Text = progress.SkippedPageCount.ToString();
 			lblCurrentStatus.Text = progress.CurrentStatus.ToString();
 			progressbar.Value = progress.DomainNumber + 1;
 		}

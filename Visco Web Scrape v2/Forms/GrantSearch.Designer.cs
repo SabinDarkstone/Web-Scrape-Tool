@@ -23,6 +23,7 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GrantSearch));
 			this.label1 = new System.Windows.Forms.Label();
 			this.lblCurrentDomain = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
@@ -33,10 +34,12 @@
 			this.lblResultsFound = new System.Windows.Forms.Label();
 			this.progressbar = new System.Windows.Forms.ProgressBar();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.btnCancelCrawl = new System.Windows.Forms.Button();
-			this.btnSaveResults = new System.Windows.Forms.Button();
 			this.lblCurrentStatus = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
+			this.btnCancelCrawl = new System.Windows.Forms.Button();
+			this.btnSaveResults = new System.Windows.Forms.Button();
+			this.lblPagesSkippedCount = new System.Windows.Forms.Label();
+			this.label6 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -69,10 +72,10 @@
 			// 
 			// lblCurrentUrl
 			// 
-			this.lblCurrentUrl.AutoSize = true;
+			this.lblCurrentUrl.AutoEllipsis = true;
 			this.lblCurrentUrl.Location = new System.Drawing.Point(131, 50);
 			this.lblCurrentUrl.Name = "lblCurrentUrl";
-			this.lblCurrentUrl.Size = new System.Drawing.Size(66, 13);
+			this.lblCurrentUrl.Size = new System.Drawing.Size(350, 13);
 			this.lblCurrentUrl.TabIndex = 4;
 			this.lblCurrentUrl.Text = "<current url>";
 			// 
@@ -121,6 +124,8 @@
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.lblPagesSkippedCount);
+			this.groupBox1.Controls.Add(this.label6);
 			this.groupBox1.Controls.Add(this.lblCurrentStatus);
 			this.groupBox1.Controls.Add(this.label4);
 			this.groupBox1.Controls.Add(this.label1);
@@ -138,6 +143,24 @@
 			this.groupBox1.TabIndex = 10;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Progress";
+			// 
+			// lblCurrentStatus
+			// 
+			this.lblCurrentStatus.AutoSize = true;
+			this.lblCurrentStatus.Location = new System.Drawing.Point(345, 98);
+			this.lblCurrentStatus.Name = "lblCurrentStatus";
+			this.lblCurrentStatus.Size = new System.Drawing.Size(47, 13);
+			this.lblCurrentStatus.TabIndex = 11;
+			this.lblCurrentStatus.Text = "<status>";
+			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(299, 98);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(40, 13);
+			this.label4.TabIndex = 10;
+			this.label4.Text = "Status:";
 			// 
 			// btnCancelCrawl
 			// 
@@ -160,23 +183,23 @@
 			this.btnSaveResults.UseVisualStyleBackColor = true;
 			this.btnSaveResults.Click += new System.EventHandler(this.btnSaveResults_Click);
 			// 
-			// lblCurrentStatus
+			// lblPagesSkippedCount
 			// 
-			this.lblCurrentStatus.AutoSize = true;
-			this.lblCurrentStatus.Location = new System.Drawing.Point(345, 98);
-			this.lblCurrentStatus.Name = "lblCurrentStatus";
-			this.lblCurrentStatus.Size = new System.Drawing.Size(47, 13);
-			this.lblCurrentStatus.TabIndex = 11;
-			this.lblCurrentStatus.Text = "<status>";
+			this.lblPagesSkippedCount.AutoSize = true;
+			this.lblPagesSkippedCount.Location = new System.Drawing.Point(345, 74);
+			this.lblPagesSkippedCount.Name = "lblPagesSkippedCount";
+			this.lblPagesSkippedCount.Size = new System.Drawing.Size(73, 13);
+			this.lblPagesSkippedCount.TabIndex = 13;
+			this.lblPagesSkippedCount.Text = "<page count>";
 			// 
-			// label4
+			// label6
 			// 
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(299, 98);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(40, 13);
-			this.label4.TabIndex = 10;
-			this.label4.Text = "Status:";
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(257, 74);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(82, 13);
+			this.label6.TabIndex = 12;
+			this.label6.Text = "Pages Skipped:";
 			// 
 			// GrantSearch
 			// 
@@ -186,8 +209,9 @@
 			this.Controls.Add(this.btnSaveResults);
 			this.Controls.Add(this.btnCancelCrawl);
 			this.Controls.Add(this.groupBox1);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "GrantSearch";
-			this.Text = "GrantSearch";
+			this.Text = "Web Crawler and Search";
 			this.Load += new System.EventHandler(this.GrantSearch_Load);
 			this.Shown += new System.EventHandler(this.GrantSearch_Shown);
 			this.groupBox1.ResumeLayout(false);
@@ -211,5 +235,7 @@
 		private System.Windows.Forms.Button btnSaveResults;
 		private System.Windows.Forms.Label lblCurrentStatus;
 		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Label lblPagesSkippedCount;
+		private System.Windows.Forms.Label label6;
 	}
 }

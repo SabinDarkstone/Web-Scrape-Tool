@@ -21,7 +21,7 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 		public SearchResults Results { get; private set; }
 
 		private readonly PoliteWebCrawler crawler;
-		private readonly Uri pageToCrawl;
+		private readonly Uri pageUri;
 		private readonly Keyword[] keywords;
 		private readonly Website domain;
 		private BackgroundWorker worker;
@@ -57,19 +57,62 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 
 			// Register thread and page
 			worker = parentThread;
-			pageToCrawl = properUrl;
+			pageUri = properUrl;
 
 			// Register events
 			crawler.PageCrawlStartingAsync += crawler_ProcessPageCrawlStarting;
 			crawler.PageCrawlCompletedAsync += crawler_ProcessPageCrawlCompleted;
 			crawler.PageCrawlDisallowedAsync += crawler_PageCrawlDisallowed;
 			crawler.PageLinksCrawlDisallowedAsync += crawler_PageLinksCrawlDisallowed;
+
+			// Register decision making
+			crawler.ShouldCrawlPage((pageToCrawl, crawlContext) => {
+				var uri = pageToCrawl.Uri.AbsoluteUri.ToLower();
+				var crawlDecision = new CrawlDecision { Allow = true };
+				if (uri.Contains(".pdf") || uri.Contains(".doc") || uri.Contains(".jpg") || uri.Contains(".xls")) {
+					CrawlHelper.SkippedPages++;
+					return new CrawlDecision {Allow = false, Reason = "Bad extensions should not be downloaded"};
+				}
+
+				if (uri.Contains("comment")) {
+					CrawlHelper.SkippedPages++;
+					return new CrawlDecision { Allow = false, Reason = "Comments are not needed" };
+				}
+
+				if (uri.Contains("reply")) {
+					CrawlHelper.SkippedPages++;
+					return new CrawlDecision { Allow = false, Reason = "Comments are not needed" };
+				}
+
+				if (uri.Contains("civil-rights")) {
+					CrawlHelper.SkippedPages++;
+					return new CrawlDecision { Allow = false, Reason = "Civil rights not relevant" };
+				}
+
+				if (uri.Contains("feedback")) {
+					CrawlHelper.SkippedPages++;
+					return new CrawlDecision {Allow = false, Reason = "Feedback pages are not needed"};
+				}
+
+				if (uri.Contains("admin")) {
+					CrawlHelper.SkippedPages++;
+					return new CrawlDecision { Allow = false, Reason = "Admin not relevant" };
+				}
+
+				if (uri.Contains("tags")) {
+					CrawlHelper.SkippedPages++;
+					return new CrawlDecision { Allow = false, Reason = "Tags are silly" };
+				}
+
+				return crawlDecision;
+			});
 		}
 
 		public void Run(CancellationTokenSource cts) {
 			cancelPlease = cts;
 			CrawlHelper.TotalPages = 0;
-			var results = crawler.Crawl(pageToCrawl, cancelPlease);
+			CrawlHelper.SkippedPages = 0;
+			var results = crawler.Crawl(pageUri, cancelPlease);
 
 			if (results.ErrorOccurred) {
 				if (cancelPlease.IsCancellationRequested) {
@@ -88,7 +131,7 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 		}
 
 		private void SearchPageForKeywords(CrawledPage page) {
-			var myProgress = new Progress(page.Uri.AbsoluteUri, domain.Name, CrawlHelper.TotalPages, Results.ResultList.Count, websiteList.IndexOf(domain), Progress.Status.Searching);
+			var myProgress = new Progress(page.Uri.AbsoluteUri, domain.Name, Results.ResultList.Count, websiteList.IndexOf(domain), Progress.Status.Searching);
 			worker.ReportProgress(0, myProgress);
 			var pageText = page.Content.Text.ToLower();
 			foreach (var keyword in keywords) {
@@ -99,6 +142,7 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 		}
 
 		private void crawler_ProcessPageCrawlStarting(object sender, PageCrawlStartingArgs e) {
+			CrawlHelper.TotalPages++;
 			if (worker.CancellationPending) {
 				worker.ReportProgress(0, new Progress(Progress.Status.Cancelling));
 				Debug.WriteLine("Cancellation is pending...");
@@ -106,12 +150,11 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 				return;
 			}
 
-			var myProgress = new Progress(e.PageToCrawl.Uri.AbsoluteUri, domain.Name, CrawlHelper.TotalPages, Results.ResultList.Count, websiteList.IndexOf(domain), Progress.Status.Crawling);
+			var myProgress = new Progress(e.PageToCrawl.Uri.AbsoluteUri, domain.Name, Results.ResultList.Count, websiteList.IndexOf(domain), Progress.Status.Crawling);
 			worker.ReportProgress(0, myProgress);
 		}
 
 		private void crawler_ProcessPageCrawlCompleted(object sender, PageCrawlCompletedArgs e) {
-			CrawlHelper.TotalPages++;
 			var crawledPage = e.CrawledPage;
 
 			if (crawledPage.WebException != null || crawledPage.HttpWebResponse.StatusCode != HttpStatusCode.OK) {
@@ -125,6 +168,11 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 				// TODO: Log
 				return;
 			} else {
+				/*
+				if (!crawledPage.Content.Text.ToLower().Contains("grant")) {
+					return;
+				}
+				*/
 				SearchPageForKeywords(crawledPage);
 			}
 		}

@@ -98,6 +98,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\AboutHelp.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AboutHelp.Designer.cs">
+      <DependentUpon>AboutHelp.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\GrantTracker.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\GrantTracker.Designer.cs">
+      <DependentUpon>GrantTracker.cs</DependentUpon>
+    </Compile>
     <Compile Include="Scripts\Configuration.cs" />
     <Compile Include="Scripts\Helpers\FileHelper.cs" />
     <Compile Include="Forms\MainForm.cs">
@@ -113,6 +125,7 @@
       <DependentUpon>GrantSearch.cs</DependentUpon>
     </Compile>
     <Compile Include="Scripts\Helpers\LogHelper.cs" />
+    <Compile Include="Scripts\Reference.cs" />
     <Compile Include="Search\Items\Keyword.cs" />
     <Compile Include="Forms\KeywordList.cs">
       <SubType>Form</SubType>
@@ -141,6 +154,12 @@
     <Compile Include="Forms\WebsiteList.Designer.cs">
       <DependentUpon>WebsiteList.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Forms\AboutHelp.resx">
+      <DependentUpon>AboutHelp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\GrantTracker.resx">
+      <DependentUpon>GrantTracker.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -176,7 +195,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="Resources\Settings.bin" />
     <None Include="Visco Web Scrape v2_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

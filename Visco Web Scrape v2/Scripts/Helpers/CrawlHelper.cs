@@ -3,5 +3,6 @@
 	public static class CrawlHelper {
 
 		public static int TotalPages { get; set; }
+		public static int SkippedPages { get; set; }
 	}
 }

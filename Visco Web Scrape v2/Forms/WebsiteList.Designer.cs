@@ -23,6 +23,7 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WebsiteList));
 			this.listboxWebsites = new System.Windows.Forms.ListBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.btnRemoveWebsite = new System.Windows.Forms.Button();
@@ -141,8 +142,9 @@
 			this.Controls.Add(this.btnAccept);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.listboxWebsites);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "WebsiteList";
-			this.Text = "WebsiteList";
+			this.Text = "Manage Website List";
 			this.Shown += new System.EventHandler(this.WebsiteList_Shown);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();

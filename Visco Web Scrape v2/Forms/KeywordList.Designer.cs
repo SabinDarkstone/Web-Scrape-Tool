@@ -23,14 +23,15 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(KeywordList));
 			this.listboxKeywordList = new System.Windows.Forms.ListBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.txtKeywordText = new System.Windows.Forms.TextBox();
 			this.btnSave = new System.Windows.Forms.Button();
 			this.btnRemove = new System.Windows.Forms.Button();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.radioInclude = new System.Windows.Forms.RadioButton();
 			this.radioExclude = new System.Windows.Forms.RadioButton();
+			this.radioInclude = new System.Windows.Forms.RadioButton();
 			this.btnAccept = new System.Windows.Forms.Button();
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.groupBox1.SuspendLayout();
@@ -96,6 +97,16 @@
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Keyword";
 			// 
+			// radioExclude
+			// 
+			this.radioExclude.AutoSize = true;
+			this.radioExclude.Location = new System.Drawing.Point(81, 81);
+			this.radioExclude.Name = "radioExclude";
+			this.radioExclude.Size = new System.Drawing.Size(63, 17);
+			this.radioExclude.TabIndex = 6;
+			this.radioExclude.Text = "Exclude";
+			this.radioExclude.UseVisualStyleBackColor = true;
+			// 
 			// radioInclude
 			// 
 			this.radioInclude.AutoSize = true;
@@ -107,16 +118,6 @@
 			this.radioInclude.TabStop = true;
 			this.radioInclude.Text = "Include";
 			this.radioInclude.UseVisualStyleBackColor = true;
-			// 
-			// radioExclude
-			// 
-			this.radioExclude.AutoSize = true;
-			this.radioExclude.Location = new System.Drawing.Point(81, 81);
-			this.radioExclude.Name = "radioExclude";
-			this.radioExclude.Size = new System.Drawing.Size(63, 17);
-			this.radioExclude.TabIndex = 6;
-			this.radioExclude.Text = "Exclude";
-			this.radioExclude.UseVisualStyleBackColor = true;
 			// 
 			// btnAccept
 			// 
@@ -147,8 +148,9 @@
 			this.Controls.Add(this.btnAccept);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.listboxKeywordList);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "KeywordList";
-			this.Text = "KeywordList";
+			this.Text = "Manage Keywords";
 			this.Shown += new System.EventHandler(this.KeywordList_Shown);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();

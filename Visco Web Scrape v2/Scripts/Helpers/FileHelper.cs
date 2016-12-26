@@ -7,10 +7,8 @@ namespace Visco_Web_Scrape_v2.Scripts.Helpers {
 
 	public static class FileHelper {
 
-		private const string FileLocation = "Settings.bin";
-
 		public static Configuration LoadConfiguration() {
-			var stream = CheckForFile(FileLocation);
+			var stream = CheckForFile(Reference.Files.SettingsFile);
 			if (stream.Length == 0) {
 				return null;
 			} else {
@@ -22,17 +20,19 @@ namespace Visco_Web_Scrape_v2.Scripts.Helpers {
 		}
 
 		public static void SaveConfiguration(Configuration config) {
-			var stream = CheckForFile(FileLocation);
+			var stream = CheckForFile(Reference.Files.SettingsFile);
 			IFormatter formatter = new BinaryFormatter();
 			formatter.Serialize(stream, config);
 			stream.Close();
 		}
 
 		private static Stream CheckForFile(string filename) {
-			LogHelper.Debug(filename);
+			if (!Directory.Exists(Reference.Files.AppFileDirectory)) {
+				Directory.CreateDirectory(Reference.Files.AppFileDirectory);
+			}
+
 			if (!File.Exists(filename)) {
-				var dialog = MessageBox.Show("No settings file was found, would you like to create a new one?",
-					"Settings Load Error", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+				var dialog = MessageBox.Show(Reference.Messages.NoSettingsFileFound, "Settings Load Error", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
 
 				switch (dialog) {
 					case DialogResult.Yes:
