@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Windows.Forms;
@@ -29,6 +32,8 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 		private DoWorkEventArgs eventArgs;
 		private GrantSearch parentForm;
 		private CancellationTokenSource cancelPlease;
+		private Dictionary<string, int> badUrlComponentsList;
+		private List<string> goodUrlComponentsList;
 
 		public GrantCrawler(Configuration configuration, Website website, Keyword[] keywords, BackgroundWorker parentThread, DoWorkEventArgs e, GrantSearch parentForm) {
 			Uri properUrl;
@@ -38,9 +43,10 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 			this.parentForm = parentForm;
 			eventArgs = e;
 			websiteList = configuration.Websites.ToArray();
+			badUrlComponentsList = new Dictionary<string, int>();
+			goodUrlComponentsList = new List<string>();
 
-			if (keywords.Length == 0)
-				throw new ArgumentNullException("Keyword list cannot be empty.");
+			if (keywords.Length == 0) throw new ArgumentNullException("Keyword list cannot be empty.");
 			this.keywords = keywords;
 
 			if (string.IsNullOrEmpty(url))
@@ -69,39 +75,10 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 			crawler.ShouldCrawlPage((pageToCrawl, crawlContext) => {
 				var uri = pageToCrawl.Uri.AbsoluteUri.ToLower();
 				var crawlDecision = new CrawlDecision { Allow = true };
-				if (uri.Contains(".pdf") || uri.Contains(".doc") || uri.Contains(".jpg") || uri.Contains(".xls")) {
-					CrawlHelper.SkippedPages++;
-					return new CrawlDecision {Allow = false, Reason = "Bad extensions should not be downloaded"};
-				}
 
-				if (uri.Contains("comment")) {
+				if (Reference.IgnoreWords.Any(word => uri.Contains(word))) {
 					CrawlHelper.SkippedPages++;
-					return new CrawlDecision { Allow = false, Reason = "Comments are not needed" };
-				}
-
-				if (uri.Contains("reply")) {
-					CrawlHelper.SkippedPages++;
-					return new CrawlDecision { Allow = false, Reason = "Comments are not needed" };
-				}
-
-				if (uri.Contains("civil-rights")) {
-					CrawlHelper.SkippedPages++;
-					return new CrawlDecision { Allow = false, Reason = "Civil rights not relevant" };
-				}
-
-				if (uri.Contains("feedback")) {
-					CrawlHelper.SkippedPages++;
-					return new CrawlDecision {Allow = false, Reason = "Feedback pages are not needed"};
-				}
-
-				if (uri.Contains("admin")) {
-					CrawlHelper.SkippedPages++;
-					return new CrawlDecision { Allow = false, Reason = "Admin not relevant" };
-				}
-
-				if (uri.Contains("tags")) {
-					CrawlHelper.SkippedPages++;
-					return new CrawlDecision { Allow = false, Reason = "Tags are silly" };
+					return new CrawlDecision {Allow = false, Reason = "Skippable word found in url."};
 				}
 
 				return crawlDecision;
@@ -126,6 +103,9 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 				MessageBox.Show("Crawl of " + RootUrl + " completed with error " + results.ErrorException.Message, "Crawl Error",
 					MessageBoxButtons.OK, MessageBoxIcon.Error);
 			} else {
+				foreach (var badComponent in badUrlComponentsList) {
+					LogHelper.Debug(badComponent.Key + ": " + badComponent.Value);
+				}
 				Successful = true;
 			}
 		}
@@ -134,9 +114,61 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 			var myProgress = new Progress(page.Uri.AbsoluteUri, domain.Name, Results.ResultList.Count, websiteList.IndexOf(domain), Progress.Status.Searching);
 			worker.ReportProgress(0, myProgress);
 			var pageText = page.Content.Text.ToLower();
+			bool keywordsFound = false;
 			foreach (var keyword in keywords) {
 				if (pageText.Contains(keyword.Text.ToLower())) {
 					Results.AddNewResult(page, keyword);
+					keywordsFound = true;
+				}
+			}
+
+			/*
+			if (!keywordsFound) {
+				var progress = new Progress(page.Uri.AbsoluteUri, domain.Name, Results.ResultList.Count, websiteList.IndexOf(domain), Progress.Status.Scanning);
+				worker.ReportProgress(0, progress);
+				AddBadUrlComponent(page.Uri.AbsoluteUri);
+			} else {
+				AddGoodUrlComponent(page.Uri.AbsoluteUri);
+			}
+			CrosscheckComponents(page.Uri.AbsoluteUri);
+			*/
+		}
+
+		private void AddBadUrlComponent(string url) {
+			var components = url.Split('/').ToList();
+			components.RemoveAt(components.Count - 1);
+
+			foreach (var component in components) {
+//				if (goodUrlComponentsList.Contains(component)) return;
+				if (badUrlComponentsList.ContainsKey(component)) {
+					badUrlComponentsList[component]++;
+				} else {
+					badUrlComponentsList.Add(component, 1);
+					LogHelper.Debug("Added bad component: " + component);
+				}
+			}
+		}
+
+		private void AddGoodUrlComponent(string url) {
+			var components = url.Split('/').ToList();
+			components.RemoveAt(components.Count - 1);
+
+			foreach (var component in components) {
+				if (!goodUrlComponentsList.Contains(component)) {
+					goodUrlComponentsList.Add(component);
+					LogHelper.Debug("Added good component: " + component);
+				}
+			}
+		}
+
+		private void CrosscheckComponents(string url) {
+			var components = url.Split('/');
+
+			foreach (var component in components) {
+				if (goodUrlComponentsList.Contains(component)) {
+					if (badUrlComponentsList.ContainsKey(component)) {
+						badUrlComponentsList.Remove(component);
+					}
 				}
 			}
 		}

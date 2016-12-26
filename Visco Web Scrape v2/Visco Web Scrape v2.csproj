@@ -246,6 +246,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Icon.ico" />
+    <Content Include="Todo List.txt" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

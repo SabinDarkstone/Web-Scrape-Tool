@@ -4,7 +4,7 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 
 	public class Progress {
 
-		public enum Status { Crawling, Searching, Cancelling, Cancelled }
+		public enum Status { Crawling, Searching, Scanning, Cancelling, Cancelled }
 
 		public string Url { get; private set; }
 		public string Domain { get; private set; }

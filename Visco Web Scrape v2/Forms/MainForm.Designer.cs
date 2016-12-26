@@ -113,7 +113,6 @@
 			// 
 			// btnGrantTrack
 			// 
-			this.btnGrantTrack.Enabled = false;
 			this.btnGrantTrack.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.btnGrantTrack.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(61)))), ((int)(((byte)(29)))));
 			this.btnGrantTrack.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(126)))), ((int)(((byte)(176)))), ((int)(((byte)(127)))));
@@ -125,6 +124,7 @@
 			this.btnGrantTrack.TabIndex = 4;
 			this.btnGrantTrack.Text = "Track Grants";
 			this.btnGrantTrack.UseVisualStyleBackColor = true;
+			this.btnGrantTrack.Click += new System.EventHandler(this.btnGrantTrack_Click);
 			// 
 			// btnHelp
 			// 

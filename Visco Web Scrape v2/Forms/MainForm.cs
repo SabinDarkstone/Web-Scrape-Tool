@@ -79,6 +79,14 @@ namespace Visco_Web_Scrape_v2.Forms {
 		private void MainForm_Load(object sender, EventArgs e) {
 			lblVersion.Text = Reference.Version;
 		}
+
+		private void btnGrantTrack_Click(object sender, EventArgs e) {
+			throw new NotImplementedException();
+
+			// Open track grants windows
+			var grantTracker = new GrantTracker();
+			grantTracker.ShowDialog();
+		}
 	}
 
 }

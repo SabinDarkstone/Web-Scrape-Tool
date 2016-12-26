@@ -1,0 +1,5 @@
+﻿TODO List
+
+- Serialize urls and keywords of grants
+- Track date and time of grant being found
+- Identify if a grant found is new since last search

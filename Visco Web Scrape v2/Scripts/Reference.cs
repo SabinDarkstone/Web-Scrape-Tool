@@ -6,6 +6,9 @@ namespace Visco_Web_Scrape_v2.Scripts {
 
 		public static string Version = "0.1.1.3 alpha";
 
+		public static string[] IgnoreWords = {
+			".pdf", ".doc", ".xls", "comment", "reply", "civil-rights", "feedback", "admin", "tags"
+		};
 
 		public static class Files {
 			public static string AppFileDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) +

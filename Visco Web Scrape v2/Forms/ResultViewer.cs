@@ -19,6 +19,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 			ExportToFile();
 		}
 
+		// TODO: Change how the grants are outputted so that there is a website per line in the first column with the keywords found on the page in the second column
 		private void ExportToFile() {
 			// Initialize progress bar settings
 			int count = 0;
