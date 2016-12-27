@@ -56,9 +56,10 @@ namespace Visco_Web_Scrape_v2.Forms {
 			grantSearch.ShowDialog();
 
 			// Check to see if the results need to be saved
-			if (grantSearch.DialogResult == DialogResult.OK) {
+			if (grantSearch.DialogResult == DialogResult.OK || grantSearch.DialogResult == DialogResult.Yes) {
 				// Save results to settings file
-				MasterConfig.Results = grantSearch.AllResults;
+//				MasterConfig.Results = grantSearch.AllResults;
+				MasterConfig.Results = grantSearch.CompareLists(MasterConfig.Results);
 				FileHelper.SaveConfiguration(MasterConfig);
 				grantSearch.Close();
 			}
@@ -86,6 +87,18 @@ namespace Visco_Web_Scrape_v2.Forms {
 			// Open track grants windows
 			var grantTracker = new GrantTracker();
 			grantTracker.ShowDialog();
+		}
+
+		private void btnChangeSettings_Click(object sender, EventArgs e) {
+			// Open settings window
+			var settings = new AdjustSettings(MasterConfig);
+			settings.ShowDialog();
+
+			if (settings.DialogResult == DialogResult.OK) {
+				MasterConfig = settings.Settings;
+				settings.Close();
+				FileHelper.SaveConfiguration(MasterConfig);
+			}
 		}
 	}
 

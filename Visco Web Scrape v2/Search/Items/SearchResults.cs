@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Abot.Poco;
 
 namespace Visco_Web_Scrape_v2.Search.Items {
@@ -37,15 +38,25 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 			}
 		}
 
+		public void AddNewResult(Result result) {
+			ResultList.Add(result);
+		}
+
 		private int CheckForDuplicates(CrawledPage page) {
 			var myResult = new Result(page.Uri.AbsoluteUri);
 
 			foreach (var result in ResultList) {
 				if (myResult.Url.Equals(result.Url)) {
-					return ResultList.IndexOf(result);  // Matching url found
+					return ResultList.IndexOf(result); // Matching url found
 				}
 			}
 			return -1; // No matching url found
 		}
+
+		public bool CheckExists(Result result) {
+			return ResultList.Any(website => website.Url.Equals(result.Url));
+		}
+
 	}
+
 }
