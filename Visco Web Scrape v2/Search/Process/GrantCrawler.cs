@@ -43,7 +43,9 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 			// Initialize crawler
 			crawler = new PoliteWebCrawler(crawlConfig);
 			RegisterEvents();
-			ConfigureDecisionMaker();
+			if (configuration.EnableUrlFiltering) {
+				ConfigureDecisionMaker();
+			}
 
 			// Run Crawler
 			Run(url);
@@ -51,10 +53,12 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 
 		private string VerifyCrawl() {
 			var keywords = this.configuration.Keywords;
-			if (keywords == null || keywords.Count == 0) throw new ArgumentNullException(nameof(keywords));
+			if (keywords == null || keywords.Count == 0)
+				throw new ArgumentNullException(nameof(keywords));
 
 			var url = website.Url;
-			if (string.IsNullOrEmpty(url)) throw new ArgumentNullException(nameof(website));
+			if (string.IsNullOrEmpty(url))
+				throw new ArgumentNullException(nameof(website));
 
 			return url.StartsWith("www.") ? "http://" + url : url;
 		}
@@ -65,24 +69,22 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 		}
 
 		private void ConfigureDecisionMaker() {
-			if (configuration.EnableUrlFiltering) {
-				crawler.ShouldCrawlPage((pageToCrawl, crawlContext) => {
-					var url = pageToCrawl.Uri.AbsoluteUri.ToLower();
-					var crawlDecision = new CrawlDecision {Allow = true};
+			crawler.ShouldCrawlPage((pageToCrawl, crawlContext) => {
+				var url = pageToCrawl.Uri.AbsoluteUri.ToLower();
+				var crawlDecision = new CrawlDecision { Allow = true };
 
-					if (Reference.IgnoreExtensions.Any(word => url.Contains(word))) {
-						CrawlHelper.SkippedPages++;
-						return new CrawlDecision { Allow = false, Reason = "Url contains unreadable extension."};
-					}
+				if (Reference.IgnoreExtensions.Any(word => url.Contains(word))) {
+					CrawlHelper.SkippedPages++;
+					return new CrawlDecision { Allow = false, Reason = "Url contains unreadable extension." };
+				}
 
-					if (Reference.IgnoreWords.Any(word => url.Contains(word))) {
-						CrawlHelper.SkippedPages++;
-						return new CrawlDecision {Allow = false, Reason = "Url contains irrelevant word."};
-					}
+				if (Reference.IgnoreWords.Any(word => url.Contains(word))) {
+					CrawlHelper.SkippedPages++;
+					return new CrawlDecision { Allow = false, Reason = "Url contains irrelevant word." };
+				}
 
-					return crawlDecision;
-				});
-			}
+				return crawlDecision;
+			});
 		}
 
 		private void Run(string url) {
@@ -109,17 +111,31 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 			}
 		}
 
-		private void SearchPageForKeywords(CrawledPage page) {
+		private bool SearchPageForKeywords(CrawledPage page) {
 			var progress = new Progress(page.Uri.AbsoluteUri, website.Name, Results.ResultList.Count,
 				configuration.Websites.IndexOf(website), Progress.Status.Searching);
 			worker.ReportProgress(0, progress);
 
+			var keywordsFound = false;
 			var pageText = page.Content.Text.ToLower();
 			foreach (var keyword in configuration.Keywords) {
 				if (pageText.Contains(keyword.Text.ToLower())) {
 					Results.AddNewResult(page, keyword);
+					keywordsFound = true;
 				}
 			}
+
+			return keywordsFound;
+		}
+
+		private void ExamineUrl(CrawledPage page, bool relevance) {
+			var fullUrl = page.Uri.AbsoluteUri.ToLower();
+
+			var url = fullUrl.Split('/').ToList();
+			url.RemoveAt(0);
+			url.RemoveAt(url.Count - 1);
+
+			Results.AddUrlParts(url.ToArray(), relevance);
 		}
 
 		private void crawler_ProcessPageCrawlStarting(object sender, PageCrawlStartingArgs args) {
@@ -147,9 +163,12 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 				return;
 			}
 
-			SearchPageForKeywords(crawledPage);
-		}
+			var keywordsFound = SearchPageForKeywords(crawledPage);
 
+			if (configuration.EnableUrlAnalysis) {
+				ExamineUrl(crawledPage, keywordsFound);
+			}
+		}
 	}
 
 }
