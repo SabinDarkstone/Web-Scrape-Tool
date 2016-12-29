@@ -31,16 +31,21 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.txtPagesPerDomain = new System.Windows.Forms.TextBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.btnClearSearchSettings = new System.Windows.Forms.Button();
 			this.btnClearResults = new System.Windows.Forms.Button();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.radioExcel = new System.Windows.Forms.RadioButton();
-			this.radioPlainText = new System.Windows.Forms.RadioButton();
 			this.radioXml = new System.Windows.Forms.RadioButton();
-			this.btnClearSearchSettings = new System.Windows.Forms.Button();
+			this.radioPlainText = new System.Windows.Forms.RadioButton();
+			this.radioExcel = new System.Windows.Forms.RadioButton();
+			this.chkbxAnalyzeUrl = new System.Windows.Forms.CheckBox();
+			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.chkbxNewResultsOnly = new System.Windows.Forms.CheckBox();
+			this.chkbxDateFound = new System.Windows.Forms.CheckBox();
 			this.flowLayoutPanel1.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
+			this.groupBox4.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// flowLayoutPanel1
@@ -48,7 +53,7 @@
 			this.flowLayoutPanel1.AutoSize = true;
 			this.flowLayoutPanel1.Controls.Add(this.btnApply);
 			this.flowLayoutPanel1.Controls.Add(this.btnCancel);
-			this.flowLayoutPanel1.Location = new System.Drawing.Point(94, 252);
+			this.flowLayoutPanel1.Location = new System.Drawing.Point(91, 402);
 			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
 			this.flowLayoutPanel1.Size = new System.Drawing.Size(162, 29);
 			this.flowLayoutPanel1.TabIndex = 0;
@@ -75,12 +80,13 @@
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.chkbxAnalyzeUrl);
 			this.groupBox1.Controls.Add(this.chkbxEnableUrlFilter);
 			this.groupBox1.Controls.Add(this.label1);
 			this.groupBox1.Controls.Add(this.txtPagesPerDomain);
 			this.groupBox1.Location = new System.Drawing.Point(12, 12);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(241, 87);
+			this.groupBox1.Size = new System.Drawing.Size(241, 108);
 			this.groupBox1.TabIndex = 1;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Crawl Settings";
@@ -115,12 +121,22 @@
 			// 
 			this.groupBox2.Controls.Add(this.btnClearSearchSettings);
 			this.groupBox2.Controls.Add(this.btnClearResults);
-			this.groupBox2.Location = new System.Drawing.Point(12, 105);
+			this.groupBox2.Location = new System.Drawing.Point(12, 126);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(132, 107);
 			this.groupBox2.TabIndex = 2;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "App Settings";
+			// 
+			// btnClearSearchSettings
+			// 
+			this.btnClearSearchSettings.Location = new System.Drawing.Point(19, 53);
+			this.btnClearSearchSettings.Name = "btnClearSearchSettings";
+			this.btnClearSearchSettings.Size = new System.Drawing.Size(96, 43);
+			this.btnClearSearchSettings.TabIndex = 1;
+			this.btnClearSearchSettings.Text = "Reset Websites and Keywords";
+			this.btnClearSearchSettings.UseVisualStyleBackColor = true;
+			this.btnClearSearchSettings.Click += new System.EventHandler(this.btnClearSearchSettings_Click);
 			// 
 			// btnClearResults
 			// 
@@ -137,34 +153,12 @@
 			this.groupBox3.Controls.Add(this.radioXml);
 			this.groupBox3.Controls.Add(this.radioPlainText);
 			this.groupBox3.Controls.Add(this.radioExcel);
-			this.groupBox3.Location = new System.Drawing.Point(150, 105);
+			this.groupBox3.Location = new System.Drawing.Point(150, 126);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(103, 107);
 			this.groupBox3.TabIndex = 3;
 			this.groupBox3.TabStop = false;
-			this.groupBox3.Text = "Export Settings";
-			// 
-			// radioExcel
-			// 
-			this.radioExcel.AutoSize = true;
-			this.radioExcel.Location = new System.Drawing.Point(18, 27);
-			this.radioExcel.Name = "radioExcel";
-			this.radioExcel.Size = new System.Drawing.Size(70, 17);
-			this.radioExcel.TabIndex = 0;
-			this.radioExcel.TabStop = true;
-			this.radioExcel.Text = "Excel File";
-			this.radioExcel.UseVisualStyleBackColor = true;
-			// 
-			// radioPlainText
-			// 
-			this.radioPlainText.AutoSize = true;
-			this.radioPlainText.Location = new System.Drawing.Point(18, 50);
-			this.radioPlainText.Name = "radioPlainText";
-			this.radioPlainText.Size = new System.Drawing.Size(72, 17);
-			this.radioPlainText.TabIndex = 1;
-			this.radioPlainText.TabStop = true;
-			this.radioPlainText.Text = "Plain Text";
-			this.radioPlainText.UseVisualStyleBackColor = true;
+			this.groupBox3.Text = "Export File Type";
 			// 
 			// radioXml
 			// 
@@ -177,21 +171,75 @@
 			this.radioXml.Text = "XML File";
 			this.radioXml.UseVisualStyleBackColor = true;
 			// 
-			// btnClearSearchSettings
+			// radioPlainText
 			// 
-			this.btnClearSearchSettings.Location = new System.Drawing.Point(19, 53);
-			this.btnClearSearchSettings.Name = "btnClearSearchSettings";
-			this.btnClearSearchSettings.Size = new System.Drawing.Size(96, 43);
-			this.btnClearSearchSettings.TabIndex = 1;
-			this.btnClearSearchSettings.Text = "Reset Websites and Keywords";
-			this.btnClearSearchSettings.UseVisualStyleBackColor = true;
-			this.btnClearSearchSettings.Click += new System.EventHandler(this.btnClearSearchSettings_Click);
+			this.radioPlainText.AutoSize = true;
+			this.radioPlainText.Location = new System.Drawing.Point(18, 50);
+			this.radioPlainText.Name = "radioPlainText";
+			this.radioPlainText.Size = new System.Drawing.Size(72, 17);
+			this.radioPlainText.TabIndex = 1;
+			this.radioPlainText.TabStop = true;
+			this.radioPlainText.Text = "Plain Text";
+			this.radioPlainText.UseVisualStyleBackColor = true;
+			// 
+			// radioExcel
+			// 
+			this.radioExcel.AutoSize = true;
+			this.radioExcel.Location = new System.Drawing.Point(18, 27);
+			this.radioExcel.Name = "radioExcel";
+			this.radioExcel.Size = new System.Drawing.Size(70, 17);
+			this.radioExcel.TabIndex = 0;
+			this.radioExcel.TabStop = true;
+			this.radioExcel.Text = "Excel File";
+			this.radioExcel.UseVisualStyleBackColor = true;
+			// 
+			// chkbxAnalyzeUrl
+			// 
+			this.chkbxAnalyzeUrl.AutoSize = true;
+			this.chkbxAnalyzeUrl.Location = new System.Drawing.Point(21, 76);
+			this.chkbxAnalyzeUrl.Name = "chkbxAnalyzeUrl";
+			this.chkbxAnalyzeUrl.Size = new System.Drawing.Size(168, 17);
+			this.chkbxAnalyzeUrl.TabIndex = 4;
+			this.chkbxAnalyzeUrl.Text = "Run URL Analysis (Very Slow)";
+			this.chkbxAnalyzeUrl.UseVisualStyleBackColor = true;
+			// 
+			// groupBox4
+			// 
+			this.groupBox4.Controls.Add(this.chkbxDateFound);
+			this.groupBox4.Controls.Add(this.chkbxNewResultsOnly);
+			this.groupBox4.Location = new System.Drawing.Point(12, 239);
+			this.groupBox4.Name = "groupBox4";
+			this.groupBox4.Size = new System.Drawing.Size(241, 85);
+			this.groupBox4.TabIndex = 4;
+			this.groupBox4.TabStop = false;
+			this.groupBox4.Text = "Export Content";
+			// 
+			// chkbxNewResultsOnly
+			// 
+			this.chkbxNewResultsOnly.AutoSize = true;
+			this.chkbxNewResultsOnly.Location = new System.Drawing.Point(21, 28);
+			this.chkbxNewResultsOnly.Name = "chkbxNewResultsOnly";
+			this.chkbxNewResultsOnly.Size = new System.Drawing.Size(140, 17);
+			this.chkbxNewResultsOnly.TabIndex = 0;
+			this.chkbxNewResultsOnly.Text = "Show New Results Only";
+			this.chkbxNewResultsOnly.UseVisualStyleBackColor = true;
+			// 
+			// chkbxDateFound
+			// 
+			this.chkbxDateFound.AutoSize = true;
+			this.chkbxDateFound.Location = new System.Drawing.Point(21, 51);
+			this.chkbxDateFound.Name = "chkbxDateFound";
+			this.chkbxDateFound.Size = new System.Drawing.Size(120, 17);
+			this.chkbxDateFound.TabIndex = 1;
+			this.chkbxDateFound.Text = "Include Date Found";
+			this.chkbxDateFound.UseVisualStyleBackColor = true;
 			// 
 			// AdjustSettings
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(268, 296);
+			this.ClientSize = new System.Drawing.Size(266, 443);
+			this.Controls.Add(this.groupBox4);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
@@ -205,6 +253,8 @@
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
+			this.groupBox4.ResumeLayout(false);
+			this.groupBox4.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -226,5 +276,9 @@
 		private System.Windows.Forms.RadioButton radioXml;
 		private System.Windows.Forms.RadioButton radioPlainText;
 		private System.Windows.Forms.RadioButton radioExcel;
+		private System.Windows.Forms.CheckBox chkbxAnalyzeUrl;
+		private System.Windows.Forms.GroupBox groupBox4;
+		private System.Windows.Forms.CheckBox chkbxDateFound;
+		private System.Windows.Forms.CheckBox chkbxNewResultsOnly;
 	}
 }

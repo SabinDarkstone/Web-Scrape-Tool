@@ -15,14 +15,18 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 		private void PopulateFields() {
 			txtPagesPerDomain.Text = Settings.PagesToCrawlPerDomain.ToString();
+
 			chkbxEnableUrlFilter.Checked = Settings.EnableUrlFiltering;
+			chkbxAnalyzeUrl.Checked = Settings.EnableUrlAnalysis;
+			chkbxDateFound.Checked = Settings.IncludeDate;
+			chkbxNewResultsOnly.Checked = Settings.OnlyNewResults;
 
 			var exportMethod = Settings.ExportMethod;
 			if (exportMethod == Configuration.ExportType.Excel) radioExcel.Checked = true;
 			if (exportMethod == Configuration.ExportType.Plain) radioPlainText.Checked = true;
 			if (exportMethod == Configuration.ExportType.Xml) radioXml.Checked = true;
 
-			btnClearResults.Enabled = Settings.Results.Count != 0;
+			btnClearResults.Enabled = Settings.LastCrawl.Results.Count != 0;
 
 			if (Settings.Websites.Count > 0 || Settings.Keywords.Count > 0) {
 				btnClearSearchSettings.Enabled = true;
@@ -40,7 +44,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 				MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
 			if (sure == DialogResult.Yes) {
-				Settings.Results.Clear();
+				Settings.LastCrawl.Results.Clear();
 				PopulateFields();
 			}
 		}
@@ -60,6 +64,10 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 		private void btnApply_Click(object sender, EventArgs e) {
 			Settings.EnableUrlFiltering = chkbxEnableUrlFilter.Checked;
+			Settings.EnableUrlAnalysis = chkbxAnalyzeUrl.Checked;
+			Settings.IncludeDate = chkbxDateFound.Checked;
+			Settings.OnlyNewResults = chkbxNewResultsOnly.Checked;
+
 			Settings.PagesToCrawlPerDomain = int.Parse(txtPagesPerDomain.Text);
 
 			if (radioExcel.Checked) {
