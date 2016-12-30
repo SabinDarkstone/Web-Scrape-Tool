@@ -4,10 +4,10 @@ namespace Visco_Web_Scrape_v2.Scripts {
 
 	public static class Reference {
 
-		public static string Version = "0.2.0 alpha";
+		public static string Version = "0.3.0 alpha";
 
 		public static string[] IgnoreWords = {
-			"comment", "reply", "civil-rights", "feedback", "admin", "tags", "fastlane"
+			"comment", "reply", "civil-rights", "feedback", "admin", "tags", "fastlane", "airconsumer", "odapc", "part40", "budget", "recovery", "citizens"
 		};
 
 		public static string[] IgnoreExtensions = {".pdf", ".xls"};
