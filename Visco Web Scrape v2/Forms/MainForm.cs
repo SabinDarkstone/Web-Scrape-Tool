@@ -20,6 +20,16 @@ namespace Visco_Web_Scrape_v2.Forms {
 			if (MasterConfig == null) {
 				MasterConfig = new Configuration();
 			}
+
+			/* UNDONE: Temporary
+			var keywords = MasterConfig.Keywords;
+			var websites = MasterConfig.Websites;
+			MasterConfig = new Configuration {
+				Keywords = keywords,
+				Websites = websites
+			};
+			FileHelper.SaveConfiguration(MasterConfig);
+			*/
 		}
 
 		private void btnWebsiteList_Click(object sender, EventArgs e) {
@@ -58,11 +68,18 @@ namespace Visco_Web_Scrape_v2.Forms {
 			// Check to see if the results need to be saved
 			if (grantSearch.DialogResult == DialogResult.OK || grantSearch.DialogResult == DialogResult.Yes) {
 				// Save results to settings file
-//				MasterConfig.Results = grantSearch.AllResults;
-				MasterConfig.Results = grantSearch.CompareLists(MasterConfig.Results);
+				MasterConfig.LastCrawl.Results = grantSearch.CompareLists(MasterConfig.LastCrawl.Results, MasterConfig.OnlyNewResults);
+				MasterConfig.LastCrawl.Date = grantSearch.Config.LastCrawl.Date;
+				if (grantSearch.LastProgress.CurrentStatus == Progress.Status.Cancelled) {
+					MasterConfig.LastCrawl.CompletionStatus = "Canceled Early";
+				} else {
+					MasterConfig.LastCrawl.CompletionStatus = "Completed Successfully";
+				}
 				FileHelper.SaveConfiguration(MasterConfig);
 				grantSearch.Close();
 			}
+
+			LogHelper.Debug("Completion status: " + MasterConfig.LastCrawl.CompletionStatus);
 		}
 
 		private void btnViewResults_Click(object sender, EventArgs e) {
