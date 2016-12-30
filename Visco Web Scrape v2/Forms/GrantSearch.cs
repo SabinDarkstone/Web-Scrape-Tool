@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Visco_Web_Scrape_v2.Scripts;
-using Visco_Web_Scrape_v2.Scripts.Helpers;
 using Visco_Web_Scrape_v2.Search.Items;
 using Visco_Web_Scrape_v2.Search.Process;
 
@@ -17,6 +15,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 		public Configuration Config;
 		public List<SearchResults> AllResults { get; private set; }
 		public CancellationTokenSource Cts = new CancellationTokenSource();
+		public Progress LastProgress { get; private set; }
 
 		private BackgroundWorker worker;
 
@@ -30,6 +29,8 @@ namespace Visco_Web_Scrape_v2.Forms {
 		}
 
 		private void UpdateFields(Progress progress) {
+			LastProgress = progress;
+
 			if (progress.CurrentStatus == Progress.Status.Cancelled) {
 				lblCurrentStatus.Text = "Cancelled";
 				return;
@@ -53,6 +54,8 @@ namespace Visco_Web_Scrape_v2.Forms {
 		}
 
 		private void btnSaveResults_Click(object sender, EventArgs e) {
+			Config.LastCrawl.Date = DateTime.Now;
+
 			DialogResult = DialogResult.OK;
 			Hide();
 		}
@@ -69,16 +72,14 @@ namespace Visco_Web_Scrape_v2.Forms {
 				Debug.WriteLine("Sending cancellation request...");
 				worker.CancelAsync();
 			} else {
+				Config.LastCrawl.CompletionStatus = "Canceled Early";
 				DialogResult = DialogResult.Cancel;
 				Close();
 			}
 		}
 
-		// Figure out a way to check if a website url exists in the current results list
-		// 1. Mark all current results as old
-		// 2. Compare url from just completed search with those that are saved
-		// 3. If a match is found, ignore it.  If no match is found, add the url and mark it as new
-		public List<SearchResults> CompareLists(List<SearchResults> savedResults) {
+		public List<SearchResults> CompareLists(List<SearchResults> savedResults, bool onlyNewResults) {
+			/* Old code
 			var newList = savedResults;
 
 			if (newList.Count == 0) return AllResults;
@@ -116,6 +117,60 @@ namespace Visco_Web_Scrape_v2.Forms {
 					}
 				}
 			}
+
+			return newList;
+			*/
+
+			var newList = new List<SearchResults>();
+
+			foreach (var domain in Config.Websites) {
+				// Create a new list with all the domains in the current settings file
+				// This will include ALL domains even if new ones were added since the last search
+				var results = new SearchResults(domain);
+
+				// Check the previous search to see if there are results for the current domain
+				foreach (var resDomain in savedResults) {
+					// Ignore the domains that do not match
+					if (!resDomain.RootUrl.Equals(domain.Url)) continue;
+
+					foreach (var result in resDomain.ResultList) {
+						results.AddNewResult(result);
+					}
+				}
+
+				// Check recent search results to see if there are any new results in the domain to add
+				foreach (var newResDomain in AllResults) {
+					// Ignore the domains that do no match
+					if (!newResDomain.RootUrl.Equals(domain.Url)) continue;
+
+					// For the correct domain, go through each result
+					foreach (var result in newResDomain.ResultList) {
+						// Skip anything that already exists
+						if (results.CheckExists(result)) continue;
+
+						// Add the result with the datetime of today (just in case) since it is determined
+						// to be new to the list from the last result
+						result.DateFound = DateTime.Today;
+						results.AddNewResult(result);
+					}
+				}
+
+				// Now that the domain is finished being populated, add it to newList
+				newList.Add(results);
+			}
+
+			/* UNDONE: Moved to the export class
+			if (onlyNewResults) {
+				// Remove any results that do not have the datetime marked as today
+				foreach (var domain in newList) {
+					foreach (var result in domain.ResultList) {
+						if (!result.DateFound.Equals(DateTime.Today)) {
+							domain.ResultList.Remove(result);
+						}
+					}
+				}
+			}
+			*/
 
 			return newList;
 		}
@@ -178,7 +233,6 @@ namespace Visco_Web_Scrape_v2.Forms {
 			btnSaveResults.Enabled = true;
 
 			lblCurrentDomain.Text = "";
-			lblCurrentStatus.Text = "Completed";
 			lblCurrentUrl.Text = "";
 		}
 
