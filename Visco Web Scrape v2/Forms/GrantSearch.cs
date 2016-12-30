@@ -12,15 +12,35 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 	public partial class GrantSearch : Form {
 
+		/// <summary>
+		/// Settings file
+		/// </summary>
 		public Configuration Config;
+
+		/// <summary>
+		/// Stores search results in a list on a domain by domain basis
+		/// </summary>
 		public List<SearchResults> AllResults { get; private set; }
+
+		/// <summary>
+		/// Cancellation token for cancelling the process early
+		/// </summary>
 		public CancellationTokenSource Cts = new CancellationTokenSource();
+
+		/// <summary>
+		/// The last progress report either before cancelling or when the search is complete
+		/// </summary>
 		public Progress LastProgress { get; private set; }
 
 		private BackgroundWorker worker;
 
 		private readonly Job jobToRun;
 
+		/// <summary>
+		/// Runs a search of websites for keywords with the Abot crawler
+		/// </summary>
+		/// <param name="configuration"></param>
+		/// <param name="job"></param>
 		public GrantSearch(Configuration configuration, Job job) {
 			InitializeComponent();
 
@@ -28,6 +48,10 @@ namespace Visco_Web_Scrape_v2.Forms {
 			jobToRun = job;
 		}
 
+		/// <summary>
+		/// Uses progress object to provide feedback to user about how the Abot crawler is running
+		/// </summary>
+		/// <param name="progress">Current progress to send to form</param>
 		private void UpdateFields(Progress progress) {
 			LastProgress = progress;
 
@@ -49,10 +73,19 @@ namespace Visco_Web_Scrape_v2.Forms {
 			progressbar.Value = progress.DomainNumber + 1;
 		}
 
+		/// <summary>
+		/// Stops the crawl
+		/// </summary>
+		/// <param name="e"></param>
 		public void Stop(DoWorkEventArgs e) {
 			e.Cancel = true;
 		}
 
+		/// <summary>
+		/// Indicates the main form that the crawl results can be saved to the settings file
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void btnSaveResults_Click(object sender, EventArgs e) {
 			Config.LastCrawl.Date = DateTime.Now;
 
@@ -60,6 +93,11 @@ namespace Visco_Web_Scrape_v2.Forms {
 			Hide();
 		}
 
+		/// <summary>
+		/// Cancel crawl early and dispose of crawl robots.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void btnCancelCrawl_Click(object sender, EventArgs e) {
 			if (worker.IsBusy) {
 				var check =
@@ -78,6 +116,12 @@ namespace Visco_Web_Scrape_v2.Forms {
 			}
 		}
 
+		/// <summary>
+		/// Compares the current search results with the previous search results
+		/// </summary>
+		/// <param name="savedResults">List of results from the current settings files</param>
+		/// <param name="onlyNewResults">Identifies if only results from the newest search will be used</param>
+		/// <returns></returns>
 		public List<SearchResults> CompareLists(List<SearchResults> savedResults, bool onlyNewResults) {
 			/* Old code
 			var newList = savedResults;
@@ -175,6 +219,11 @@ namespace Visco_Web_Scrape_v2.Forms {
 			return newList;
 		}
 
+		/// <summary>
+		/// Initializes the crawler, registers events and runs the crawler once the form is finished loading and shown
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void GrantSearch_Shown(object sender, EventArgs e) {
 			// Initialize results
 			AllResults = new List<SearchResults>();
@@ -194,6 +243,11 @@ namespace Visco_Web_Scrape_v2.Forms {
 			worker.RunWorkerAsync(jobToRun);
 		}
 
+		/// <summary>
+		/// Event to run work
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void worker_DoWork(object sender, DoWorkEventArgs e) {
 			// Update UI to match "in-progress" conditions
 			try {
@@ -222,11 +276,21 @@ namespace Visco_Web_Scrape_v2.Forms {
 			}
 		}
 
+		/// <summary>
+		/// Event for changing of progress
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
 			var progress = e.UserState as Progress;
 			UpdateFields(progress);
 		}
 
+		/// <summary>
+		/// Event for completion of crawl
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
 			btnCancelCrawl.Text = "Cancel";
 			btnCancelCrawl.Enabled = false;
@@ -236,6 +300,11 @@ namespace Visco_Web_Scrape_v2.Forms {
 			lblCurrentUrl.Text = "";
 		}
 
+		/// <summary>
+		/// Runs of loading of form but before the components are visible to user
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void GrantSearch_Load(object sender, EventArgs e) {
 			// Clear out placeholder fields
 			lblCurrentDomain.Text = "";
