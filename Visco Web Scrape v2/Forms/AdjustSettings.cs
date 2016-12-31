@@ -30,6 +30,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 			chkbxAnalyzeUrl.Checked = Settings.EnableUrlAnalysis;
 			chkbxDateFound.Checked = Settings.IncludeDate;
 			chkbxNewResultsOnly.Checked = Settings.OnlyNewResults;
+			chkbxSendEmail.Checked = Settings.EnableSendEmail;
 
 			var exportMethod = Settings.ExportMethod;
 			if (exportMethod == Configuration.ExportType.Excel) radioExcel.Checked = true;
@@ -97,6 +98,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 			Settings.EnableUrlAnalysis = chkbxAnalyzeUrl.Checked;
 			Settings.IncludeDate = chkbxDateFound.Checked;
 			Settings.OnlyNewResults = chkbxNewResultsOnly.Checked;
+			Settings.EnableSendEmail = chkbxSendEmail.Checked;
 
 			Settings.PagesToCrawlPerDomain = int.Parse(txtPagesPerDomain.Text);
 

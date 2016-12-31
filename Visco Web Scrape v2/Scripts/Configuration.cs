@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Visco_Web_Scrape_v2.Search;
 using Visco_Web_Scrape_v2.Search.Items;
 
 namespace Visco_Web_Scrape_v2.Scripts {
@@ -24,18 +25,21 @@ namespace Visco_Web_Scrape_v2.Scripts {
 
 		public List<Website> Websites { get; set; }
 		public List<Keyword> Keywords { get; set; }
+		public List<Recipient> Recipients { get; set; }
 		
 		public int PagesToCrawlPerDomain { get; set; }
 		public bool EnableUrlFiltering { get; set; }
 		public bool EnableUrlAnalysis { get; set; }
 		public bool IncludeDate { get; set; }
 		public bool OnlyNewResults { get; set; }
+		public bool EnableSendEmail { get; set; }
 		public ExportType ExportMethod { get; set; }
 		public LastCrawlInfo LastCrawl { get; set; }
 
 		public Configuration() {
 			Websites = new List<Website>();
 			Keywords = new List<Keyword>();
+			Recipients = new List<Recipient>();
 
 			if (LastCrawl == null) {
 				LastCrawl = new LastCrawlInfo { Results = new List<SearchResults>() };
