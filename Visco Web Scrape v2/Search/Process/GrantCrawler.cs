@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -71,16 +72,16 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 		private void ConfigureDecisionMaker() {
 			crawler.ShouldCrawlPage((pageToCrawl, crawlContext) => {
 				var url = pageToCrawl.Uri.AbsoluteUri.ToLower();
-				var crawlDecision = new CrawlDecision { Allow = true };
+				var crawlDecision = new CrawlDecision {Allow = true};
 
 				if (Reference.IgnoreExtensions.Any(word => url.Contains(word))) {
 					CrawlHelper.SkippedPages++;
-					return new CrawlDecision { Allow = false, Reason = "Url contains unreadable extension." };
+					return new CrawlDecision {Allow = false, Reason = "Url contains unreadable extension."};
 				}
 
 				if (Reference.IgnoreWords.Any(word => url.Contains(word))) {
 					CrawlHelper.SkippedPages++;
-					return new CrawlDecision { Allow = false, Reason = "Url contains irrelevant word." };
+					return new CrawlDecision {Allow = false, Reason = "Url contains irrelevant word."};
 				}
 
 				return crawlDecision;
@@ -170,5 +171,4 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 			}
 		}
 	}
-
 }
