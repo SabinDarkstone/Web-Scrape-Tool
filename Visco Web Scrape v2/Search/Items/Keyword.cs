@@ -3,7 +3,7 @@
 namespace Visco_Web_Scrape_v2.Search.Items {
 
 	[Serializable]
-	public class Keyword {
+	public class Keyword : IComparable {
 
 		public string Text { get; }
 
@@ -15,6 +15,11 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 
 		public override string ToString() {
 			return Text;
+		}
+
+		public int CompareTo(object obj) {
+			var other = (Keyword)obj;
+			return String.Compare(this.Text, other.Text);
 		}
 	}
 }

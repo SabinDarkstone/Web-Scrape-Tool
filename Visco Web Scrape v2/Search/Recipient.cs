@@ -3,7 +3,7 @@
 namespace Visco_Web_Scrape_v2.Search {
 
 	[Serializable]
-	public class Recipient {
+	public class Recipient : IComparable {
 
 		public string Name { get; set; }
 		public string Address { get; set; }
@@ -15,6 +15,11 @@ namespace Visco_Web_Scrape_v2.Search {
 
 		public override string ToString() {
 			return Name;
+		}
+
+		public int CompareTo(object obj) {
+			var other = (Recipient)obj;
+			return String.Compare(this.Name, other.Name);
 		}
 	}
 }

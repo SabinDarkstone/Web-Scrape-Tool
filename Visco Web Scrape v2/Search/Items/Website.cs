@@ -3,7 +3,7 @@
 namespace Visco_Web_Scrape_v2.Search.Items {
 
 	[Serializable]
-	public class Website {
+	public class Website : IComparable {
 
 		public string Name { get; }
 		public string Url { get; }
@@ -23,6 +23,11 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 			unchecked {
 				return (Name.GetHashCode() * 397) ^ Url.GetHashCode();
 			}
+		}
+
+		public int CompareTo(object obj) {
+			var other = (Website) obj;
+			return String.Compare(this.Name, other.Name);
 		}
 	}
 }
