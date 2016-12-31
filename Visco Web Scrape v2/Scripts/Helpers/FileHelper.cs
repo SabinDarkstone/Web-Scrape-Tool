@@ -32,7 +32,7 @@ namespace Visco_Web_Scrape_v2.Scripts.Helpers {
 			}
 
 			if (!File.Exists(filename)) {
-				var dialog = MessageBox.Show(Reference.Messages.NoSettingsFileFound, "Settings Load Error", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+				var dialog = MessageBox.Show(Reference.Messages.NoSettingsFileFound, Reference.Messages.SettingsLoadError, MessageBoxButtons.YesNo, MessageBoxIcon.Error);
 
 				switch (dialog) {
 					case DialogResult.Yes:
