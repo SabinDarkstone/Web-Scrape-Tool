@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
@@ -18,22 +19,22 @@ namespace Visco_Web_Scrape_v2.Forms {
 		}
 
 		private void ResultViewer_Shown(object sender, EventArgs e) {
+			// Initialize progress bar
+			var pageCount = config.Websites.Count;
+			progressbar.Maximum = pageCount;
+
 			ExportToFile();
 		}
 
 		// TODO: Change how the grants are outputted so that there is a website per line in the first column with the keywords found on the page in the second column
 		private void ExportToFile() {
-			// Initialize progress bar
-			var pageCount = config.LastCrawl.Results.SelectMany(domain => domain.ResultList).Count();
-			progressbar.Maximum = pageCount;
-
 			// Indicate the program is saving the file
 			btnStatusClose.Text = "Saving...";
 			btnStatusClose.Enabled = false;
 
 			switch (config.ExportMethod) {
 				case Configuration.ExportType.Excel:
-					ExportToExcel();
+					ExportToExcel(false);
 					break;
 
 				case Configuration.ExportType.Plain:
@@ -49,17 +50,18 @@ namespace Visco_Web_Scrape_v2.Forms {
 			}
 		}
 
-		private void ExportToExcel() {
+		public void ExportToExcel(bool forEmail) {
 			// Initialize excel interop and start application
 			var excel = new Excel.Application { Visible = false };
 
 			// Get a new workbook
-			Excel._Workbook workbook = excel.Workbooks.Add(Missing.Value);
+			Excel.Workbook workbook = excel.Workbooks.Add(Missing.Value);
 
 			// Go through each website and write to the file
 			var results = config.LastCrawl.Results;
 			int currentRow = 1;
 			for (var index = results.Count - 1; index >= 0; index--) {
+				progressbar.Value++;
 				var entry = results[index];
 
 				// Add a new worksheet for each domain
@@ -98,7 +100,6 @@ namespace Visco_Web_Scrape_v2.Forms {
 				// Go through the rows and add information
 				currentRow = 1;
 				foreach (var website in entry.ResultList) {
-					progressbar.Value++;
 					currentRow++;
 
 					if (config.OnlyNewResults && !website.DateFound.Equals(DateTime.Today)) continue;
@@ -163,7 +164,23 @@ namespace Visco_Web_Scrape_v2.Forms {
 			btnStatusClose.Text = "Close";
 			btnStatusClose.Enabled = true;
 
-			excel.Visible = true;
+			if (forEmail) {
+				excel.Visible = false;
+
+				var date = config.LastCrawl.Date;
+				var fileName = Reference.Files.AppFileDirectory + "Results_"
+					+ date.Month + date.Day + date.Year;
+
+				if (File.Exists(fileName + ".xlsx")) {
+					File.Delete(fileName + ".xlsx");
+				}
+				workbook.SaveAs(fileName, Excel.XlFileFormat.xlWorkbookDefault, Type.Missing, Type.Missing, false, false,
+					Excel.XlSaveAsAccessMode.xlNoChange, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+				workbook.Close();
+				excel.Quit();
+			} else {
+				excel.Visible = true;
+			}
 		}
 
 		private void ExportToPlainText() {
