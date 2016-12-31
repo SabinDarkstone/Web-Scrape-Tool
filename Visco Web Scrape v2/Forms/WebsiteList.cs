@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using Visco_Web_Scrape_v2.Scripts;
-using Visco_Web_Scrape_v2.Search;
 using Visco_Web_Scrape_v2.Search.Items;
 
 namespace Visco_Web_Scrape_v2.Forms {
