@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -8,6 +7,7 @@ using System.Windows.Forms;
 using Abot.Core;
 using Abot.Crawler;
 using Abot.Poco;
+using Visco_Web_Scrape_v2.Properties;
 using Visco_Web_Scrape_v2.Scripts;
 using Visco_Web_Scrape_v2.Scripts.Helpers;
 using Visco_Web_Scrape_v2.Search.Items;
@@ -47,13 +47,16 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 			if (configuration.EnableUrlFiltering) {
 				ConfigureDecisionMaker();
 			}
+			if (configuration.EnableUrlAnalysis) {
+				crawlConfig.MaxConcurrentThreads = 2;
+			}
 
 			// Run Crawler
 			Run(url);
 		}
 
 		private string VerifyCrawl() {
-			var keywords = this.configuration.Keywords;
+			var keywords = configuration.Keywords;
 			if (keywords == null || keywords.Count == 0)
 				throw new ArgumentNullException(nameof(keywords));
 
@@ -76,12 +79,12 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 
 				if (Reference.IgnoreExtensions.Any(word => url.Contains(word))) {
 					CrawlHelper.SkippedPages++;
-					return new CrawlDecision {Allow = false, Reason = "Url contains unreadable extension."};
+					return new CrawlDecision {Allow = false, Reason = Resources.BadExtension};
 				}
 
 				if (Reference.IgnoreWords.Any(word => url.Contains(word))) {
 					CrawlHelper.SkippedPages++;
-					return new CrawlDecision {Allow = false, Reason = "Url contains irrelevant word."};
+					return new CrawlDecision {Allow = false, Reason = Resources.UrlFiltered};
 				}
 
 				return crawlDecision;
@@ -104,7 +107,7 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 
 				// Report that there was an error and mark crawl as unsuccessful
 				Successful = false;
-				MessageBox.Show("Crawl of page" + url + " completed with error: " + results.ErrorException.Message, "Crawling Error",
+				MessageBox.Show(Resources.DomainCrawlError + results.ErrorException.Message, Resources.Error,
 					MessageBoxButtons.OK, MessageBoxIcon.Error);
 			} else {
 				// Crawl was completed successfully and without cancellation

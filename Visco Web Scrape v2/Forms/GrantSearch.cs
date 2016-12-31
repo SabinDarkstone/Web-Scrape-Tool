@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
+using Visco_Web_Scrape_v2.Properties;
 using Visco_Web_Scrape_v2.Scripts;
 using Visco_Web_Scrape_v2.Search.Items;
 using Visco_Web_Scrape_v2.Search.Process;
@@ -62,7 +63,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 		private void btnCancelCrawl_Click(object sender, EventArgs e) {
 			if (worker.IsBusy) {
 				var check =
-					MessageBox.Show(Reference.Messages.CancelCrawl, Reference.Messages.CancelQuestion, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+					MessageBox.Show(Resources.ConfirmCancelCrawl, Resources.ConfirmationRequired, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
 				if (check == DialogResult.No)
 					return;

@@ -68,6 +68,7 @@
 			this.Controls.Add(this.tabControl1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "GrantTracker";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Track Grant Information";
 			this.tabControl1.ResumeLayout(false);
 			this.ResumeLayout(false);

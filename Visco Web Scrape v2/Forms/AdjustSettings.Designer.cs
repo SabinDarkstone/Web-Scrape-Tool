@@ -39,9 +39,9 @@
 			this.radioPlainText = new System.Windows.Forms.RadioButton();
 			this.radioExcel = new System.Windows.Forms.RadioButton();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.chkbxSendEmail = new System.Windows.Forms.CheckBox();
 			this.chkbxDateFound = new System.Windows.Forms.CheckBox();
 			this.chkbxNewResultsOnly = new System.Windows.Forms.CheckBox();
-			this.chkbxSendEmail = new System.Windows.Forms.CheckBox();
 			this.flowLayoutPanel1.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -181,6 +181,7 @@
 			this.radioXml.TabStop = true;
 			this.radioXml.Text = "XML File";
 			this.radioXml.UseVisualStyleBackColor = true;
+			this.radioXml.CheckedChanged += new System.EventHandler(this.radioXml_CheckedChanged);
 			// 
 			// radioPlainText
 			// 
@@ -192,6 +193,7 @@
 			this.radioPlainText.TabStop = true;
 			this.radioPlainText.Text = "Plain Text";
 			this.radioPlainText.UseVisualStyleBackColor = true;
+			this.radioPlainText.CheckedChanged += new System.EventHandler(this.radioPlainText_CheckedChanged);
 			// 
 			// radioExcel
 			// 
@@ -216,6 +218,16 @@
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Export Content";
 			// 
+			// chkbxSendEmail
+			// 
+			this.chkbxSendEmail.AutoSize = true;
+			this.chkbxSendEmail.Location = new System.Drawing.Point(21, 74);
+			this.chkbxSendEmail.Name = "chkbxSendEmail";
+			this.chkbxSendEmail.Size = new System.Drawing.Size(156, 17);
+			this.chkbxSendEmail.TabIndex = 2;
+			this.chkbxSendEmail.Text = "Send Emails On Completion";
+			this.chkbxSendEmail.UseVisualStyleBackColor = true;
+			// 
 			// chkbxDateFound
 			// 
 			this.chkbxDateFound.AutoSize = true;
@@ -236,16 +248,6 @@
 			this.chkbxNewResultsOnly.Text = "Show New Results Only";
 			this.chkbxNewResultsOnly.UseVisualStyleBackColor = true;
 			// 
-			// chkbxSendEmail
-			// 
-			this.chkbxSendEmail.AutoSize = true;
-			this.chkbxSendEmail.Location = new System.Drawing.Point(21, 74);
-			this.chkbxSendEmail.Name = "chkbxSendEmail";
-			this.chkbxSendEmail.Size = new System.Drawing.Size(156, 17);
-			this.chkbxSendEmail.TabIndex = 2;
-			this.chkbxSendEmail.Text = "Send Emails On Completion";
-			this.chkbxSendEmail.UseVisualStyleBackColor = true;
-			// 
 			// AdjustSettings
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -257,6 +259,7 @@
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.flowLayoutPanel1);
 			this.Name = "AdjustSettings";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Change User Settings";
 			this.Shown += new System.EventHandler(this.AdjustSettings_Shown);
 			this.flowLayoutPanel1.ResumeLayout(false);

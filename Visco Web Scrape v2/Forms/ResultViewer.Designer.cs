@@ -67,6 +67,7 @@
 			this.Controls.Add(this.label1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "ResultViewer";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "View Search Results";
 			this.Shown += new System.EventHandler(this.ResultViewer_Shown);
 			this.ResumeLayout(false);

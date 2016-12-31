@@ -176,6 +176,7 @@
       <DependentUpon>WebsiteList.cs</DependentUpon>
     </Compile>
     <Compile Include="Search\Recipient.cs" />
+    <Compile Include="Settings.cs" />
     <EmbeddedResource Include="Forms\AboutHelp.resx">
       <DependentUpon>AboutHelp.cs</DependentUpon>
     </EmbeddedResource>
@@ -277,7 +278,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Icon.ico" />
-    <Content Include="Todo List.txt" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

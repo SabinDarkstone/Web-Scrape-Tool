@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Resources;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -6,7 +7,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Visco Web Grant Search Tool")]
-[assembly: AssemblyDescription("A tool to crawl and search websites for information about grants for streetscapes and lighting.  Designed for Visco Lighting.  Crawling powered by Abot Crawler.")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Darkstone Concepts")]
 [assembly: AssemblyProduct("Visco Web Grant Search Tool")]
@@ -34,3 +35,5 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("0.4.1.0")]
 [assembly: AssemblyFileVersion("0.4.1.0")]
+[assembly: NeutralResourcesLanguage("en")]
+

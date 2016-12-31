@@ -144,6 +144,7 @@
 			this.Controls.Add(this.listboxWebsites);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "WebsiteList";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Manage Website List";
 			this.Shown += new System.EventHandler(this.WebsiteList_Shown);
 			this.groupBox1.ResumeLayout(false);

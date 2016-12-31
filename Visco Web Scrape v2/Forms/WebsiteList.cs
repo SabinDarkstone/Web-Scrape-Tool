@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using Visco_Web_Scrape_v2.Properties;
 using Visco_Web_Scrape_v2.Scripts;
 using Visco_Web_Scrape_v2.Search.Items;
 
@@ -17,6 +18,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 		}
 
 		private void UpdateListbox() {
+			CurrentWebsites.Sort();
 			listboxWebsites.Items.Clear();
 			foreach (var website in CurrentWebsites) {
 				listboxWebsites.Items.Add(website);
@@ -49,19 +51,14 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 		private void btnSaveWebsite_Click(object sender, EventArgs e) {
 			var myWebsite = new Website(txtWebsiteName.Text, txtWebsiteUrl.Text);
-			var alreadyExists = false;
+			var selectedWebsite = listboxWebsites.SelectedItem as Website;
 
-			// Loop through websites in current list and check to see if anything matches the current name
-			foreach (var website in CurrentWebsites) {
-				// If a match is found, remove the old one and replace it with the new one
-				if (website.Name.Equals(myWebsite.Name)) {
-					CurrentWebsites.Remove(website);
-					CurrentWebsites.Add(myWebsite);
-					alreadyExists = true;
-				}
-			}
-			// If no match is found, add the website
-			if (!alreadyExists) {
+			// Check to make sure the recipient does not already exist
+			if (selectedWebsite != null && (selectedWebsite.Name.Equals(txtWebsiteName.Text) ||
+				selectedWebsite.Url.Equals(txtWebsiteUrl.Text))) {
+				CurrentWebsites.Remove(selectedWebsite);
+				CurrentWebsites.Add(myWebsite);
+			} else {
 				CurrentWebsites.Add(myWebsite);
 			}
 
@@ -75,8 +72,8 @@ namespace Visco_Web_Scrape_v2.Forms {
 				var selectedWebsite = listboxWebsites.SelectedItem as Website;
 				// Check if the user really wants to remove the website
 				var dialog =
-					MessageBox.Show("Are you sure you want to remove " + selectedWebsite.Name + " from the list of websites?",
-						"Confirm removal", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+					MessageBox.Show(Resources.ConfirmDeleteWebsite + selectedWebsite,
+						Resources.ConfirmationRequired, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 				if (dialog == DialogResult.Yes) {
 					CurrentWebsites.Remove(selectedWebsite);
 					UpdateListbox();
@@ -90,8 +87,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 			if (listboxWebsites.SelectedIndex != -1) {
 				var website = listboxWebsites.SelectedItem as Website;
 				if (website == null) {
-					MessageBox.Show("The selected website does not exist in the records.", "Error", MessageBoxButtons.OK,
-						MessageBoxIcon.Error);
+					MessageBox.Show(Resources.WebsiteNotFound, Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 				txtWebsiteName.Text = website.Name;
 				txtWebsiteUrl.Text = website.Url;

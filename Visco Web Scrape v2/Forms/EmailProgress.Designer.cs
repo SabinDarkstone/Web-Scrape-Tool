@@ -23,6 +23,7 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EmailProgress));
 			this.label1 = new System.Windows.Forms.Label();
 			this.lblCurrentStatus = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
@@ -83,8 +84,10 @@
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.lblCurrentStatus);
 			this.Controls.Add(this.label1);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "EmailProgress";
-			this.Text = "EmailProgress";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+			this.Text = "Sending Emails";
 			this.Shown += new System.EventHandler(this.EmailProgress_Shown);
 			this.ResumeLayout(false);
 			this.PerformLayout();

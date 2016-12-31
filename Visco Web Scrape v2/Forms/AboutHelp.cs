@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Visco_Web_Scrape_v2.Properties;
 
 namespace Visco_Web_Scrape_v2.Forms {
 	partial class AboutHelp : Form {
@@ -13,10 +14,10 @@ namespace Visco_Web_Scrape_v2.Forms {
 			InitializeComponent();
 			this.Text = String.Format("About {0}", AssemblyTitle);
 			this.labelProductName.Text = AssemblyProduct;
-			this.labelVersion.Text = String.Format("Version {0}", AssemblyVersion);
+			this.labelVersion.Text = String.Format("Version {0}", Resources.Version);
 			this.labelCopyright.Text = AssemblyCopyright;
 			this.labelCompanyName.Text = AssemblyCompany;
-			this.textBoxDescription.Text = AssemblyDescription;
+			this.textBoxDescription.Text = Resources.Description;
 		}
 
 		#region Assembly Attribute Accessors

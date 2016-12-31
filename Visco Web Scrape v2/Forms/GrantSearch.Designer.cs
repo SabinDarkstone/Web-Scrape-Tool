@@ -34,12 +34,12 @@
 			this.lblResultsFound = new System.Windows.Forms.Label();
 			this.progressbar = new System.Windows.Forms.ProgressBar();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.lblPagesSkippedCount = new System.Windows.Forms.Label();
+			this.label6 = new System.Windows.Forms.Label();
 			this.lblCurrentStatus = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.btnCancelCrawl = new System.Windows.Forms.Button();
 			this.btnSaveResults = new System.Windows.Forms.Button();
-			this.lblPagesSkippedCount = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -144,6 +144,24 @@
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Progress";
 			// 
+			// lblPagesSkippedCount
+			// 
+			this.lblPagesSkippedCount.AutoSize = true;
+			this.lblPagesSkippedCount.Location = new System.Drawing.Point(345, 74);
+			this.lblPagesSkippedCount.Name = "lblPagesSkippedCount";
+			this.lblPagesSkippedCount.Size = new System.Drawing.Size(73, 13);
+			this.lblPagesSkippedCount.TabIndex = 13;
+			this.lblPagesSkippedCount.Text = "<page count>";
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(257, 74);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(82, 13);
+			this.label6.TabIndex = 12;
+			this.label6.Text = "Pages Skipped:";
+			// 
 			// lblCurrentStatus
 			// 
 			this.lblCurrentStatus.AutoSize = true;
@@ -183,24 +201,6 @@
 			this.btnSaveResults.UseVisualStyleBackColor = true;
 			this.btnSaveResults.Click += new System.EventHandler(this.btnSaveResults_Click);
 			// 
-			// lblPagesSkippedCount
-			// 
-			this.lblPagesSkippedCount.AutoSize = true;
-			this.lblPagesSkippedCount.Location = new System.Drawing.Point(345, 74);
-			this.lblPagesSkippedCount.Name = "lblPagesSkippedCount";
-			this.lblPagesSkippedCount.Size = new System.Drawing.Size(73, 13);
-			this.lblPagesSkippedCount.TabIndex = 13;
-			this.lblPagesSkippedCount.Text = "<page count>";
-			// 
-			// label6
-			// 
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(257, 74);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(82, 13);
-			this.label6.TabIndex = 12;
-			this.label6.Text = "Pages Skipped:";
-			// 
 			// GrantSearch
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -211,6 +211,7 @@
 			this.Controls.Add(this.groupBox1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "GrantSearch";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Web Crawler and Search";
 			this.Load += new System.EventHandler(this.GrantSearch_Load);
 			this.Shown += new System.EventHandler(this.GrantSearch_Shown);

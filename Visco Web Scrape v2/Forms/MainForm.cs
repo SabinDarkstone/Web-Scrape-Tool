@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using Visco_Web_Scrape_v2.Properties;
 using Visco_Web_Scrape_v2.Scripts;
 using Visco_Web_Scrape_v2.Scripts.Helpers;
 using Visco_Web_Scrape_v2.Search.Process;
@@ -16,10 +17,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 		private void Form1_Shown(object sender, EventArgs e) {
 			// Load Settings File
-			MasterConfig = FileHelper.LoadConfiguration();
-			if (MasterConfig == null) {
-				MasterConfig = new Configuration();
-			}
+			MasterConfig = FileHelper.LoadConfiguration() ?? new Configuration();
 
 			/* UNDONE: Temporarys
 			var keywords = MasterConfig.Keywords;
@@ -74,7 +72,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 				MasterConfig.LastCrawl.Date = grantSearch.Config.LastCrawl.Date;
 				if (grantSearch.LastProgress.CurrentStatus == Progress.Status.Cancelled) {
 					MasterConfig.LastCrawl.CompletionStatus = "Canceled Early";
-					var response = MessageBox.Show("Would you like to send an email of the incomplete search?", "Send Email?",
+					var response = MessageBox.Show(Resources.ConfirmSendIncompleteSearch, Resources.ConfirmationRequired,
 						MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 					if (response == DialogResult.Yes) sendEmail = true;
 				} else {
@@ -107,11 +105,11 @@ namespace Visco_Web_Scrape_v2.Forms {
 		}
 
 		private void MainForm_Load(object sender, EventArgs e) {
-			lblVersion.Text = Reference.Version;
+			lblVersion.Text = Resources.Version;
 		}
 
 		private void btnGrantTrack_Click(object sender, EventArgs e) {
-			throw new NotImplementedException();
+			MessageBox.Show(Resources.FeatureNotImplemented, Resources.HeadsUp, MessageBoxButtons.OK, MessageBoxIcon.Stop);
 
 			// Open track grants windows
 			var grantTracker = new GrantTracker();

@@ -30,8 +30,6 @@
 			this.btnSave = new System.Windows.Forms.Button();
 			this.btnRemove = new System.Windows.Forms.Button();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.radioExclude = new System.Windows.Forms.RadioButton();
-			this.radioInclude = new System.Windows.Forms.RadioButton();
 			this.btnAccept = new System.Windows.Forms.Button();
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.groupBox1.SuspendLayout();
@@ -42,7 +40,7 @@
 			this.listboxKeywordList.FormattingEnabled = true;
 			this.listboxKeywordList.Location = new System.Drawing.Point(12, 12);
 			this.listboxKeywordList.Name = "listboxKeywordList";
-			this.listboxKeywordList.Size = new System.Drawing.Size(202, 225);
+			this.listboxKeywordList.Size = new System.Drawing.Size(202, 186);
 			this.listboxKeywordList.TabIndex = 0;
 			this.listboxKeywordList.SelectedIndexChanged += new System.EventHandler(this.listboxKeywordList_SelectedIndexChanged);
 			// 
@@ -64,7 +62,7 @@
 			// 
 			// btnSave
 			// 
-			this.btnSave.Location = new System.Drawing.Point(34, 110);
+			this.btnSave.Location = new System.Drawing.Point(34, 71);
 			this.btnSave.Name = "btnSave";
 			this.btnSave.Size = new System.Drawing.Size(75, 23);
 			this.btnSave.TabIndex = 3;
@@ -74,7 +72,7 @@
 			// 
 			// btnRemove
 			// 
-			this.btnRemove.Location = new System.Drawing.Point(115, 110);
+			this.btnRemove.Location = new System.Drawing.Point(115, 71);
 			this.btnRemove.Name = "btnRemove";
 			this.btnRemove.Size = new System.Drawing.Size(75, 23);
 			this.btnRemove.TabIndex = 4;
@@ -84,44 +82,20 @@
 			// 
 			// groupBox1
 			// 
-			this.groupBox1.Controls.Add(this.radioExclude);
-			this.groupBox1.Controls.Add(this.radioInclude);
 			this.groupBox1.Controls.Add(this.btnSave);
 			this.groupBox1.Controls.Add(this.btnRemove);
 			this.groupBox1.Controls.Add(this.label1);
 			this.groupBox1.Controls.Add(this.txtKeywordText);
 			this.groupBox1.Location = new System.Drawing.Point(220, 12);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(224, 145);
+			this.groupBox1.Size = new System.Drawing.Size(224, 112);
 			this.groupBox1.TabIndex = 5;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Keyword";
 			// 
-			// radioExclude
-			// 
-			this.radioExclude.AutoSize = true;
-			this.radioExclude.Location = new System.Drawing.Point(81, 81);
-			this.radioExclude.Name = "radioExclude";
-			this.radioExclude.Size = new System.Drawing.Size(63, 17);
-			this.radioExclude.TabIndex = 6;
-			this.radioExclude.Text = "Exclude";
-			this.radioExclude.UseVisualStyleBackColor = true;
-			// 
-			// radioInclude
-			// 
-			this.radioInclude.AutoSize = true;
-			this.radioInclude.Checked = true;
-			this.radioInclude.Location = new System.Drawing.Point(81, 58);
-			this.radioInclude.Name = "radioInclude";
-			this.radioInclude.Size = new System.Drawing.Size(60, 17);
-			this.radioInclude.TabIndex = 5;
-			this.radioInclude.TabStop = true;
-			this.radioInclude.Text = "Include";
-			this.radioInclude.UseVisualStyleBackColor = true;
-			// 
 			// btnAccept
 			// 
-			this.btnAccept.Location = new System.Drawing.Point(296, 173);
+			this.btnAccept.Location = new System.Drawing.Point(298, 134);
 			this.btnAccept.Name = "btnAccept";
 			this.btnAccept.Size = new System.Drawing.Size(75, 23);
 			this.btnAccept.TabIndex = 6;
@@ -131,7 +105,7 @@
 			// 
 			// btnCancel
 			// 
-			this.btnCancel.Location = new System.Drawing.Point(296, 202);
+			this.btnCancel.Location = new System.Drawing.Point(298, 163);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 7;
@@ -143,13 +117,14 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(463, 252);
+			this.ClientSize = new System.Drawing.Size(463, 211);
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.btnAccept);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.listboxKeywordList);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "KeywordList";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Manage Keywords";
 			this.Shown += new System.EventHandler(this.KeywordList_Shown);
 			this.groupBox1.ResumeLayout(false);
@@ -166,8 +141,6 @@
 		private System.Windows.Forms.Button btnSave;
 		private System.Windows.Forms.Button btnRemove;
 		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.RadioButton radioExclude;
-		private System.Windows.Forms.RadioButton radioInclude;
 		private System.Windows.Forms.Button btnAccept;
 		private System.Windows.Forms.Button btnCancel;
 	}

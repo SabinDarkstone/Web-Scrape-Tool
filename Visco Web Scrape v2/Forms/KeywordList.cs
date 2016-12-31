@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using Visco_Web_Scrape_v2.Properties;
 using Visco_Web_Scrape_v2.Scripts;
 using Visco_Web_Scrape_v2.Search.Items;
 
@@ -25,23 +26,12 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 		private void Clear() {
 			txtKeywordText.Text = "";
-			radioExclude.Checked = false;
-			radioInclude.Checked = true;
 		}
 
 		private void btnSave_Click(object sender, EventArgs e) {
-			var myKeyword = new Keyword(txtKeywordText.Text,
-				radioInclude.Checked ? Keyword.KeywordType.Include : Keyword.KeywordType.Exclude);
-			var alreadyExists = false;
+			var myKeyword = new Keyword(txtKeywordText.Text);
 
-			// Loop through keywords in current list and check to see if anything matches the current name
-			foreach (var keyword in CurrentKeywords) {
-				if (keyword.Text.Equals(myKeyword.Text)) {
-					alreadyExists = true;
-				}
-			}
-			// If no match is found, add the website
-			if (!alreadyExists) {
+			if (!CurrentKeywords.Contains(myKeyword)) {
 				CurrentKeywords.Add(myKeyword);
 			}
 
@@ -55,8 +45,8 @@ namespace Visco_Web_Scrape_v2.Forms {
 				var selectedKeyword = listboxKeywordList.SelectedItem as Keyword;
 				// Check if the user really wants to remove the keyword
 				var dialog =
-					MessageBox.Show("Are you sure you want to remove " + selectedKeyword.Text + " from the list of keywords?",
-						"Confirm removal", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+					MessageBox.Show(Resources.ConfirmDeleteKeyword + selectedKeyword.Text,
+						Resources.ConfirmationRequired, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 				if (dialog == DialogResult.Yes) {
 					CurrentKeywords.Remove(selectedKeyword);
 					UpdateListbox();
@@ -70,17 +60,10 @@ namespace Visco_Web_Scrape_v2.Forms {
 			if (listboxKeywordList.SelectedIndex != -1) {
 				var keyword = listboxKeywordList.SelectedItem as Keyword;
 				if (keyword == null) {
-					MessageBox.Show("The selected keyword does not exist in the records.", "Error", MessageBoxButtons.OK,
-						MessageBoxIcon.Error);
+					MessageBox.Show(Resources.KeywordNotFound, Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
-				txtKeywordText.Text = keyword.Text;
-				if (keyword.Type == Keyword.KeywordType.Exclude) {
-					radioInclude.Checked = false;
-					radioExclude.Checked = true;
-				} else {
-					radioInclude.Checked = true;
-					radioExclude.Checked = false;
-				}
+
+				if (keyword != null) txtKeywordText.Text = keyword.Text;
 			}
 		}
 

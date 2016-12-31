@@ -142,6 +142,7 @@
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.listboxEmailAddresses);
 			this.Name = "EmailListEditor";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Email List Editor";
 			this.Shown += new System.EventHandler(this.EmailListEditor_Shown);
 			this.groupBox1.ResumeLayout(false);

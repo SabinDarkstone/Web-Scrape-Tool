@@ -2,6 +2,7 @@
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
+using Visco_Web_Scrape_v2.Properties;
 
 namespace Visco_Web_Scrape_v2.Scripts.Helpers {
 
@@ -32,13 +33,13 @@ namespace Visco_Web_Scrape_v2.Scripts.Helpers {
 			}
 
 			if (!File.Exists(filename)) {
-				var dialog = MessageBox.Show(Reference.Messages.NoSettingsFileFound, Reference.Messages.SettingsLoadError, MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+				var dialog = MessageBox.Show(Resources.NoSettingsFound, Resources.ConfirmationRequired, MessageBoxButtons.YesNo, MessageBoxIcon.Error);
 
 				switch (dialog) {
 					case DialogResult.Yes:
 						return new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
 					default:
-						throw new FileNotFoundException("Settings file");
+						throw new FileNotFoundException(Resources.SettingsFileName);
 				}
 			} else {
 				return new FileStream(filename, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);

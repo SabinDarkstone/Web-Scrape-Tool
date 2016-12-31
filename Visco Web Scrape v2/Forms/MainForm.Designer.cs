@@ -30,13 +30,13 @@
 			this.btnManageEmails = new System.Windows.Forms.Button();
 			this.btnBeginSearch = new System.Windows.Forms.Button();
 			this.btnViewResults = new System.Windows.Forms.Button();
+			this.btnSendEmail = new System.Windows.Forms.Button();
 			this.btnGrantTrack = new System.Windows.Forms.Button();
 			this.btnChangeSettings = new System.Windows.Forms.Button();
 			this.btnHelp = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
 			this.lblVersion = new System.Windows.Forms.Label();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
-			this.btnSendEmail = new System.Windows.Forms.Button();
 			this.flowLayoutPanel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
@@ -132,6 +132,21 @@
 			this.btnViewResults.UseVisualStyleBackColor = true;
 			this.btnViewResults.Click += new System.EventHandler(this.btnViewResults_Click);
 			// 
+			// btnSendEmail
+			// 
+			this.btnSendEmail.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.btnSendEmail.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(61)))), ((int)(((byte)(29)))));
+			this.btnSendEmail.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(126)))), ((int)(((byte)(176)))), ((int)(((byte)(127)))));
+			this.btnSendEmail.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btnSendEmail.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.btnSendEmail.Location = new System.Drawing.Point(195, 99);
+			this.btnSendEmail.Name = "btnSendEmail";
+			this.btnSendEmail.Size = new System.Drawing.Size(90, 90);
+			this.btnSendEmail.TabIndex = 8;
+			this.btnSendEmail.Text = "Manually Send Email";
+			this.btnSendEmail.UseVisualStyleBackColor = true;
+			this.btnSendEmail.Click += new System.EventHandler(this.btnSendEmail_Click);
+			// 
 			// btnGrantTrack
 			// 
 			this.btnGrantTrack.Enabled = false;
@@ -210,21 +225,6 @@
 			this.pictureBox1.TabIndex = 1;
 			this.pictureBox1.TabStop = false;
 			// 
-			// btnSendEmail
-			// 
-			this.btnSendEmail.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.btnSendEmail.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(61)))), ((int)(((byte)(29)))));
-			this.btnSendEmail.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(126)))), ((int)(((byte)(176)))), ((int)(((byte)(127)))));
-			this.btnSendEmail.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btnSendEmail.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.btnSendEmail.Location = new System.Drawing.Point(195, 99);
-			this.btnSendEmail.Name = "btnSendEmail";
-			this.btnSendEmail.Size = new System.Drawing.Size(90, 90);
-			this.btnSendEmail.TabIndex = 8;
-			this.btnSendEmail.Text = "Manually Send Email";
-			this.btnSendEmail.UseVisualStyleBackColor = true;
-			this.btnSendEmail.Click += new System.EventHandler(this.btnSendEmail_Click);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -236,6 +236,7 @@
 			this.Controls.Add(this.pictureBox1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "MainForm";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Visco Grant Search";
 			this.Load += new System.EventHandler(this.MainForm_Load);
 			this.Shown += new System.EventHandler(this.Form1_Shown);

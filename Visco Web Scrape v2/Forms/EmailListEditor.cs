@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using Visco_Web_Scrape_v2.Properties;
 using Visco_Web_Scrape_v2.Scripts;
 using Visco_Web_Scrape_v2.Search;
 
@@ -18,6 +19,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 		}
 
 		private void UpdateListbox() {
+			CurrentRecipients.Sort();
 			listboxEmailAddresses.Items.Clear();
 
 			foreach (var recipient in CurrentRecipients) {
@@ -51,19 +53,14 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 		private void btnSaveRecipient_Click(object sender, EventArgs e) {
 			var myRecipient = new Recipient(txtRecipientName.Text, txtRecipientAddress.Text);
-			var alreadyExists = false;
+			var selectedRecipient = listboxEmailAddresses.SelectedItem as Recipient;
 
-			// Loop through recipients in current list and check to see if anything matches the current name
-			foreach (var recipient in CurrentRecipients) {
-				// If a match is found, remove the old one and replace it with the new one
-				if (recipient.Name.Equals(myRecipient.Name)) {
-					CurrentRecipients.Remove(recipient);
-					CurrentRecipients.Add(myRecipient);
-					alreadyExists = true;
-				}
-			}
-			// If no match is found, add the recipient
-			if (!alreadyExists) {
+			// Check to make sure the recipient does not already exist
+			if (selectedRecipient != null && (selectedRecipient.Name.Equals(txtRecipientName.Text) ||
+				selectedRecipient.Address.Equals(txtRecipientAddress.Text))) {
+				CurrentRecipients.Remove(selectedRecipient);
+				CurrentRecipients.Add(myRecipient);
+			} else {
 				CurrentRecipients.Add(myRecipient);
 			}
 
@@ -77,8 +74,8 @@ namespace Visco_Web_Scrape_v2.Forms {
 				var selectedRecipient = listboxEmailAddresses.SelectedItem as Recipient;
 				// Check if the user really wants to remove the recipient
 				var dialog =
-					MessageBox.Show("Are you sure you want to remove " + selectedRecipient.Name + " from the list of recipients?",
-						"Confirm removal", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+					MessageBox.Show(Resources.ConfirmDeleteRecipient + selectedRecipient,
+						Resources.ConfirmationRequired, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 				if (dialog == DialogResult.Yes) {
 					CurrentRecipients.Remove(selectedRecipient);
 					UpdateListbox();
@@ -92,8 +89,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 			if (listboxEmailAddresses.SelectedIndex != -1) {
 				var recipient = listboxEmailAddresses.SelectedItem as Recipient;
 				if (recipient == null) {
-					MessageBox.Show("The selected recipient does not exist in the records.", "Error", MessageBoxButtons.OK,
-						MessageBoxIcon.Error);
+					MessageBox.Show(Resources.RecipientNotFound, Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 				txtRecipientName.Text = recipient.Name;
 				txtRecipientAddress.Text = recipient.Address;

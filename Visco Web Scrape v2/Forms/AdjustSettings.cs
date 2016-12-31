@@ -1,28 +1,19 @@
 ﻿using System;
 using System.Windows.Forms;
+using Visco_Web_Scrape_v2.Properties;
 using Visco_Web_Scrape_v2.Scripts;
 
 namespace Visco_Web_Scrape_v2.Forms {
 
 	public partial class AdjustSettings : Form {
 
-		/// <summary>
-		/// Stores the settings being modified
-		/// </summary>
 		public Configuration Settings { get; set; }
 
-		/// <summary>
-		/// Form that allows changing of settings on a per-user basis
-		/// </summary>
-		/// <param name="config"></param>
 		public AdjustSettings(Configuration config) {
 			InitializeComponent();
 			Settings = config;
 		}
 
-		/// <summary>
-		/// Transfers settings into the form so current ones can be viewed
-		/// </summary>
 		private void PopulateFields() {
 			txtPagesPerDomain.Text = Settings.PagesToCrawlPerDomain.ToString();
 
@@ -46,22 +37,12 @@ namespace Visco_Web_Scrape_v2.Forms {
 			}
 		}
 
-		/// <summary>
-		/// Runs when the form is shown
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
 		private void AdjustSettings_Shown(object sender, EventArgs e) {
 			PopulateFields();
 		}
 
-		/// <summary>
-		/// Clears search results after confirming action with user
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
 		private void btnClearResults_Click(object sender, EventArgs e) {
-			var sure = MessageBox.Show(Reference.Messages.ClearCrawlResults, Reference.Messages.AreYouSure,
+			var sure = MessageBox.Show(Resources.ConfirmClearResults, Resources.ConfirmationRequired,
 				MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
 			if (sure == DialogResult.Yes) {
@@ -70,29 +51,19 @@ namespace Visco_Web_Scrape_v2.Forms {
 			}
 		}
 
-		/// <summary>
-		/// Clears the website and keyword lists
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
 		private void btnClearSearchSettings_Click(object sender, EventArgs e) {
-			var sure = MessageBox.Show(Reference.Messages.ClearSearchSettings, Reference.Messages.AreYouSure,
+			var sure = MessageBox.Show(Resources.ConfirmClearWebAndKeys, Resources.ConfirmationRequired,
 				MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
 			if (sure == DialogResult.Yes) {
 				Settings.Websites.Clear();
 				Settings.Keywords.Clear();
-				MessageBox.Show(Reference.Messages.WarnMismatchSettingsAndResults, Reference.Messages.Warning,
+				MessageBox.Show(Resources.MismatchWarning, Resources.HeadsUp,
 					MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				PopulateFields();
 			}
 		}
 
-		/// <summary>
-		/// Applies settings on form to the main application and closes the form
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
 		private void btnApply_Click(object sender, EventArgs e) {
 			Settings.EnableUrlFiltering = chkbxEnableUrlFilter.Checked;
 			Settings.EnableUrlAnalysis = chkbxAnalyzeUrl.Checked;
@@ -109,21 +80,28 @@ namespace Visco_Web_Scrape_v2.Forms {
 			} else if (radioXml.Checked) {
 				Settings.ExportMethod = Configuration.ExportType.Xml;
 			} else {
-				throw new ArgumentNullException("Export file type");
+				throw new ArgumentNullException(nameof(sender));
 			}
 
 			DialogResult = DialogResult.OK;
 			Hide();
 		}
 
-		/// <summary>
-		/// Disregards any settings changes and returns to the main form
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
 		private void btnCancel_Click(object sender, EventArgs e) {
 			DialogResult = DialogResult.Cancel;
 			Close();
+		}
+
+		private void radioPlainText_CheckedChanged(object sender, EventArgs e) {
+			if (radioPlainText.Checked) {
+				MessageBox.Show(Resources.FeatureNotImplemented, Resources.HeadsUp, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			}
+		}
+
+		private void radioXml_CheckedChanged(object sender, EventArgs e) {
+			if (radioXml.Checked) {
+				MessageBox.Show(Resources.FeatureNotImplemented, Resources.HeadsUp, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			}
 		}
 	}
 

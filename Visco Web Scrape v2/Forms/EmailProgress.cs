@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Windows.Forms;
+using Visco_Web_Scrape_v2.Properties;
 using Visco_Web_Scrape_v2.Scripts;
 using Visco_Web_Scrape_v2.Scripts.Helpers;
 
@@ -98,7 +99,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 			if (PrepareExcelDocument()) {
 				SendEmail();
 			} else {
-				MessageBox.Show(Reference.Messages.MailSendError, Reference.Messages.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show(Resources.MailSendError, Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 	}
