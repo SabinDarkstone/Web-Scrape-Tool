@@ -27,6 +27,7 @@
 			this.btnApply = new System.Windows.Forms.Button();
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.chkbxAnalyzeUrl = new System.Windows.Forms.CheckBox();
 			this.chkbxEnableUrlFilter = new System.Windows.Forms.CheckBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.txtPagesPerDomain = new System.Windows.Forms.TextBox();
@@ -37,10 +38,10 @@
 			this.radioXml = new System.Windows.Forms.RadioButton();
 			this.radioPlainText = new System.Windows.Forms.RadioButton();
 			this.radioExcel = new System.Windows.Forms.RadioButton();
-			this.chkbxAnalyzeUrl = new System.Windows.Forms.CheckBox();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
-			this.chkbxNewResultsOnly = new System.Windows.Forms.CheckBox();
 			this.chkbxDateFound = new System.Windows.Forms.CheckBox();
+			this.chkbxNewResultsOnly = new System.Windows.Forms.CheckBox();
+			this.chkbxSendEmail = new System.Windows.Forms.CheckBox();
 			this.flowLayoutPanel1.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -90,6 +91,16 @@
 			this.groupBox1.TabIndex = 1;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Crawl Settings";
+			// 
+			// chkbxAnalyzeUrl
+			// 
+			this.chkbxAnalyzeUrl.AutoSize = true;
+			this.chkbxAnalyzeUrl.Location = new System.Drawing.Point(21, 76);
+			this.chkbxAnalyzeUrl.Name = "chkbxAnalyzeUrl";
+			this.chkbxAnalyzeUrl.Size = new System.Drawing.Size(168, 17);
+			this.chkbxAnalyzeUrl.TabIndex = 4;
+			this.chkbxAnalyzeUrl.Text = "Run URL Analysis (Very Slow)";
+			this.chkbxAnalyzeUrl.UseVisualStyleBackColor = true;
 			// 
 			// chkbxEnableUrlFilter
 			// 
@@ -193,26 +204,27 @@
 			this.radioExcel.Text = "Excel File";
 			this.radioExcel.UseVisualStyleBackColor = true;
 			// 
-			// chkbxAnalyzeUrl
-			// 
-			this.chkbxAnalyzeUrl.AutoSize = true;
-			this.chkbxAnalyzeUrl.Location = new System.Drawing.Point(21, 76);
-			this.chkbxAnalyzeUrl.Name = "chkbxAnalyzeUrl";
-			this.chkbxAnalyzeUrl.Size = new System.Drawing.Size(168, 17);
-			this.chkbxAnalyzeUrl.TabIndex = 4;
-			this.chkbxAnalyzeUrl.Text = "Run URL Analysis (Very Slow)";
-			this.chkbxAnalyzeUrl.UseVisualStyleBackColor = true;
-			// 
 			// groupBox4
 			// 
+			this.groupBox4.Controls.Add(this.chkbxSendEmail);
 			this.groupBox4.Controls.Add(this.chkbxDateFound);
 			this.groupBox4.Controls.Add(this.chkbxNewResultsOnly);
 			this.groupBox4.Location = new System.Drawing.Point(12, 239);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(241, 85);
+			this.groupBox4.Size = new System.Drawing.Size(241, 105);
 			this.groupBox4.TabIndex = 4;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Export Content";
+			// 
+			// chkbxDateFound
+			// 
+			this.chkbxDateFound.AutoSize = true;
+			this.chkbxDateFound.Location = new System.Drawing.Point(21, 51);
+			this.chkbxDateFound.Name = "chkbxDateFound";
+			this.chkbxDateFound.Size = new System.Drawing.Size(120, 17);
+			this.chkbxDateFound.TabIndex = 1;
+			this.chkbxDateFound.Text = "Include Date Found";
+			this.chkbxDateFound.UseVisualStyleBackColor = true;
 			// 
 			// chkbxNewResultsOnly
 			// 
@@ -224,15 +236,15 @@
 			this.chkbxNewResultsOnly.Text = "Show New Results Only";
 			this.chkbxNewResultsOnly.UseVisualStyleBackColor = true;
 			// 
-			// chkbxDateFound
+			// chkbxSendEmail
 			// 
-			this.chkbxDateFound.AutoSize = true;
-			this.chkbxDateFound.Location = new System.Drawing.Point(21, 51);
-			this.chkbxDateFound.Name = "chkbxDateFound";
-			this.chkbxDateFound.Size = new System.Drawing.Size(120, 17);
-			this.chkbxDateFound.TabIndex = 1;
-			this.chkbxDateFound.Text = "Include Date Found";
-			this.chkbxDateFound.UseVisualStyleBackColor = true;
+			this.chkbxSendEmail.AutoSize = true;
+			this.chkbxSendEmail.Location = new System.Drawing.Point(21, 74);
+			this.chkbxSendEmail.Name = "chkbxSendEmail";
+			this.chkbxSendEmail.Size = new System.Drawing.Size(156, 17);
+			this.chkbxSendEmail.TabIndex = 2;
+			this.chkbxSendEmail.Text = "Send Emails On Completion";
+			this.chkbxSendEmail.UseVisualStyleBackColor = true;
 			// 
 			// AdjustSettings
 			// 
@@ -280,5 +292,6 @@
 		private System.Windows.Forms.GroupBox groupBox4;
 		private System.Windows.Forms.CheckBox chkbxDateFound;
 		private System.Windows.Forms.CheckBox chkbxNewResultsOnly;
+		private System.Windows.Forms.CheckBox chkbxSendEmail;
 	}
 }
