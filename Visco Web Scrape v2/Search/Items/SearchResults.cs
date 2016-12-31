@@ -61,21 +61,23 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 
 		public void AddUrlParts(string[] parts, bool keywordsFound) {
 			foreach (var part in parts) {
-				if (part.Contains("www.")) continue;
-				if (string.IsNullOrWhiteSpace(part)) continue;
-				if (part.Contains("title=")) continue;
-				if (part.Contains("feedback?")) continue;
-				if (part.Length == 1) continue;
-				if (part.Contains("=")) continue;
-
-				if (!UrlDetails.WithKeyword.Keys.Contains(part)) {
-					LogHelper.Debug("Adding url part: " + part);
-					UrlDetails.WithKeyword.Add(part, 0);
+				if (part.Contains("www.") || part.Contains("feedback?") || part.Contains("=") || string.IsNullOrWhiteSpace(part)) {
+					continue;
 				}
 
-				if (!UrlDetails.WithoutKeyword.Keys.Contains(part)) {
-					UrlDetails.WithoutKeyword.Add(part, 0);
+				try {
+					if (!UrlDetails.WithKeyword.Keys.Contains(part)) {
+						LogHelper.Debug("Adding url part: " + part);
+						UrlDetails.WithKeyword.Add(part, 0);
+					}
+
+					if (!UrlDetails.WithoutKeyword.Keys.Contains(part)) {
+						UrlDetails.WithoutKeyword.Add(part, 0);
+					}
+				} catch (Exception ex) {
+					LogHelper.Warn(ex.Message);
 				}
+
 
 				if (keywordsFound) {
 					UrlDetails.WithKeyword[part]++;
