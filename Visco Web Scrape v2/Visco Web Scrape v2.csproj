@@ -38,7 +38,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\Visco Grant Search.xml</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -112,6 +113,18 @@
     <Compile Include="Forms\AdjustSettings.Designer.cs">
       <DependentUpon>AdjustSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\EmailListEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\EmailListEditor.Designer.cs">
+      <DependentUpon>EmailListEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\EmailProgress.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\EmailProgress.Designer.cs">
+      <DependentUpon>EmailProgress.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\GrantTracker.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -162,11 +175,18 @@
     <Compile Include="Forms\WebsiteList.Designer.cs">
       <DependentUpon>WebsiteList.cs</DependentUpon>
     </Compile>
+    <Compile Include="Search\Recipient.cs" />
     <EmbeddedResource Include="Forms\AboutHelp.resx">
       <DependentUpon>AboutHelp.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AdjustSettings.resx">
       <DependentUpon>AdjustSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\EmailListEditor.resx">
+      <DependentUpon>EmailListEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\EmailProgress.resx">
+      <DependentUpon>EmailProgress.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\GrantTracker.resx">
       <DependentUpon>GrantTracker.cs</DependentUpon>
