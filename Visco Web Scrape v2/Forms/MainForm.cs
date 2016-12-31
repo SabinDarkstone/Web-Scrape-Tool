@@ -21,7 +21,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 				MasterConfig = new Configuration();
 			}
 
-			/* UNDONE: Temporary
+			/* UNDONE: Temporarys
 			var keywords = MasterConfig.Keywords;
 			var websites = MasterConfig.Websites;
 			MasterConfig = new Configuration {
@@ -64,22 +64,34 @@ namespace Visco_Web_Scrape_v2.Forms {
 			// Open grant search window
 			var grantSearch = new GrantSearch(MasterConfig, new Job(MasterConfig.Websites, MasterConfig.Keywords));
 			grantSearch.ShowDialog();
+			var sendEmail = false;
 
 			// Check to see if the results need to be saved
 			if (grantSearch.DialogResult == DialogResult.OK || grantSearch.DialogResult == DialogResult.Yes) {
+
 				// Save results to settings file
 				MasterConfig.LastCrawl.Results = grantSearch.CompareLists(MasterConfig.LastCrawl.Results, MasterConfig.OnlyNewResults);
 				MasterConfig.LastCrawl.Date = grantSearch.Config.LastCrawl.Date;
 				if (grantSearch.LastProgress.CurrentStatus == Progress.Status.Cancelled) {
 					MasterConfig.LastCrawl.CompletionStatus = "Canceled Early";
+					var response = MessageBox.Show("Would you like to send an email of the incomplete search?", "Send Email?",
+						MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+					if (response == DialogResult.Yes) sendEmail = true;
 				} else {
 					MasterConfig.LastCrawl.CompletionStatus = "Completed Successfully";
+					sendEmail = true;
 				}
 				FileHelper.SaveConfiguration(MasterConfig);
 				grantSearch.Close();
 			}
 
 			LogHelper.Debug("Completion status: " + MasterConfig.LastCrawl.CompletionStatus);
+
+			// Send the email if we need to
+			if (sendEmail) {
+				var emailProgress = new EmailProgress(MasterConfig);
+				emailProgress.ShowDialog();
+			}
 		}
 
 		private void btnViewResults_Click(object sender, EventArgs e) {
@@ -116,6 +128,23 @@ namespace Visco_Web_Scrape_v2.Forms {
 				settings.Close();
 				FileHelper.SaveConfiguration(MasterConfig);
 			}
+		}
+
+		private void btnManageEmails_Click(object sender, EventArgs e) {
+			// Open email editor window
+			var emailEditor = new EmailListEditor(MasterConfig);
+			emailEditor.ShowDialog();
+
+			if (emailEditor.DialogResult == DialogResult.OK) {
+				MasterConfig.Recipients = emailEditor.CurrentRecipients;
+				emailEditor.Close();
+				FileHelper.SaveConfiguration(MasterConfig);
+			}
+		}
+
+		private void btnSendEmail_Click(object sender, EventArgs e) {
+			var emailSender = new EmailProgress(MasterConfig);
+			emailSender.ShowDialog();
 		}
 	}
 

@@ -27,6 +27,7 @@
 			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
 			this.btnWebsiteList = new System.Windows.Forms.Button();
 			this.btnKeywordList = new System.Windows.Forms.Button();
+			this.btnManageEmails = new System.Windows.Forms.Button();
 			this.btnBeginSearch = new System.Windows.Forms.Button();
 			this.btnViewResults = new System.Windows.Forms.Button();
 			this.btnGrantTrack = new System.Windows.Forms.Button();
@@ -35,6 +36,7 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.lblVersion = new System.Windows.Forms.Label();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
+			this.btnSendEmail = new System.Windows.Forms.Button();
 			this.flowLayoutPanel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
@@ -43,8 +45,10 @@
 			// 
 			this.flowLayoutPanel1.Controls.Add(this.btnWebsiteList);
 			this.flowLayoutPanel1.Controls.Add(this.btnKeywordList);
+			this.flowLayoutPanel1.Controls.Add(this.btnManageEmails);
 			this.flowLayoutPanel1.Controls.Add(this.btnBeginSearch);
 			this.flowLayoutPanel1.Controls.Add(this.btnViewResults);
+			this.flowLayoutPanel1.Controls.Add(this.btnSendEmail);
 			this.flowLayoutPanel1.Controls.Add(this.btnGrantTrack);
 			this.flowLayoutPanel1.Controls.Add(this.btnChangeSettings);
 			this.flowLayoutPanel1.Controls.Add(this.btnHelp);
@@ -83,6 +87,21 @@
 			this.btnKeywordList.UseVisualStyleBackColor = true;
 			this.btnKeywordList.Click += new System.EventHandler(this.btnKeywordList_Click);
 			// 
+			// btnManageEmails
+			// 
+			this.btnManageEmails.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.btnManageEmails.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(61)))), ((int)(((byte)(29)))));
+			this.btnManageEmails.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(126)))), ((int)(((byte)(176)))), ((int)(((byte)(127)))));
+			this.btnManageEmails.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btnManageEmails.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.btnManageEmails.Location = new System.Drawing.Point(195, 3);
+			this.btnManageEmails.Name = "btnManageEmails";
+			this.btnManageEmails.Size = new System.Drawing.Size(90, 90);
+			this.btnManageEmails.TabIndex = 7;
+			this.btnManageEmails.Text = "Manage Email List";
+			this.btnManageEmails.UseVisualStyleBackColor = true;
+			this.btnManageEmails.Click += new System.EventHandler(this.btnManageEmails_Click);
+			// 
 			// btnBeginSearch
 			// 
 			this.btnBeginSearch.FlatAppearance.BorderColor = System.Drawing.Color.Black;
@@ -90,7 +109,7 @@
 			this.btnBeginSearch.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(126)))), ((int)(((byte)(176)))), ((int)(((byte)(127)))));
 			this.btnBeginSearch.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnBeginSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.btnBeginSearch.Location = new System.Drawing.Point(195, 3);
+			this.btnBeginSearch.Location = new System.Drawing.Point(3, 99);
 			this.btnBeginSearch.Name = "btnBeginSearch";
 			this.btnBeginSearch.Size = new System.Drawing.Size(90, 90);
 			this.btnBeginSearch.TabIndex = 2;
@@ -105,7 +124,7 @@
 			this.btnViewResults.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(126)))), ((int)(((byte)(176)))), ((int)(((byte)(127)))));
 			this.btnViewResults.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnViewResults.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.btnViewResults.Location = new System.Drawing.Point(3, 99);
+			this.btnViewResults.Location = new System.Drawing.Point(99, 99);
 			this.btnViewResults.Name = "btnViewResults";
 			this.btnViewResults.Size = new System.Drawing.Size(90, 90);
 			this.btnViewResults.TabIndex = 3;
@@ -115,12 +134,13 @@
 			// 
 			// btnGrantTrack
 			// 
+			this.btnGrantTrack.Enabled = false;
 			this.btnGrantTrack.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.btnGrantTrack.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(61)))), ((int)(((byte)(29)))));
 			this.btnGrantTrack.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(126)))), ((int)(((byte)(176)))), ((int)(((byte)(127)))));
 			this.btnGrantTrack.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnGrantTrack.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.btnGrantTrack.Location = new System.Drawing.Point(99, 99);
+			this.btnGrantTrack.Location = new System.Drawing.Point(3, 195);
 			this.btnGrantTrack.Name = "btnGrantTrack";
 			this.btnGrantTrack.Size = new System.Drawing.Size(90, 90);
 			this.btnGrantTrack.TabIndex = 4;
@@ -135,7 +155,7 @@
 			this.btnChangeSettings.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(126)))), ((int)(((byte)(176)))), ((int)(((byte)(127)))));
 			this.btnChangeSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnChangeSettings.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.btnChangeSettings.Location = new System.Drawing.Point(195, 99);
+			this.btnChangeSettings.Location = new System.Drawing.Point(99, 195);
 			this.btnChangeSettings.Name = "btnChangeSettings";
 			this.btnChangeSettings.Size = new System.Drawing.Size(90, 90);
 			this.btnChangeSettings.TabIndex = 6;
@@ -150,7 +170,7 @@
 			this.btnHelp.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(126)))), ((int)(((byte)(176)))), ((int)(((byte)(127)))));
 			this.btnHelp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnHelp.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.btnHelp.Location = new System.Drawing.Point(3, 195);
+			this.btnHelp.Location = new System.Drawing.Point(195, 195);
 			this.btnHelp.Name = "btnHelp";
 			this.btnHelp.Size = new System.Drawing.Size(90, 90);
 			this.btnHelp.TabIndex = 5;
@@ -190,6 +210,21 @@
 			this.pictureBox1.TabIndex = 1;
 			this.pictureBox1.TabStop = false;
 			// 
+			// btnSendEmail
+			// 
+			this.btnSendEmail.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.btnSendEmail.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(61)))), ((int)(((byte)(29)))));
+			this.btnSendEmail.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(126)))), ((int)(((byte)(176)))), ((int)(((byte)(127)))));
+			this.btnSendEmail.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btnSendEmail.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.btnSendEmail.Location = new System.Drawing.Point(195, 99);
+			this.btnSendEmail.Name = "btnSendEmail";
+			this.btnSendEmail.Size = new System.Drawing.Size(90, 90);
+			this.btnSendEmail.TabIndex = 8;
+			this.btnSendEmail.Text = "Manually Send Email";
+			this.btnSendEmail.UseVisualStyleBackColor = true;
+			this.btnSendEmail.Click += new System.EventHandler(this.btnSendEmail_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -223,6 +258,8 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label lblVersion;
 		private System.Windows.Forms.Button btnChangeSettings;
+		private System.Windows.Forms.Button btnManageEmails;
+		private System.Windows.Forms.Button btnSendEmail;
 	}
 }
 
