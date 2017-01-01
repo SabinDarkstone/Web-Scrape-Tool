@@ -23,6 +23,7 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GrantSearch));
 			this.label1 = new System.Windows.Forms.Label();
 			this.lblCurrentDomain = new System.Windows.Forms.Label();
@@ -34,12 +35,17 @@
 			this.lblResultsFound = new System.Windows.Forms.Label();
 			this.progressbar = new System.Windows.Forms.ProgressBar();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.lblCurrentDomainTime = new System.Windows.Forms.Label();
+			this.label9 = new System.Windows.Forms.Label();
+			this.lblTotalTime = new System.Windows.Forms.Label();
+			this.label8 = new System.Windows.Forms.Label();
 			this.lblPagesSkippedCount = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
 			this.lblCurrentStatus = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.btnCancelCrawl = new System.Windows.Forms.Button();
 			this.btnSaveResults = new System.Windows.Forms.Button();
+			this.timerTotal = new System.Windows.Forms.Timer(this.components);
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -117,13 +123,17 @@
 			// 
 			// progressbar
 			// 
-			this.progressbar.Location = new System.Drawing.Point(6, 134);
+			this.progressbar.Location = new System.Drawing.Point(6, 153);
 			this.progressbar.Name = "progressbar";
 			this.progressbar.Size = new System.Drawing.Size(485, 23);
 			this.progressbar.TabIndex = 9;
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.lblCurrentDomainTime);
+			this.groupBox1.Controls.Add(this.label9);
+			this.groupBox1.Controls.Add(this.lblTotalTime);
+			this.groupBox1.Controls.Add(this.label8);
 			this.groupBox1.Controls.Add(this.lblPagesSkippedCount);
 			this.groupBox1.Controls.Add(this.label6);
 			this.groupBox1.Controls.Add(this.lblCurrentStatus);
@@ -139,10 +149,46 @@
 			this.groupBox1.Controls.Add(this.label5);
 			this.groupBox1.Location = new System.Drawing.Point(12, 12);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(497, 171);
+			this.groupBox1.Size = new System.Drawing.Size(497, 189);
 			this.groupBox1.TabIndex = 10;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Progress";
+			// 
+			// lblCurrentDomainTime
+			// 
+			this.lblCurrentDomainTime.AutoSize = true;
+			this.lblCurrentDomainTime.Location = new System.Drawing.Point(345, 123);
+			this.lblCurrentDomainTime.Name = "lblCurrentDomainTime";
+			this.lblCurrentDomainTime.Size = new System.Drawing.Size(41, 13);
+			this.lblCurrentDomainTime.TabIndex = 17;
+			this.lblCurrentDomainTime.Text = "<timer>";
+			// 
+			// label9
+			// 
+			this.label9.AutoSize = true;
+			this.label9.Location = new System.Drawing.Point(230, 123);
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size(109, 13);
+			this.label9.TabIndex = 16;
+			this.label9.Text = "Current Domain Time:";
+			// 
+			// lblTotalTime
+			// 
+			this.lblTotalTime.AutoSize = true;
+			this.lblTotalTime.Location = new System.Drawing.Point(131, 123);
+			this.lblTotalTime.Name = "lblTotalTime";
+			this.lblTotalTime.Size = new System.Drawing.Size(41, 13);
+			this.lblTotalTime.TabIndex = 15;
+			this.lblTotalTime.Text = "<timer>";
+			// 
+			// label8
+			// 
+			this.label8.AutoSize = true;
+			this.label8.Location = new System.Drawing.Point(24, 123);
+			this.label8.Name = "label8";
+			this.label8.Size = new System.Drawing.Size(101, 13);
+			this.label8.TabIndex = 14;
+			this.label8.Text = "Total Elapsed Time:";
 			// 
 			// lblPagesSkippedCount
 			// 
@@ -182,7 +228,7 @@
 			// 
 			// btnCancelCrawl
 			// 
-			this.btnCancelCrawl.Location = new System.Drawing.Point(254, 193);
+			this.btnCancelCrawl.Location = new System.Drawing.Point(252, 220);
 			this.btnCancelCrawl.Name = "btnCancelCrawl";
 			this.btnCancelCrawl.Size = new System.Drawing.Size(75, 23);
 			this.btnCancelCrawl.TabIndex = 11;
@@ -193,7 +239,7 @@
 			// btnSaveResults
 			// 
 			this.btnSaveResults.Enabled = false;
-			this.btnSaveResults.Location = new System.Drawing.Point(173, 193);
+			this.btnSaveResults.Location = new System.Drawing.Point(171, 220);
 			this.btnSaveResults.Name = "btnSaveResults";
 			this.btnSaveResults.Size = new System.Drawing.Size(75, 23);
 			this.btnSaveResults.TabIndex = 12;
@@ -201,11 +247,17 @@
 			this.btnSaveResults.UseVisualStyleBackColor = true;
 			this.btnSaveResults.Click += new System.EventHandler(this.btnSaveResults_Click);
 			// 
+			// timerTotal
+			// 
+			this.timerTotal.Enabled = true;
+			this.timerTotal.Interval = 1000;
+			this.timerTotal.Tick += new System.EventHandler(this.timerTotal_Tick);
+			// 
 			// GrantSearch
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(521, 228);
+			this.ClientSize = new System.Drawing.Size(521, 255);
 			this.Controls.Add(this.btnSaveResults);
 			this.Controls.Add(this.btnCancelCrawl);
 			this.Controls.Add(this.groupBox1);
@@ -238,5 +290,10 @@
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Label lblPagesSkippedCount;
 		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.Label lblTotalTime;
+		private System.Windows.Forms.Label label8;
+		private System.Windows.Forms.Timer timerTotal;
+		private System.Windows.Forms.Label lblCurrentDomainTime;
+		private System.Windows.Forms.Label label9;
 	}
 }

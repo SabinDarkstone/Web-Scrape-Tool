@@ -6,12 +6,24 @@ using System.Threading;
 using System.Windows.Forms;
 using Visco_Web_Scrape_v2.Properties;
 using Visco_Web_Scrape_v2.Scripts;
+using Visco_Web_Scrape_v2.Scripts.Helpers;
 using Visco_Web_Scrape_v2.Search.Items;
 using Visco_Web_Scrape_v2.Search.Process;
 
 namespace Visco_Web_Scrape_v2.Forms {
 
 	public partial class GrantSearch : Form {
+
+		public static class ElapsedTime {
+
+			public static int TotalSeconds { get; set; }
+			public static int TotalMinutes { get; set; }
+			public static int TotalHours { get; set; }
+
+			public static int CurrentSeconds { get; set; }
+			public static int CurrentMinutes { get; set; }
+			public static int CurrentHours { get; set; }
+		}
 
 		public Configuration Config;
 		public List<SearchResults> AllResults { get; private set; }
@@ -20,19 +32,30 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 		private BackgroundWorker worker;
 		private readonly Job jobToRun;
+		private readonly Predicate<Website> predicate;
 
 		public GrantSearch(Configuration configuration, Job job) {
 			InitializeComponent();
 
 			Config = configuration;
 			jobToRun = job;
+			predicate = AlreadyRunToday;
+
+			foreach (var website in jobToRun.WebsitesToCrawl) {
+				if (website.LastCrawlDate == DateTime.Today) {
+					LogHelper.Debug(website.Name + "  already ran today");
+				} else {
+					LogHelper.Debug(website.Name + " not yet run today");
+				}
+			}
 		}
+
+		public bool AlreadyRunToday(Website arg) => arg.LastCrawlDate != DateTime.Today;
 
 		private void UpdateFields(Progress progress) {
 			LastProgress = progress;
 
 			if (progress.CurrentStatus == Progress.Status.Cancelled) {
-				lblCurrentStatus.Text = "Cancelled";
 				return;
 			}
 
@@ -72,6 +95,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 				Debug.WriteLine("Sending cancellation request...");
 				worker.CancelAsync();
 			} else {
+				LastProgress.CurrentStatus = Progress.Status.Cancelled;
 				Config.LastCrawl.CompletionStatus = "Canceled Early";
 				DialogResult = DialogResult.Cancel;
 				Close();
@@ -131,7 +155,8 @@ namespace Visco_Web_Scrape_v2.Forms {
 				// Check the previous search to see if there are results for the current domain
 				foreach (var resDomain in savedResults) {
 					// Ignore the domains that do not match
-					if (!resDomain.RootUrl.Equals(domain.Url)) continue;
+					if (!resDomain.RootUrl.Equals(domain.Url))
+						continue;
 
 					foreach (var result in resDomain.ResultList) {
 						results.AddNewResult(result);
@@ -141,12 +166,14 @@ namespace Visco_Web_Scrape_v2.Forms {
 				// Check recent search results to see if there are any new results in the domain to add
 				foreach (var newResDomain in AllResults) {
 					// Ignore the domains that do no match
-					if (!newResDomain.RootUrl.Equals(domain.Url)) continue;
+					if (!newResDomain.RootUrl.Equals(domain.Url))
+						continue;
 
 					// For the correct domain, go through each result
 					foreach (var result in newResDomain.ResultList) {
 						// Skip anything that already exists
-						if (results.CheckExists(result)) continue;
+						if (results.CheckExists(result))
+							continue;
 
 						// Add the result with the datetime of today (just in case) since it is determined
 						// to be new to the list from the last result
@@ -205,26 +232,108 @@ namespace Visco_Web_Scrape_v2.Forms {
 				MessageBox.Show(ex.Message);
 			}
 
-
 			// Go through each domain and setup a crawler to crawl it
 			var websites = e.Argument as Job;
+			var crawlQueue = websites.WebsitesToCrawl.FindAll(predicate);
+
 			var myWorker = sender as BackgroundWorker;
-			if (websites == null)
-				throw new NullReferenceException("No website list.");
-			foreach (var website in websites.WebsitesToCrawl) {
+			if (websites == null) throw new NullReferenceException("No website list.");
+			foreach (var website in crawlQueue) {
+				// Reset current domain timer
+				ElapsedTime.CurrentHours = 0;
+				ElapsedTime.CurrentMinutes = 0;
+				ElapsedTime.CurrentSeconds = 0;
+
 				// Initialize and run the crawler
 				var grantCrawler = new GrantCrawler(Config, website, myWorker, Cts);
+				if (Cts.IsCancellationRequested) {
+					lblCurrentStatus.Text = "Cancelled";
+					LastProgress.CurrentStatus = Progress.Status.Cancelled;
+					return;
+				}
 
-				// Check crawler status
 				if (grantCrawler.Successful) {
+					website.LastCrawlDate = DateTime.Today;
 					AllResults.Add(grantCrawler.Results);
 				}
 			}
+
 		}
 
 		private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
 			var progress = e.UserState as Progress;
 			UpdateFields(progress);
+		}
+
+		private void timerTotal_Tick(object sender, EventArgs e) {
+			ElapsedTime.TotalSeconds++;
+			ElapsedTime.CurrentSeconds++;
+
+			if (ElapsedTime.TotalSeconds == 60) {
+				ElapsedTime.TotalSeconds = 0;
+				ElapsedTime.TotalMinutes++;
+
+				if (ElapsedTime.TotalMinutes == 60) {
+					ElapsedTime.TotalMinutes = 0;
+					ElapsedTime.TotalHours++;
+				}
+			}
+
+			if (ElapsedTime.CurrentSeconds == 60) {
+				ElapsedTime.CurrentSeconds = 0;
+				ElapsedTime.CurrentMinutes++;
+
+				if (ElapsedTime.CurrentMinutes == 60) {
+					ElapsedTime.CurrentMinutes = 0;
+					ElapsedTime.CurrentHours++;
+				}
+			}
+
+			UpdateTimers();
+		}
+
+		private void UpdateTimers() {
+			string currSec, currMin, currHr;
+			string totSec, totMin, totHr;
+
+			if (ElapsedTime.CurrentSeconds < 10) {
+				currSec = "0" + ElapsedTime.CurrentSeconds;
+			} else {
+				currSec = ElapsedTime.CurrentSeconds.ToString();
+			}
+
+			if (ElapsedTime.CurrentMinutes < 10) {
+				currMin = "0" + ElapsedTime.CurrentMinutes;
+			} else {
+				currMin = ElapsedTime.CurrentMinutes.ToString();
+			}
+
+			if (ElapsedTime.CurrentHours < 10) {
+				currHr = "0" + ElapsedTime.CurrentHours;
+			} else {
+				currHr = ElapsedTime.CurrentHours.ToString();
+			}
+
+			if (ElapsedTime.TotalSeconds < 10) {
+				totSec = "0" + ElapsedTime.TotalSeconds;
+			} else {
+				totSec = ElapsedTime.TotalSeconds.ToString();
+			}
+
+			if (ElapsedTime.TotalMinutes < 10) {
+				totMin = "0" + ElapsedTime.TotalMinutes;
+			} else {
+				totMin = ElapsedTime.TotalMinutes.ToString();
+			}
+
+			if (ElapsedTime.TotalHours < 10) {
+				totHr = "0" + ElapsedTime.TotalHours;
+			} else {
+				totHr = ElapsedTime.TotalHours.ToString();
+			}
+
+			lblCurrentDomainTime.Text = currHr + ":" + currMin + ":" + currSec;
+			lblTotalTime.Text = totHr + ":" + totMin + ":" + totSec;
 		}
 
 		private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {

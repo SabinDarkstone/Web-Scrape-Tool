@@ -12,7 +12,7 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 		public int? SkippedPageCount { get; }
 		public int? RelevantPageCount { get; private set; }
 		public int DomainNumber { get; private set; }
-		public Status CurrentStatus { get; private set; }
+		public Status CurrentStatus { get; set; }
 
 		public Progress(string url, string domain, int? foundPages, int index, Status status) {
 			Url = url;

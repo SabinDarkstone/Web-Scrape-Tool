@@ -23,6 +23,8 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 
 		public string RootUrl { get; }
 		public string Name { get; }
+
+		public bool DoneToday { get; set; }
 		public List<Result> ResultList { get; set; }
 		public UrlParts UrlDetails { get; set; }
 

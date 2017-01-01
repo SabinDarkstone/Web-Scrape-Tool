@@ -28,6 +28,9 @@ namespace Visco_Web_Scrape_v2.Forms {
 			};
 			FileHelper.SaveConfiguration(MasterConfig);
 			*/
+
+			LogHelper.Debug("Date of last crawl " + MasterConfig.LastCrawl.Date.ToShortDateString());
+
 		}
 
 		private void btnWebsiteList_Click(object sender, EventArgs e) {
@@ -76,7 +79,6 @@ namespace Visco_Web_Scrape_v2.Forms {
 						MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 					if (response == DialogResult.Yes) sendEmail = true;
 				} else {
-					MasterConfig.LastCrawl.CompletionStatus = "Completed Successfully";
 					sendEmail = true;
 				}
 				FileHelper.SaveConfiguration(MasterConfig);
@@ -86,7 +88,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 			LogHelper.Debug("Completion status: " + MasterConfig.LastCrawl.CompletionStatus);
 
 			// Send the email if we need to
-			if (sendEmail) {
+			if (MasterConfig.EnableSendEmail && sendEmail) {
 				var emailProgress = new EmailProgress(MasterConfig);
 				emailProgress.ShowDialog();
 			}

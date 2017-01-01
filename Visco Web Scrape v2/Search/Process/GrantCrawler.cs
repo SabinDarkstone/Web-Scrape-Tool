@@ -17,7 +17,7 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 	public class GrantCrawler {
 
 		public bool Successful { get; private set; }
-		public SearchResults Results { get; }
+		public SearchResults Results { get; private set; }
 
 		private readonly PoliteWebCrawler crawler;
 		private readonly Website website;
@@ -30,7 +30,7 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 			this.website = website;
 			this.configuration = configuration;
 			this.worker = worker;
-			this.cancelMe = cancelToken;
+			cancelMe = cancelToken;
 
 			Results = new SearchResults(this.website);
 
@@ -40,6 +40,7 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 			// Read settings file and overwrite app.config settings for crawler
 			var crawlConfig = AbotConfigurationSectionHandler.LoadFromXml().Convert();
 			crawlConfig.MaxPagesToCrawlPerDomain = configuration.PagesToCrawlPerDomain;
+			crawlConfig.MaxPagesToCrawl = configuration.PagesToCrawlPerDomain;
 
 			// Initialize crawler
 			crawler = new PoliteWebCrawler(crawlConfig);
@@ -70,6 +71,7 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 		private void RegisterEvents() {
 			crawler.PageCrawlStartingAsync += crawler_ProcessPageCrawlStarting;
 			crawler.PageCrawlCompletedAsync += crawler_ProcessPageCrawlCompleted;
+			crawler.PageCrawlDisallowedAsync += crawler_PageCrawlDisallowed;
 		}
 
 		private void ConfigureDecisionMaker() {
@@ -101,7 +103,7 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 				// Cancel crawl but report it as successful so that no errors are raised
 				if (cancelMe.IsCancellationRequested) {
 					Successful = true;
-					worker.ReportProgress(0, new Progress(Progress.Status.Cancelled));
+					worker.ReportProgress(0, new Progress(Progress.Status.Cancelling));
 					return;
 				}
 
@@ -172,6 +174,11 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 			if (configuration.EnableUrlAnalysis) {
 				ExamineUrl(crawledPage, keywordsFound);
 			}
+		}
+
+		private void crawler_PageCrawlDisallowed(object sender, PageCrawlDisallowedArgs args) {
+			var progress = new Progress(args.PageToCrawl.Uri.AbsoluteUri, website.Name, Results.ResultList.Count, configuration.Websites.IndexOf(website), Progress.Status.Crawling);
+			worker.ReportProgress(0, progress);
 		}
 	}
 }

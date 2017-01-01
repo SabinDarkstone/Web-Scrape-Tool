@@ -47,6 +47,10 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 			if (sure == DialogResult.Yes) {
 				Settings.LastCrawl.Results.Clear();
+				Settings.LastCrawl.Date = DateTime.MinValue;
+				foreach (var website in Settings.Websites) {
+					website.LastCrawlDate = DateTime.MinValue;
+				}
 				PopulateFields();
 			}
 		}
