@@ -147,6 +147,7 @@
     </Compile>
     <Compile Include="Scripts\Helpers\LogHelper.cs" />
     <Compile Include="Scripts\Reference.cs" />
+    <Compile Include="Search\Items\CombinedResults.cs" />
     <Compile Include="Search\Items\Keyword.cs" />
     <Compile Include="Forms\KeywordList.cs">
       <SubType>Form</SubType>
@@ -163,11 +164,10 @@
       <DependentUpon>ResultViewer.cs</DependentUpon>
     </Compile>
     <Compile Include="Scripts\Helpers\CrawlHelper.cs" />
+    <Compile Include="Search\Items\WebsiteResults.cs" />
     <Compile Include="Search\Process\GrantCrawler.cs" />
     <Compile Include="Search\Process\Job.cs" />
     <Compile Include="Search\Process\Progress.cs" />
-    <Compile Include="Search\Items\Result.cs" />
-    <Compile Include="Search\Items\SearchResults.cs" />
     <Compile Include="Search\Items\Website.cs" />
     <Compile Include="Forms\WebsiteList.cs">
       <SubType>Form</SubType>
@@ -175,7 +175,7 @@
     <Compile Include="Forms\WebsiteList.Designer.cs">
       <DependentUpon>WebsiteList.cs</DependentUpon>
     </Compile>
-    <Compile Include="Search\Recipient.cs" />
+    <Compile Include="Search\Items\Recipient.cs" />
     <Compile Include="Settings.cs" />
     <EmbeddedResource Include="Forms\AboutHelp.resx">
       <DependentUpon>AboutHelp.cs</DependentUpon>

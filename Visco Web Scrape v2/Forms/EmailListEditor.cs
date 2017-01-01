@@ -4,12 +4,13 @@ using System.Windows.Forms;
 using Visco_Web_Scrape_v2.Properties;
 using Visco_Web_Scrape_v2.Scripts;
 using Visco_Web_Scrape_v2.Search;
+using Visco_Web_Scrape_v2.Search.Items;
 
 namespace Visco_Web_Scrape_v2.Forms {
 
 	public partial class EmailListEditor : Form {
 
-		public List<Recipient> CurrentRecipients { get; private set; }
+		public HashSet<Recipient> CurrentRecipients { get; private set; }
 		public Configuration Config { get; set; }
 
 		public EmailListEditor(Configuration configuration) {
@@ -19,7 +20,6 @@ namespace Visco_Web_Scrape_v2.Forms {
 		}
 
 		private void UpdateListbox() {
-			CurrentRecipients.Sort();
 			listboxEmailAddresses.Items.Clear();
 
 			foreach (var recipient in CurrentRecipients) {
@@ -47,7 +47,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 				CurrentRecipients = Config.Recipients;
 				UpdateListbox();
 			} else {
-				CurrentRecipients = new List<Recipient>();
+				CurrentRecipients = new HashSet<Recipient>();
 			}
 		}
 

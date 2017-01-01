@@ -5,12 +5,20 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 
 	public class Job {
 
-		public List<Website> WebsitesToCrawl { get; }
-		public List<Keyword> KeywordsToSearchFor { get; }
+		public HashSet<Website> WebsitesToCrawl { get; }
+		public HashSet<Keyword> KeywordsToSearchFor { get; }
 
-		public Job(List<Website> websites, List<Keyword> keywords) {
-			WebsitesToCrawl = websites;
-			KeywordsToSearchFor = keywords;
+		public Job(IEnumerable<Website> websites, IEnumerable<Keyword> keywords) {
+			WebsitesToCrawl = new HashSet<Website>();
+			KeywordsToSearchFor = new HashSet<Keyword>();
+
+			foreach (var website in websites) {
+				if (website.IsEnabled) WebsitesToCrawl.Add(website);
+			}
+
+			foreach (var keyword in keywords) {
+				if (keyword.IsEnabled) KeywordsToSearchFor.Add(keyword);
+			}
 		}
 	}
 }

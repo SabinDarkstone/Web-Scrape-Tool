@@ -6,11 +6,15 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 	public class Keyword : IComparable {
 
 		public string Text { get; }
+		public bool IsEnabled { get; set; }
 
-		protected bool Equals(Keyword other) => string.Equals(Text, other.Text);
+		protected bool Equals(Keyword other) {
+			return string.Equals(Text, other.Text);
+		}
 
 		public Keyword(string text) {
 			Text = text;
+			IsEnabled = true;
 		}
 
 		public override string ToString() {

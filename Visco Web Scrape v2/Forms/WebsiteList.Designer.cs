@@ -24,7 +24,6 @@
 		/// </summary>
 		private void InitializeComponent() {
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WebsiteList));
-			this.listboxWebsites = new System.Windows.Forms.ListBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.btnRemoveWebsite = new System.Windows.Forms.Button();
 			this.btnSaveWebsite = new System.Windows.Forms.Button();
@@ -34,17 +33,9 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.btnAccept = new System.Windows.Forms.Button();
 			this.btnCancel = new System.Windows.Forms.Button();
+			this.chklistboxWebsites = new System.Windows.Forms.CheckedListBox();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// listboxWebsites
-			// 
-			this.listboxWebsites.FormattingEnabled = true;
-			this.listboxWebsites.Location = new System.Drawing.Point(12, 12);
-			this.listboxWebsites.Name = "listboxWebsites";
-			this.listboxWebsites.Size = new System.Drawing.Size(207, 212);
-			this.listboxWebsites.TabIndex = 0;
-			this.listboxWebsites.SelectedIndexChanged += new System.EventHandler(this.listboxWebsites_SelectedIndexChanged);
 			// 
 			// groupBox1
 			// 
@@ -133,15 +124,26 @@
 			this.btnCancel.UseVisualStyleBackColor = true;
 			this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
 			// 
+			// chklistboxWebsites
+			// 
+			this.chklistboxWebsites.FormattingEnabled = true;
+			this.chklistboxWebsites.Location = new System.Drawing.Point(12, 12);
+			this.chklistboxWebsites.Name = "chklistboxWebsites";
+			this.chklistboxWebsites.Size = new System.Drawing.Size(207, 214);
+			this.chklistboxWebsites.TabIndex = 4;
+			this.chklistboxWebsites.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.chklistboxWebsites_ItemCheck);
+			this.chklistboxWebsites.SelectedIndexChanged += new System.EventHandler(this.chklistboxWebsites_SelectedIndexChanged);
+			this.chklistboxWebsites.Validated += new System.EventHandler(this.chklistboxWebsites_Validated);
+			// 
 			// WebsiteList
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(588, 238);
+			this.Controls.Add(this.chklistboxWebsites);
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.btnAccept);
 			this.Controls.Add(this.groupBox1);
-			this.Controls.Add(this.listboxWebsites);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "WebsiteList";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -154,8 +156,6 @@
 		}
 
 		#endregion
-
-		private System.Windows.Forms.ListBox listboxWebsites;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.Button btnRemoveWebsite;
 		private System.Windows.Forms.Button btnSaveWebsite;
@@ -165,5 +165,6 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Button btnAccept;
 		private System.Windows.Forms.Button btnCancel;
+		private System.Windows.Forms.CheckedListBox chklistboxWebsites;
 	}
 }

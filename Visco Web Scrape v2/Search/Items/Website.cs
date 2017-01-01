@@ -7,11 +7,12 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 
 		public string Name { get; }
 		public string Url { get; }
-		public DateTime LastCrawlDate { get; set; }
+		public bool IsEnabled { get; set; }
 
 		public Website(string name, string url) {
 			Name = name;
 			Url = url;
+			IsEnabled = true;
 		}
 
 		public override string ToString() => Name;

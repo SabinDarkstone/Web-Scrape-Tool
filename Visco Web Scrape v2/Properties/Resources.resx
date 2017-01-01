@@ -2318,4 +2318,13 @@ If you have any questions, comments or errors to report, please contact the deve
     <value>The following domain search completed with an error:
 </value>
   </data>
+  <data name="ResultsFileName" xml:space="preserve">
+    <value>Results.bin</value>
+  </data>
+  <data name="NoResultsFileFound" xml:space="preserve">
+    <value>No results file was found, would you like to create a new one?</value>
+  </data>
+  <data name="UnknownError" xml:space="preserve">
+    <value>An unknown error occurred. Please contact the developed with detailed steps on how to replicate this error so it may be fixed.</value>
+  </data>
 </root>

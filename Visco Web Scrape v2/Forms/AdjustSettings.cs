@@ -2,16 +2,19 @@
 using System.Windows.Forms;
 using Visco_Web_Scrape_v2.Properties;
 using Visco_Web_Scrape_v2.Scripts;
+using Visco_Web_Scrape_v2.Search.Items;
 
 namespace Visco_Web_Scrape_v2.Forms {
 
 	public partial class AdjustSettings : Form {
 
 		public Configuration Settings { get; set; }
+		public CombinedResults Results { get; set; }
 
-		public AdjustSettings(Configuration config) {
+		public AdjustSettings(Configuration config, CombinedResults res) {
 			InitializeComponent();
 			Settings = config;
+			Results = res;
 		}
 
 		private void PopulateFields() {
@@ -27,8 +30,6 @@ namespace Visco_Web_Scrape_v2.Forms {
 			if (exportMethod == Configuration.ExportType.Excel) radioExcel.Checked = true;
 			if (exportMethod == Configuration.ExportType.Plain) radioPlainText.Checked = true;
 			if (exportMethod == Configuration.ExportType.Xml) radioXml.Checked = true;
-
-			btnClearResults.Enabled = Settings.LastCrawl.Results.Count != 0;
 
 			if (Settings.Websites.Count > 0 || Settings.Keywords.Count > 0) {
 				btnClearSearchSettings.Enabled = true;
@@ -46,11 +47,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 				MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
 			if (sure == DialogResult.Yes) {
-				Settings.LastCrawl.Results.Clear();
-				Settings.LastCrawl.Date = DateTime.MinValue;
-				foreach (var website in Settings.Websites) {
-					website.LastCrawlDate = DateTime.MinValue;
-				}
+				Results = new CombinedResults();
 				PopulateFields();
 			}
 		}

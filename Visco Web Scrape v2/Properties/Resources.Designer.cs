@@ -228,6 +228,15 @@ namespace Visco_Web_Scrape_v2.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No results file was found, would you like to create a new one?.
+        /// </summary>
+        internal static string NoResultsFileFound {
+            get {
+                return ResourceManager.GetString("NoResultsFileFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No settings file was found, would you like to create a new one?.
         /// </summary>
         internal static string NoSettingsFound {
@@ -246,11 +255,29 @@ namespace Visco_Web_Scrape_v2.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Results.bin.
+        /// </summary>
+        internal static string ResultsFileName {
+            get {
+                return ResourceManager.GetString("ResultsFileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Settings.bin.
         /// </summary>
         internal static string SettingsFileName {
             get {
                 return ResourceManager.GetString("SettingsFileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An unknown error occurred. Please contact the developed with detailed steps on how to replicate this error so it may be fixed..
+        /// </summary>
+        internal static string UnknownError {
+            get {
+                return ResourceManager.GetString("UnknownError", resourceCulture);
             }
         }
         

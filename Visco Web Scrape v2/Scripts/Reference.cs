@@ -9,13 +9,15 @@ namespace Visco_Web_Scrape_v2.Scripts {
 			"tags", "comment", "reply", "calendar", "admin", "legacy", "feedback"
 		};
 
-		public static string[] IgnoreExtensions = {".pdf", ".xls", ".doc", ".cfm", ".zip", ".jpg", ".dgn"};
+		public static string[] IgnoreExtensions = {".doc", ".xls", ".pdf", ".cfm", ".zip", ".jpg", ".dgn", ".dwg"};
 
 		public static class Files {
 			public static string AppFileDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) +
 				@"\Darkstone Concepts\Visco Web Crawler\";
 
 			public static string SettingsFile = AppFileDirectory + Resources.SettingsFileName;
+			public static string ResultsFile = AppFileDirectory + Resources.ResultsFileName;
+			public static string ExportDirectory = AppFileDirectory + @"Exports\";
 		}
 
 	}

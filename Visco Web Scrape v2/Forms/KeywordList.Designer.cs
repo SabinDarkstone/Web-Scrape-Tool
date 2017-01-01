@@ -24,7 +24,6 @@
 		/// </summary>
 		private void InitializeComponent() {
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(KeywordList));
-			this.listboxKeywordList = new System.Windows.Forms.ListBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.txtKeywordText = new System.Windows.Forms.TextBox();
 			this.btnSave = new System.Windows.Forms.Button();
@@ -32,17 +31,9 @@
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.btnAccept = new System.Windows.Forms.Button();
 			this.btnCancel = new System.Windows.Forms.Button();
+			this.chklistboxKeywords = new System.Windows.Forms.CheckedListBox();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// listboxKeywordList
-			// 
-			this.listboxKeywordList.FormattingEnabled = true;
-			this.listboxKeywordList.Location = new System.Drawing.Point(12, 12);
-			this.listboxKeywordList.Name = "listboxKeywordList";
-			this.listboxKeywordList.Size = new System.Drawing.Size(202, 186);
-			this.listboxKeywordList.TabIndex = 0;
-			this.listboxKeywordList.SelectedIndexChanged += new System.EventHandler(this.listboxKeywordList_SelectedIndexChanged);
 			// 
 			// label1
 			// 
@@ -113,15 +104,25 @@
 			this.btnCancel.UseVisualStyleBackColor = true;
 			this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
 			// 
+			// chklistboxKeywords
+			// 
+			this.chklistboxKeywords.FormattingEnabled = true;
+			this.chklistboxKeywords.Location = new System.Drawing.Point(12, 12);
+			this.chklistboxKeywords.Name = "chklistboxKeywords";
+			this.chklistboxKeywords.Size = new System.Drawing.Size(190, 184);
+			this.chklistboxKeywords.TabIndex = 8;
+			this.chklistboxKeywords.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.chklistboxKeywords_ItemCheck);
+			this.chklistboxKeywords.SelectedIndexChanged += new System.EventHandler(this.chklistboxKeywords_SelectedIndexChanged);
+			// 
 			// KeywordList
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(463, 211);
+			this.Controls.Add(this.chklistboxKeywords);
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.btnAccept);
 			this.Controls.Add(this.groupBox1);
-			this.Controls.Add(this.listboxKeywordList);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "KeywordList";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -134,8 +135,6 @@
 		}
 
 		#endregion
-
-		private System.Windows.Forms.ListBox listboxKeywordList;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.TextBox txtKeywordText;
 		private System.Windows.Forms.Button btnSave;
@@ -143,5 +142,6 @@
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.Button btnAccept;
 		private System.Windows.Forms.Button btnCancel;
+		private System.Windows.Forms.CheckedListBox chklistboxKeywords;
 	}
 }

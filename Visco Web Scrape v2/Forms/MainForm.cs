@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using Visco_Web_Scrape_v2.Properties;
 using Visco_Web_Scrape_v2.Scripts;
 using Visco_Web_Scrape_v2.Scripts.Helpers;
+using Visco_Web_Scrape_v2.Search.Items;
 using Visco_Web_Scrape_v2.Search.Process;
 
 namespace Visco_Web_Scrape_v2.Forms {
@@ -10,6 +11,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 	public partial class MainForm : Form {
 
 		public Configuration MasterConfig { get; set; }
+		public CombinedResults MasterResults { get; set; }
 
 		public MainForm() {
 			InitializeComponent();
@@ -18,6 +20,9 @@ namespace Visco_Web_Scrape_v2.Forms {
 		private void Form1_Shown(object sender, EventArgs e) {
 			// Load Settings File
 			MasterConfig = FileHelper.LoadConfiguration() ?? new Configuration();
+			MasterResults = FileHelper.LoadResults() ?? new CombinedResults();
+
+			PrintDebugInfo();
 
 			/* UNDONE: Temporarys
 			var keywords = MasterConfig.Keywords;
@@ -28,9 +33,13 @@ namespace Visco_Web_Scrape_v2.Forms {
 			};
 			FileHelper.SaveConfiguration(MasterConfig);
 			*/
+		}
 
-			LogHelper.Debug("Date of last crawl " + MasterConfig.LastCrawl.Date.ToShortDateString());
-
+		private void PrintDebugInfo() {
+			LogHelper.Debug("Number of websites in results file: " + MasterResults.AllResults.Count);
+			foreach (var website in MasterResults.AllResults) {
+				LogHelper.Debug(website.RootWebsite.Name + " " + website.RootWebsite.Url);
+			}
 		}
 
 		private void btnWebsiteList_Click(object sender, EventArgs e) {
@@ -63,40 +72,26 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 		private void btnBeginSearch_Click(object sender, EventArgs e) {
 			// Open grant search window
-			var grantSearch = new GrantSearch(MasterConfig, new Job(MasterConfig.Websites, MasterConfig.Keywords));
+			var grantSearch = new GrantSearch(MasterConfig, MasterResults, new Job(MasterConfig.Websites, MasterConfig.Keywords));
 			grantSearch.ShowDialog();
-			var sendEmail = false;
 
 			// Check to see if the results need to be saved
-			if (grantSearch.DialogResult == DialogResult.OK || grantSearch.DialogResult == DialogResult.Yes) {
+			if (grantSearch.DialogResult == DialogResult.OK) {
 
 				// Save results to settings file
-				MasterConfig.LastCrawl.Results = grantSearch.CompareLists(MasterConfig.LastCrawl.Results, MasterConfig.OnlyNewResults);
-				MasterConfig.LastCrawl.Date = grantSearch.Config.LastCrawl.Date;
-				if (grantSearch.LastProgress.CurrentStatus == Progress.Status.Cancelled) {
-					MasterConfig.LastCrawl.CompletionStatus = "Canceled Early";
-					var response = MessageBox.Show(Resources.ConfirmSendIncompleteSearch, Resources.ConfirmationRequired,
-						MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-					if (response == DialogResult.Yes) sendEmail = true;
-				} else {
-					sendEmail = true;
-				}
-				FileHelper.SaveConfiguration(MasterConfig);
+				LogHelper.Debug("Retrieving results from search");
+				MasterResults = grantSearch.Results;
+				LogHelper.Debug("Results retrieved");
+				LogHelper.Debug("Sending command to save results");
+				FileHelper.SaveResults(MasterResults);
+				LogHelper.Debug("Command sent");
 				grantSearch.Close();
-			}
-
-			LogHelper.Debug("Completion status: " + MasterConfig.LastCrawl.CompletionStatus);
-
-			// Send the email if we need to
-			if (MasterConfig.EnableSendEmail && sendEmail) {
-				var emailProgress = new EmailProgress(MasterConfig);
-				emailProgress.ShowDialog();
 			}
 		}
 
 		private void btnViewResults_Click(object sender, EventArgs e) {
 			// Open result viewer window
-			var resultViewer = new ResultViewer(MasterConfig);
+			var resultViewer = new ResultViewer(MasterConfig, MasterResults);
 			resultViewer.ShowDialog();
 		}
 
@@ -120,13 +115,15 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 		private void btnChangeSettings_Click(object sender, EventArgs e) {
 			// Open settings window
-			var settings = new AdjustSettings(MasterConfig);
+			var settings = new AdjustSettings(MasterConfig, MasterResults);
 			settings.ShowDialog();
 
 			if (settings.DialogResult == DialogResult.OK) {
 				MasterConfig = settings.Settings;
+				MasterResults = settings.Results;
 				settings.Close();
 				FileHelper.SaveConfiguration(MasterConfig);
+				FileHelper.SaveResults(MasterResults);
 			}
 		}
 
@@ -143,7 +140,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 		}
 
 		private void btnSendEmail_Click(object sender, EventArgs e) {
-			var emailSender = new EmailProgress(MasterConfig);
+			var emailSender = new EmailProgress(MasterConfig, MasterResults);
 			emailSender.ShowDialog();
 		}
 	}

@@ -4,5 +4,6 @@
 
 		public static int TotalPages { get; set; }
 		public static int SkippedPages { get; set; }
+		public static int CurrentDomain { get; set; }
 	}
 }

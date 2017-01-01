@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Visco_Web_Scrape_v2.Search {
+namespace Visco_Web_Scrape_v2.Search.Items {
 
 	[Serializable]
 	public class Recipient : IComparable {

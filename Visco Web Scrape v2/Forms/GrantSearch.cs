@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Visco_Web_Scrape_v2.Properties;
@@ -26,50 +26,28 @@ namespace Visco_Web_Scrape_v2.Forms {
 		}
 
 		public Configuration Config;
-		public List<SearchResults> AllResults { get; private set; }
+		public CombinedResults Results { get; set; }
 		public CancellationTokenSource Cts = new CancellationTokenSource();
 		public Progress LastProgress { get; private set; }
 
 		private BackgroundWorker worker;
 		private readonly Job jobToRun;
-		private readonly Predicate<Website> predicate;
 
-		public GrantSearch(Configuration configuration, Job job) {
+		public GrantSearch(Configuration configuration, CombinedResults results, Job job) {
 			InitializeComponent();
 
 			Config = configuration;
+			Results = results;
 			jobToRun = job;
-			predicate = AlreadyRunToday;
-
-			foreach (var website in jobToRun.WebsitesToCrawl) {
-				if (website.LastCrawlDate == DateTime.Today) {
-					LogHelper.Debug(website.Name + "  already ran today");
-				} else {
-					LogHelper.Debug(website.Name + " not yet run today");
-				}
-			}
 		}
 
-		public bool AlreadyRunToday(Website arg) => arg.LastCrawlDate != DateTime.Today;
-
 		private void UpdateFields(Progress progress) {
-			LastProgress = progress;
-
-			if (progress.CurrentStatus == Progress.Status.Cancelled) {
-				return;
-			}
-
-			lblCurrentDomain.Text = progress.Domain ?? lblCurrentDomain.Text;
-			lblCurrentUrl.Text = progress.Url ?? lblCurrentDomain.Text;
-			lblPagesCrawledCount.Text = progress.TotalPageCount == null
-				? lblPagesCrawledCount.Text
-				: progress.TotalPageCount.ToString();
-			lblResultsFound.Text = progress.RelevantPageCount == null
-				? lblResultsFound.Text
-				: progress.RelevantPageCount.ToString();
-			lblPagesSkippedCount.Text = progress.SkippedPageCount.ToString();
 			lblCurrentStatus.Text = progress.CurrentStatus.ToString();
-			progressbar.Value = progress.DomainNumber + 1;
+			lblCurrentDomain.Text = progress.Domain ?? lblCurrentDomain.Text;
+			lblCurrentUrl.Text = progress.Url ?? lblCurrentUrl.Text;
+			lblPagesCrawledCount.Text = CrawlHelper.TotalPages.ToString();
+			lblPagesSkippedCount.Text = CrawlHelper.SkippedPages.ToString();
+			lblResultsFound.Text = progress.RelevantPageCount == null ? lblResultsFound.Text : progress.RelevantPageCount.ToString();
 		}
 
 		public void Stop(DoWorkEventArgs e) {
@@ -77,12 +55,17 @@ namespace Visco_Web_Scrape_v2.Forms {
 		}
 
 		private void btnSaveResults_Click(object sender, EventArgs e) {
-			Config.LastCrawl.Date = DateTime.Now;
+			foreach (var website in Results.AllResults) {
+				foreach (var result in website.ResultList) {
+					LogHelper.Info("Found result on " + website.RootWebsite.Name + "\n" + result.PageUrl);
+				}
+			}
 
 			DialogResult = DialogResult.OK;
 			Hide();
 		}
 
+		// TODO: Fix completion status issue
 		private void btnCancelCrawl_Click(object sender, EventArgs e) {
 			if (worker.IsBusy) {
 				var check =
@@ -96,115 +79,14 @@ namespace Visco_Web_Scrape_v2.Forms {
 				worker.CancelAsync();
 			} else {
 				LastProgress.CurrentStatus = Progress.Status.Cancelled;
-				Config.LastCrawl.CompletionStatus = "Canceled Early";
 				DialogResult = DialogResult.Cancel;
 				Close();
 			}
 		}
 
-		public List<SearchResults> CompareLists(List<SearchResults> savedResults, bool onlyNewResults) {
-			/* Old code
-			var newList = savedResults;
-
-			if (newList.Count == 0) return AllResults;
-
-			// Mark all current results as old
-			foreach (var domain in newList) {
-				LogHelper.Debug(domain + " " + domain.ResultList.Count);
-				if (domain.ResultList.Count != 0) {
-					foreach (var website in domain.ResultList) {
-						website.IsNew = false;
-					}
-				}
-			}
-
-			foreach (var recentDomain in AllResults) {
-				foreach (var recentWebsite in recentDomain.ResultList) {
-
-					var foundMatch = false;
-					foreach (var domain in newList) {
-						foreach (var website in domain.ResultList) {
-
-							if (recentWebsite.Url.Equals(website.Url)) {
-								foundMatch = true;
-								break;
-							}
-						}
-						if (foundMatch) {
-							break;
-						} else {
-							if (recentDomain.Name.Equals(domain.Name)) {
-								domain.AddNewResult(recentWebsite);
-								LogHelper.Debug(domain.Name + " " + recentWebsite.Url);
-							}
-						}
-					}
-				}
-			}
-
-			return newList;
-			*/
-
-			var newList = new List<SearchResults>();
-
-			foreach (var domain in Config.Websites) {
-				// Create a new list with all the domains in the current settings file
-				// This will include ALL domains even if new ones were added since the last search
-				var results = new SearchResults(domain);
-
-				// Check the previous search to see if there are results for the current domain
-				foreach (var resDomain in savedResults) {
-					// Ignore the domains that do not match
-					if (!resDomain.RootUrl.Equals(domain.Url))
-						continue;
-
-					foreach (var result in resDomain.ResultList) {
-						results.AddNewResult(result);
-					}
-				}
-
-				// Check recent search results to see if there are any new results in the domain to add
-				foreach (var newResDomain in AllResults) {
-					// Ignore the domains that do no match
-					if (!newResDomain.RootUrl.Equals(domain.Url))
-						continue;
-
-					// For the correct domain, go through each result
-					foreach (var result in newResDomain.ResultList) {
-						// Skip anything that already exists
-						if (results.CheckExists(result))
-							continue;
-
-						// Add the result with the datetime of today (just in case) since it is determined
-						// to be new to the list from the last result
-						result.DateFound = DateTime.Today;
-						results.AddNewResult(result);
-					}
-				}
-
-				// Now that the domain is finished being populated, add it to newList
-				newList.Add(results);
-			}
-
-			/* UNDONE: Moved to the export class
-			if (onlyNewResults) {
-				// Remove any results that do not have the datetime marked as today
-				foreach (var domain in newList) {
-					foreach (var result in domain.ResultList) {
-						if (!result.DateFound.Equals(DateTime.Today)) {
-							domain.ResultList.Remove(result);
-						}
-					}
-				}
-			}
-			*/
-
-			return newList;
-		}
-
 		private void GrantSearch_Shown(object sender, EventArgs e) {
 			// Initialize results
-			AllResults = new List<SearchResults>();
+			Results.StartNewSearch();
 
 			// Initialize the background worker
 			worker = new BackgroundWorker {
@@ -233,19 +115,23 @@ namespace Visco_Web_Scrape_v2.Forms {
 			}
 
 			// Go through each domain and setup a crawler to crawl it
-			var websites = e.Argument as Job;
-			var crawlQueue = websites.WebsitesToCrawl.FindAll(predicate);
+			var myJob = e.Argument as Job;
 
 			var myWorker = sender as BackgroundWorker;
-			if (websites == null) throw new NullReferenceException("No website list.");
-			foreach (var website in crawlQueue) {
+			if (myJob == null) throw new NullReferenceException("No website list.");
+			foreach (var website in myJob.WebsitesToCrawl) {
 				// Reset current domain timer
 				ElapsedTime.CurrentHours = 0;
 				ElapsedTime.CurrentMinutes = 0;
 				ElapsedTime.CurrentSeconds = 0;
 
+				// Set website results as not being new
+				var websiteResults = Results.AllResults.FirstOrDefault(i => i.RootWebsite.Url.Equals(website.Url));
+				websiteResults?.StartNewSearch();
+
 				// Initialize and run the crawler
-				var grantCrawler = new GrantCrawler(Config, website, myWorker, Cts);
+				CrawlHelper.CurrentDomain++;
+				var grantCrawler = new GrantCrawler(jobToRun, Config, website, myWorker, Cts, this);
 				if (Cts.IsCancellationRequested) {
 					lblCurrentStatus.Text = "Cancelled";
 					LastProgress.CurrentStatus = Progress.Status.Cancelled;
@@ -253,8 +139,9 @@ namespace Visco_Web_Scrape_v2.Forms {
 				}
 
 				if (grantCrawler.Successful) {
-					website.LastCrawlDate = DateTime.Today;
-					AllResults.Add(grantCrawler.Results);
+					var firstOrDefault = Results.AllResults.FirstOrDefault(i => i.RootWebsite.Url.Equals(website.Url));
+					if (firstOrDefault != null)
+						firstOrDefault.CompletedSearch = true;
 				}
 			}
 

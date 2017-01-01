@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Visco_Web_Scrape_v2.Properties;
 using Visco_Web_Scrape_v2.Scripts;
 using Visco_Web_Scrape_v2.Scripts.Helpers;
+using Visco_Web_Scrape_v2.Search.Items;
 
 
 namespace Visco_Web_Scrape_v2.Forms {
@@ -14,22 +15,24 @@ namespace Visco_Web_Scrape_v2.Forms {
 	public partial class EmailProgress : Form {
 
 		public Configuration Config;
+		public CombinedResults Results;
 
 		private string fileName;
 
-		public EmailProgress(Configuration config) {
+		public EmailProgress(Configuration config, CombinedResults res) {
 			InitializeComponent();
 
 			Config = config;
+			Results = res;
 		}
 
 		private bool PrepareExcelDocument() {
 			lblCurrentStatus.Text = "Generating excel file";
-			var excelExport = new ResultViewer(Config);
+			var excelExport = new ResultViewer(Config, Results);
 			excelExport.ExportToExcel(true);
 			excelExport.Close();
 
-			var date = Config.LastCrawl.Date;
+			var date = Results.LastRan;
 			fileName = Reference.Files.AppFileDirectory + "Results_"
 				+ date.Month + date.Day + date.Year + ".xlsx";
 
@@ -77,16 +80,15 @@ namespace Visco_Web_Scrape_v2.Forms {
 				progressBar1.Maximum = Config.Recipients.Count;
 
 				// Send the message to each recipient
-				for (int index = 0; index < Config.Recipients.Count; index++) {
+				foreach (var recipient in Config.Recipients) {
 					progressBar1.Value++;
-					var recipient = Config.Recipients[index];
 					LogHelper.Debug("Preparing message for " + recipient.Name);
 					message.To.Clear();
 					message.To.Add(new MailAddress(recipient.Address, recipient.Name));
 					message.Attachments.Add(attachment);
 
 					LogHelper.Debug("Sending message to " + recipient.Name + " at " + recipient.Address);
-					lblRecipientCount.Text = (index + 1) + " of " + Config.Recipients.Count;
+					lblRecipientCount.Text = "";
 					client.Send(message);
 				}
 			} catch (Exception e) {
