@@ -5,23 +5,25 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
     <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Abot.dll" Value="..\packages\Abot.1.5.1.50\lib\net40"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_AutoMapper.Net4.dll" Value="..\packages\AutoMapper.3.3.1\lib\net40"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Abot.dll" Value="..\packages\Abot.1.5.1.53\lib\net40"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_AutoMapper.Net4.dll" Value="..\packages\AngleSharp.0.9.8.1\lib\net45"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_AutoMapper.dll" Value="..\packages\AutoMapper.3.3.1\lib\net40"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_CsQuery.dll" Value="..\packages\CsQuery.1.3.4\lib\net40"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_HtmlAgilityPack.dll" Value="..\packages\Abot.1.5.1.50\lib\net40"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_HtmlAgilityPack.dll" Value="..\packages\Abot.1.5.1.53\lib\net40"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_Robots.dll" Value="..\packages\NRobotsPatched.1.0.5.0\lib\net40"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_ViscoGrantSearch.exe" Value="..\Visco Web Scrape v2\bin\Debug"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_ViscoGrantSearch.exe.config" Value="..\Visco Web Scrape v2\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ViscoWebScrapev2" Value="..\packages\AutoMapper.3.3.1\lib\net40"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_log4net.dll" Value="..\packages\log4net.2.0.3\lib\net40-full"/>
     <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_Abot.dll" Value="Abot.dll"/>
-    <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_AutoMapper.Net4.dll" Value="AutoMapper.Net4.dll"/>
+    <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_AutoMapper.Net4.dll" Value="AngleSharp.dll"/>
     <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_AutoMapper.dll" Value="AutoMapper.dll"/>
     <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_CsQuery.dll" Value="CsQuery.dll"/>
     <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_HtmlAgilityPack.dll" Value="HtmlAgilityPack.dll"/>
     <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_Robots.dll" Value="Robots.dll"/>
     <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_ViscoGrantSearch.exe" Value="Visco Grant Search.exe"/>
     <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_ViscoGrantSearch.exe.config" Value="Visco Grant Search.exe.config"/>
+    <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_ViscoWebScrapev2" Value="AutoMapper.Net4.dll"/>
     <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_log4net.dll" Value="log4net.dll"/>
     <ROW Property="ALLUSERS" Value="1"/>
     <ROW Property="ARPCOMMENTS" Value="This installer database contains the logic and data required to install [|ProductName]." ValueLocId="*"/>
@@ -67,9 +69,10 @@
     <ROW File="AutoMapper.dll" Component_="ViscoWebScrapev2_References" FileName="AUTOMA~2.DLL|[|AI_PROPPATH_FILENAME_PERBUILD_AutoMapper.dll]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_AutoMapper.dll&gt;" SelfReg="false" NextFile="AutoMapper.Net4.dll"/>
     <ROW File="CsQuery.dll" Component_="ViscoWebScrapev2_References" FileName="[|AI_PROPPATH_FILENAME_PERBUILD_CsQuery.dll]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_CsQuery.dll&gt;" SelfReg="false" NextFile="HtmlAgilityPack.dll"/>
     <ROW File="HtmlAgilityPack.dll" Component_="ViscoWebScrapev2_References" FileName="HTMLAG~2.DLL|[|AI_PROPPATH_FILENAME_PERBUILD_HtmlAgilityPack.dll]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_HtmlAgilityPack.dll&gt;" SelfReg="false" NextFile="log4net.dll"/>
-    <ROW File="Robots.dll" Component_="ViscoWebScrapev2_References" FileName="[|AI_PROPPATH_FILENAME_PERBUILD_Robots.dll]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_Robots.dll&gt;" SelfReg="false"/>
+    <ROW File="Robots.dll" Component_="ViscoWebScrapev2_References" FileName="[|AI_PROPPATH_FILENAME_PERBUILD_Robots.dll]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_Robots.dll&gt;" SelfReg="false" NextFile="ViscoWebScrapev2"/>
     <ROW File="ViscoGrantSearch.exe" Component_="ViscoWebScrapev2_PrimaryOutput" FileName="VISCOG~2.EXE|[|AI_PROPPATH_FILENAME_PERBUILD_ViscoGrantSearch.exe]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_ViscoGrantSearch.exe&gt;" SelfReg="false" NextFile="ViscoGrantSearch.exe.config" DigSign="true"/>
     <ROW File="ViscoGrantSearch.exe.config" Component_="ViscoWebScrapev2_PrimaryOutput" FileName="VISCOG~2.CON|[|AI_PROPPATH_FILENAME_PERBUILD_ViscoGrantSearch.exe.config]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_ViscoGrantSearch.exe.config&gt;" SelfReg="false" NextFile="Abot.dll"/>
+    <ROW File="ViscoWebScrapev2" Component_="ViscoWebScrapev2_References" FileName="AUTOMA~1.DLL|[|AI_PROPPATH_FILENAME_PERBUILD_ViscoWebScrapev2]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_ViscoWebScrapev2&gt;" SelfReg="false"/>
     <ROW File="log4net.dll" Component_="ViscoWebScrapev2_References" FileName="[|AI_PROPPATH_FILENAME_PERBUILD_log4net.dll]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_log4net.dll&gt;" SelfReg="false" NextFile="Robots.dll"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.AppPathsComponent">
@@ -81,6 +84,7 @@
     <ROW Name="AI_APPPATH_PERBUILD_Robots.dll" Path="[|AI_PROPPATH_DIR_PERBUILD_Robots.dll]\[|AI_PROPPATH_FILENAME_PERBUILD_Robots.dll]" Type="2" Content="0"/>
     <ROW Name="AI_APPPATH_PERBUILD_ViscoGrantSearch.exe" Path="[|AI_PROPPATH_DIR_PERBUILD_ViscoGrantSearch.exe]\[|AI_PROPPATH_FILENAME_PERBUILD_ViscoGrantSearch.exe]" Type="2" Content="0"/>
     <ROW Name="AI_APPPATH_PERBUILD_ViscoGrantSearch.exe.config" Path="[|AI_PROPPATH_DIR_PERBUILD_ViscoGrantSearch.exe.config]\[|AI_PROPPATH_FILENAME_PERBUILD_ViscoGrantSearch.exe.config]" Type="2" Content="0"/>
+    <ROW Name="AI_APPPATH_PERBUILD_ViscoWebScrapev2" Path="[|AI_PROPPATH_DIR_PERBUILD_ViscoWebScrapev2]\[|AI_PROPPATH_FILENAME_PERBUILD_ViscoWebScrapev2]" Type="2" Content="0"/>
     <ROW Name="AI_APPPATH_PERBUILD_log4net.dll" Path="[|AI_PROPPATH_DIR_PERBUILD_log4net.dll]\[|AI_PROPPATH_FILENAME_PERBUILD_log4net.dll]" Type="2" Content="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
@@ -196,5 +200,6 @@
     <ROW ProjectId="{1ff3b18d-4add-4f49-8702-d2bb52dd3236}" ProjectName="Visco Web Scrape v2" OutputGroup="References" OutputFile="HtmlAgilityPack.dll"/>
     <ROW ProjectId="{1ff3b18d-4add-4f49-8702-d2bb52dd3236}" ProjectName="Visco Web Scrape v2" OutputGroup="References" OutputFile="log4net.dll"/>
     <ROW ProjectId="{1ff3b18d-4add-4f49-8702-d2bb52dd3236}" ProjectName="Visco Web Scrape v2" OutputGroup="References" OutputFile="Robots.dll"/>
+    <ROW ProjectId="{1ff3b18d-4add-4f49-8702-d2bb52dd3236}" ProjectName="Visco Web Scrape v2" OutputGroup="References" OutputFile="ViscoWebScrapev2"/>
   </COMPONENT>
 </DOCUMENT>

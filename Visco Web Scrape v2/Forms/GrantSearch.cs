@@ -140,8 +140,9 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 				if (grantCrawler.Successful) {
 					var firstOrDefault = Results.AllResults.FirstOrDefault(i => i.RootWebsite.Url.Equals(website.Url));
-					if (firstOrDefault != null)
+					if (firstOrDefault != null) {
 						firstOrDefault.CompletedSearch = true;
+					}
 				}
 			}
 
@@ -149,6 +150,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 		private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
 			var progress = e.UserState as Progress;
+			progressbar.Value = CrawlHelper.CurrentDomain;
 			UpdateFields(progress);
 		}
 

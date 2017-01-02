@@ -14,6 +14,7 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 			public string PageUrl { get; }
 			public HashSet<Keyword> KeywordsOnPage { get; }
 			public DateTime DiscoveryTimeUtc { get; set; }
+			public string Context { get; set; }
 			public bool IsNewResult { get; set; }
 
 			public Result(string url) {
@@ -31,6 +32,7 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 
 		public int SearchTimeInSeconds { get; set; }
 		public bool CompletedSearch { get; set; }
+		public int CrawledPages { get; set; }
 
 		private Result newResult;
 
@@ -43,8 +45,9 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 			newResult = new Result(pageUrl);
 		}
 
-		public void AddResultKeyword(Keyword keyword) {
+		public void AddResultKeyword(Keyword keyword, string context = "") {
 			newResult.AddKeyword(keyword);
+			newResult.Context = context;
 		}
 
 		public void FinalizeResult() {
