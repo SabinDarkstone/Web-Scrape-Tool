@@ -26,7 +26,8 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ResultViewer));
 			this.label1 = new System.Windows.Forms.Label();
 			this.btnStatusClose = new System.Windows.Forms.Button();
-			this.progressbar = new System.Windows.Forms.ProgressBar();
+			this.progressBook = new System.Windows.Forms.ProgressBar();
+			this.progressSheet = new System.Windows.Forms.ProgressBar();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -42,7 +43,7 @@
 			// 
 			// btnStatusClose
 			// 
-			this.btnStatusClose.Location = new System.Drawing.Point(114, 215);
+			this.btnStatusClose.Location = new System.Drawing.Point(114, 243);
 			this.btnStatusClose.Name = "btnStatusClose";
 			this.btnStatusClose.Size = new System.Drawing.Size(75, 23);
 			this.btnStatusClose.TabIndex = 1;
@@ -50,19 +51,27 @@
 			this.btnStatusClose.UseVisualStyleBackColor = true;
 			this.btnStatusClose.Click += new System.EventHandler(this.btnStatusClose_Click);
 			// 
-			// progressbar
+			// progressBook
 			// 
-			this.progressbar.Location = new System.Drawing.Point(32, 174);
-			this.progressbar.Name = "progressbar";
-			this.progressbar.Size = new System.Drawing.Size(239, 23);
-			this.progressbar.TabIndex = 2;
+			this.progressBook.Location = new System.Drawing.Point(32, 170);
+			this.progressBook.Name = "progressBook";
+			this.progressBook.Size = new System.Drawing.Size(239, 23);
+			this.progressBook.TabIndex = 2;
+			// 
+			// progressSheet
+			// 
+			this.progressSheet.Location = new System.Drawing.Point(32, 199);
+			this.progressSheet.Name = "progressSheet";
+			this.progressSheet.Size = new System.Drawing.Size(239, 23);
+			this.progressSheet.TabIndex = 3;
 			// 
 			// ResultViewer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(304, 250);
-			this.Controls.Add(this.progressbar);
+			this.ClientSize = new System.Drawing.Size(304, 280);
+			this.Controls.Add(this.progressSheet);
+			this.Controls.Add(this.progressBook);
 			this.Controls.Add(this.btnStatusClose);
 			this.Controls.Add(this.label1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -78,6 +87,7 @@
 
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Button btnStatusClose;
-		private System.Windows.Forms.ProgressBar progressbar;
+		private System.Windows.Forms.ProgressBar progressBook;
+		private System.Windows.Forms.ProgressBar progressSheet;
 	}
 }

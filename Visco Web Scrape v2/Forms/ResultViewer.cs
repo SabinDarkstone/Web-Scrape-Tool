@@ -25,7 +25,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 		private void ResultViewer_Shown(object sender, EventArgs e) {
 			// Initialize progress bar
 			var pageCount = results.AllResults.Count;
-			progressbar.Maximum = pageCount;
+			progressBook.Maximum = pageCount;
 
 			ExportToFile();
 		}
@@ -65,18 +65,28 @@ namespace Visco_Web_Scrape_v2.Forms {
 			int currentRow;
 			foreach (var website in results.AllResults.Reverse()) {
 				currentRow = 1;
-				progressbar.Value++;
+				progressBook.Value++;
 
 				// Add a new sheet
 				Excel._Worksheet sheet = workbook.Worksheets.Add();
 				sheet.Name = website.RootWebsite.Name;
 
 				// Create sheet headers
-				sheet.Cells[currentRow, 1] = "Website Url";
-				sheet.Cells[currentRow, 2] = "Keywords Found";
-				if (config.IncludeDate) sheet.Cells[currentRow, 3] = "Date Discovered";
+				if (website.ResultList.Count == 0) {
+					sheet.Cells[1, 1] = "No results found for enabled keywords";
+					continue;
+				} else {
+					sheet.Cells[currentRow, 1] = "Website Url";
+					sheet.Cells[currentRow, 2] = "Keywords Found";
+					if (config.IncludeDate) sheet.Cells[currentRow, 3] = "Date Discovered";
+				}
+
+				progressSheet.Maximum = website.ResultList.Count;
+				progressSheet.Value = 0;
 
 				foreach (var result in website.ResultList) {
+					progressSheet.Value++;
+
 					if (config.OnlyNewResults) {
 						if (!result.IsNewResult) {
 							continue;
@@ -88,7 +98,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 					Debug.Assert(rng != null, "rng != null");
 
 					// Write page url
-					rng.Hyperlinks.Add(rng, result.PageUrl, Missing.Value, "Click to open page", result.PageUrl);
+					rng.Hyperlinks.Add(rng, result.PageUrl, Missing.Value, string.IsNullOrEmpty(result.Context) ? "" : result.Context, result.PageUrl);
 
 					// Write keywords
 					var keywords = result.KeywordsOnPage.Aggregate("", (current, keyword) => current + (keyword.Text + ", "));
