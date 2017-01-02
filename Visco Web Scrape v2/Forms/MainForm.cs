@@ -25,10 +25,10 @@ namespace Visco_Web_Scrape_v2.Forms {
 			PrintDebugInfo();
 
 			/* UNDONE: Temporarys
-			var keywords = MasterConfig.Keywords;
+			var keywords = MasterConfig.PageWords;
 			var websites = MasterConfig.Websites;
 			MasterConfig = new Configuration {
-				Keywords = keywords,
+				PageWords = keywords,
 				Websites = websites
 			};
 			FileHelper.SaveConfiguration(MasterConfig);
@@ -64,7 +64,8 @@ namespace Visco_Web_Scrape_v2.Forms {
 			// Check to see if the websites need to be saved
 			if (keywordEditor.DialogResult == DialogResult.OK) {
 				// Save changes to settings file
-				MasterConfig.Keywords = keywordEditor.CurrentKeywords;
+				MasterConfig.PageWords = keywordEditor.Whitelist;
+				MasterConfig.UrlWords = keywordEditor.Blacklist;
 				FileHelper.SaveConfiguration(MasterConfig);
 				keywordEditor.Close();
 			}
@@ -72,7 +73,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 		private void btnBeginSearch_Click(object sender, EventArgs e) {
 			// Open grant search window
-			var grantSearch = new GrantSearch(MasterConfig, MasterResults, new Job(MasterConfig.Websites, MasterConfig.Keywords));
+			var grantSearch = new GrantSearch(MasterConfig, MasterResults, new Job(MasterConfig.Websites, MasterConfig.PageWords));
 			grantSearch.ShowDialog();
 
 			// Check to see if the results need to be saved

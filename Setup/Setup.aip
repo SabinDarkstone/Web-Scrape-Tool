@@ -11,8 +11,8 @@
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_CsQuery.dll" Value="..\packages\CsQuery.1.3.4\lib\net40"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_HtmlAgilityPack.dll" Value="..\packages\Abot.1.5.1.53\lib\net40"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_Robots.dll" Value="..\packages\NRobotsPatched.1.0.5.0\lib\net40"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ViscoGrantSearch.exe" Value="..\Visco Web Scrape v2\bin\Debug"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ViscoGrantSearch.exe.config" Value="..\Visco Web Scrape v2\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ViscoGrantSearch.exe" Value="..\Visco Web Scrape v2\bin\Release"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ViscoGrantSearch.exe.config" Value="..\Visco Web Scrape v2\bin\Release"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_ViscoWebScrapev2" Value="..\packages\AutoMapper.3.3.1\lib\net40"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_log4net.dll" Value="..\packages\log4net.2.0.3\lib\net40-full"/>
     <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_Abot.dll" Value="Abot.dll"/>

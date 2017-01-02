@@ -77,7 +77,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 					continue;
 				} else {
 					sheet.Cells[currentRow, 1] = "Website Url";
-					sheet.Cells[currentRow, 2] = "Keywords Found";
+					sheet.Cells[currentRow, 2] = "PageWords Found";
 					if (config.IncludeDate) sheet.Cells[currentRow, 3] = "Date Discovered";
 				}
 
@@ -142,6 +142,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 			foreach (var website in results.AllResults) {
 				currentRow++;
 				summary.Cells[currentRow, 1] = website.RootWebsite.Name;
+				summary.Cells[currentRow, 3] = website.GetCrawlTime();
 
 				if (config.OnlyNewResults) {
 					summary.Cells[currentRow, 2] = website.ResultList.Count(i => i.IsNewResult);
@@ -150,11 +151,11 @@ namespace Visco_Web_Scrape_v2.Forms {
 				}
 			}
 
-			// Keywords in search
+			// PageWords in search
 			currentRow += 2;
-			summary.Cells[currentRow, 1] = "Keywords Used";
+			summary.Cells[currentRow, 1] = "PageWords Used";
 			summary.Range["A" + currentRow].Font.Bold = true;
-			foreach (var keyword in config.Keywords) {
+			foreach (var keyword in config.PageWords) {
 				currentRow++;
 				summary.Cells[currentRow, 1] = keyword.Text;
 				summary.Cells[currentRow, 2] = (keyword.IsEnabled) ? "Enabled" : "Disabled";

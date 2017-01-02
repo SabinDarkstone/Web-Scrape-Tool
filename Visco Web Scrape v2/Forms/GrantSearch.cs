@@ -19,10 +19,12 @@ namespace Visco_Web_Scrape_v2.Forms {
 			public static int TotalSeconds { get; set; }
 			public static int TotalMinutes { get; set; }
 			public static int TotalHours { get; set; }
+			public static int TotalTime { get; set; }
 
 			public static int CurrentSeconds { get; set; }
 			public static int CurrentMinutes { get; set; }
 			public static int CurrentHours { get; set; }
+			public static int CurrentTime { get; set; }
 		}
 
 		public Configuration Config;
@@ -117,6 +119,10 @@ namespace Visco_Web_Scrape_v2.Forms {
 			// Go through each domain and setup a crawler to crawl it
 			var myJob = e.Argument as Job;
 
+			foreach (var website in myJob.WebsitesToCrawl.ToList().FindAll(i => i.IsEnabled)) {
+				LogHelper.Debug(website.Name);
+			}
+
 			var myWorker = sender as BackgroundWorker;
 			if (myJob == null) throw new NullReferenceException("No website list.");
 			foreach (var website in myJob.WebsitesToCrawl) {
@@ -124,25 +130,30 @@ namespace Visco_Web_Scrape_v2.Forms {
 				ElapsedTime.CurrentHours = 0;
 				ElapsedTime.CurrentMinutes = 0;
 				ElapsedTime.CurrentSeconds = 0;
+				ElapsedTime.CurrentTime = 0;
 
-				// Set website results as not being new
-				var websiteResults = Results.AllResults.FirstOrDefault(i => i.RootWebsite.Url.Equals(website.Url));
-				websiteResults?.StartNewSearch();
+				try {
+					// Set website results as not being new
+					var websiteResults = Results.AllResults.FirstOrDefault(i => i.RootWebsite.Url.Equals(website.Url));
+					websiteResults?.StartNewSearch();
 
-				// Initialize and run the crawler
-				CrawlHelper.CurrentDomain++;
-				var grantCrawler = new GrantCrawler(jobToRun, Config, website, myWorker, Cts, this);
-				if (Cts.IsCancellationRequested) {
-					lblCurrentStatus.Text = "Cancelled";
-					LastProgress.CurrentStatus = Progress.Status.Cancelled;
-					return;
-				}
-
-				if (grantCrawler.Successful) {
-					var firstOrDefault = Results.AllResults.FirstOrDefault(i => i.RootWebsite.Url.Equals(website.Url));
-					if (firstOrDefault != null) {
-						firstOrDefault.CompletedSearch = true;
+					// Initialize and run the crawler
+					CrawlHelper.CurrentDomain++;
+					var grantCrawler = new GrantCrawler(jobToRun, Config, website, myWorker, Cts, this);
+					if (Cts.IsCancellationRequested) {
+						lblCurrentStatus.Text = "Cancelled";
+						LastProgress.CurrentStatus = Progress.Status.Cancelled;
+						return;
 					}
+
+					if (grantCrawler.Successful) {
+						var firstOrDefault = Results.AllResults.FirstOrDefault(i => i.RootWebsite.Url.Equals(website.Url));
+						if (firstOrDefault != null) {
+							firstOrDefault.CompletedSearch = true;
+						}
+					}
+				} catch (Exception ex) {
+					LogHelper.Error(ex.Message);
 				}
 			}
 
@@ -155,6 +166,9 @@ namespace Visco_Web_Scrape_v2.Forms {
 		}
 
 		private void timerTotal_Tick(object sender, EventArgs e) {
+			ElapsedTime.TotalTime++;
+			ElapsedTime.CurrentTime++;
+
 			ElapsedTime.TotalSeconds++;
 			ElapsedTime.CurrentSeconds++;
 

@@ -98,12 +98,10 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 					return new CrawlDecision {Allow = false, Reason = Resources.BadExtension};
 				}
 
-				/*
-				if (Reference.IgnoreWords.Any(word => url.Contains(word))) {
+				if (config.UrlWords.Any(word => url.Contains(word.Text) && word.IsEnabled)) {
 					CrawlHelper.SkippedPages++;
 					return new CrawlDecision {Allow = false, Reason = Resources.UrlFiltered};
 				}
-				*/
 
 				return crawlDecision;
 			});
@@ -117,6 +115,8 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 
 			LogHelper.Debug("Adding results to parent form...");
 			Results.CrawledPages = CrawlHelper.TotalPages;
+			Results.SkippedPages = CrawlHelper.SkippedPages;
+			Results.SearchTimeInSeconds = GrantSearch.ElapsedTime.CurrentTime;
 			parentForm.Results.AddWebsiteResults(Results);
 
 			if (results.ErrorOccurred) {

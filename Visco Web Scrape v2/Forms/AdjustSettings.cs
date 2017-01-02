@@ -31,9 +31,9 @@ namespace Visco_Web_Scrape_v2.Forms {
 			if (exportMethod == Configuration.ExportType.Plain) radioPlainText.Checked = true;
 			if (exportMethod == Configuration.ExportType.Xml) radioXml.Checked = true;
 
-			if (Settings.Websites.Count > 0 || Settings.Keywords.Count > 0) {
+			if (Settings.Websites.Count > 0 || Settings.PageWords.Count > 0) {
 				btnClearSearchSettings.Enabled = true;
-			} else if (Settings.Websites.Count == 0 && Settings.Keywords.Count == 0) {
+			} else if (Settings.Websites.Count == 0 && Settings.PageWords.Count == 0) {
 				btnClearSearchSettings.Enabled = false;
 			}
 		}
@@ -58,7 +58,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 			if (sure == DialogResult.Yes) {
 				Settings.Websites.Clear();
-				Settings.Keywords.Clear();
+				Settings.PageWords.Clear();
 				MessageBox.Show(Resources.MismatchWarning, Resources.HeadsUp,
 					MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				PopulateFields();

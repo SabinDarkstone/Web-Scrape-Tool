@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Visco_Web_Scrape_v2.Search;
 using Visco_Web_Scrape_v2.Search.Items;
 
 namespace Visco_Web_Scrape_v2.Scripts {
@@ -11,7 +10,8 @@ namespace Visco_Web_Scrape_v2.Scripts {
 		public enum ExportType { Excel, Plain, Xml }
 
 		public HashSet<Website> Websites { get; set; }
-		public HashSet<Keyword> Keywords { get; set; }
+		public HashSet<Keyword> PageWords { get; set; }
+		public HashSet<Keyword> UrlWords { get; set; }
 		public HashSet<Recipient> Recipients { get; set; }
 		
 		public int PagesToCrawlPerDomain { get; set; }
@@ -24,7 +24,8 @@ namespace Visco_Web_Scrape_v2.Scripts {
 
 		public Configuration() {
 			Websites = new HashSet<Website>();
-			Keywords = new HashSet<Keyword>();
+			PageWords = new HashSet<Keyword>();
+			UrlWords = new HashSet<Keyword>();
 			Recipients = new HashSet<Recipient>();
 		}
 	}

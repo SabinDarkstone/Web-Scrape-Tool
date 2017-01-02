@@ -6,7 +6,7 @@ namespace Visco_Web_Scrape_v2.Scripts {
 	public static class Reference {
 
 		public static string[] IgnoreWords = {
-			"tags", "comment", "reply", "calendar", "admin", "legacy", "feedback"
+			"tags", "comment", "reply", "calendar", "admin", "legacy", "feedback", "cgi-bin"
 		};
 
 		public static string[] IgnoreExtensions = {".doc", ".xls", ".pdf", ".cfm", ".zip", ".jpg", ".dgn", ".dwg"};

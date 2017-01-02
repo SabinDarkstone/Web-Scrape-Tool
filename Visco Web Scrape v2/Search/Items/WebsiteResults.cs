@@ -33,6 +33,7 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 		public int SearchTimeInSeconds { get; set; }
 		public bool CompletedSearch { get; set; }
 		public int CrawledPages { get; set; }
+		public int SkippedPages { get; set; }
 
 		private Result newResult;
 
@@ -53,6 +54,11 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 		public void FinalizeResult() {
 			if (newResult == null || ResultList.Contains(newResult)) return;
 
+			if (ResultList.Any(i => i.Context.Equals(newResult.Context))) {
+				newResult = null;
+				return;
+			}
+
 			newResult.DiscoveryTimeUtc = DateTime.UtcNow;
 			newResult.IsNewResult = true;
 			ResultList.Add(newResult);
@@ -68,7 +74,7 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 		public void AddResult(Result result) {
 			newResult = result;
 			newResult.DiscoveryTimeUtc = DateTime.UtcNow;
-			if (!ResultList.Any(i => i.PageUrl.Equals(result.PageUrl))) {
+			if (!ResultList.Any(i => i.PageUrl.Equals(result.PageUrl)) || !ResultList.Any(i => i.Context.Equals(result.Context))) {
 				LogHelper.Debug("Adding new result: " + newResult.PageUrl);
 				newResult.IsNewResult = true;
 				ResultList.Add(newResult);
@@ -83,8 +89,8 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 			var minutes = SearchTimeInSeconds / 60;
 			var hours = SearchTimeInSeconds / 3600;
 
-			return ((hours < 10) ? "0" + hours : hours.ToString()) +
-				((minutes < 10) ? "0" + minutes : minutes.ToString()) +
+			return ((hours < 10) ? "0" + hours : hours.ToString()) + ":" +
+				((minutes < 10) ? "0" + minutes : minutes.ToString()) + ":" +
 				((seconds < 10) ? "0" + seconds : seconds.ToString());
 		}
 	}
