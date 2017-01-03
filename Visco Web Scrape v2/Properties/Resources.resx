@@ -2327,4 +2327,7 @@ If you have any questions, comments or errors to report, please contact the deve
   <data name="UnknownError" xml:space="preserve">
     <value>An unknown error occurred. Please contact the developed with detailed steps on how to replicate this error so it may be fixed.</value>
   </data>
+  <data name="ExcelWorkerIsNull" xml:space="preserve">
+    <value>An error occurred while starting the excel file creation.  Please try again</value>
+  </data>
 </root>

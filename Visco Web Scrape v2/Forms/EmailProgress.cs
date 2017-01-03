@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Mail;
@@ -18,12 +19,16 @@ namespace Visco_Web_Scrape_v2.Forms {
 		public CombinedResults Results;
 
 		private string fileName;
+		private List<Recipient> sendToList;
 
 		public EmailProgress(Configuration config, CombinedResults res) {
 			InitializeComponent();
 
 			Config = config;
 			Results = res;
+
+			sendToList = new List<Recipient>();
+			sendToList.AddRange(this.Config.Recipients);
 		}
 
 		private bool PrepareExcelDocument() {
@@ -88,7 +93,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 					message.Attachments.Add(attachment);
 
 					LogHelper.Debug("Sending message to " + recipient.Name + " at " + recipient.Address);
-					lblRecipientCount.Text = "";
+					lblRecipientCount.Text = (sendToList.IndexOf(recipient) + 1) + " of " + sendToList.Count;
 					client.Send(message);
 				}
 			} catch (Exception e) {

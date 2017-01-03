@@ -173,6 +173,15 @@ namespace Visco_Web_Scrape_v2.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An error occurred while starting the excel file creation.  Please try again.
+        /// </summary>
+        internal static string ExcelWorkerIsNull {
+            get {
+                return ResourceManager.GetString("ExcelWorkerIsNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This feature is not yet implemented, please either return to the main form or choose a different setting.
         /// </summary>
         internal static string FeatureNotImplemented {

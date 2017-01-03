@@ -1,11 +1,13 @@
 ﻿using System;
-using System.Diagnostics;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using Visco_Web_Scrape_v2.Properties;
 using Visco_Web_Scrape_v2.Scripts;
+using Visco_Web_Scrape_v2.Scripts.Helpers;
 using Visco_Web_Scrape_v2.Search.Items;
 using Excel = Microsoft.Office.Interop.Excel;
 
@@ -13,111 +15,131 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 	public partial class ResultViewer : Form {
 
+		public static class ExportProgress {
+			public static int CurrentSheet { get; set; }
+			public static int SheetCount { get; set; }
+			public static int CurrentRow { get; set; }
+			public static int RowCount { get; set; }
+		}
+
 		private readonly Configuration config;
 		private readonly CombinedResults results;
+		private readonly BackgroundWorker worker;
+
+		private Excel.Application excel;
+		private Excel.Workbook workbook;
+
+		private bool isForEmail;
 
 		public ResultViewer(Configuration configuration, CombinedResults results) {
 			InitializeComponent();
 
 			config = configuration;
 			this.results = results;
+
+			worker = new BackgroundWorker();
 		}
 
 		private void ResultViewer_Shown(object sender, EventArgs e) {
-			// Initialize progress bar
-			var pageCount = results.AllResults.Count;
-			progressBook.Maximum = pageCount;
+			// Initialize the worker
+			worker.WorkerSupportsCancellation = false;
+			worker.WorkerReportsProgress = true;
+			worker.DoWork += worker_DoWork;
+			worker.ProgressChanged += worker_ProgressChanged;
+			worker.RunWorkerCompleted += worker_WorkCompleted;
 
 			ExportToFile();
 		}
 
-		private void ExportToFile() {
-			// Indicate the program is saving the file
-			btnStatusClose.Text = "Saving...";
-			btnStatusClose.Enabled = false;
-
-			switch (config.ExportMethod) {
-				case Configuration.ExportType.Excel:
-					ExportToExcel(false);
-					break;
-
-				case Configuration.ExportType.Plain:
-					ExportToPlainText();
-					break;
-
-				case Configuration.ExportType.Xml:
-					ExportToXml();
-					break;
-
-				default:
-					throw new ArgumentOutOfRangeException();
+		private void worker_DoWork(object sender, DoWorkEventArgs args) {
+			var myWorker = sender as BackgroundWorker;
+			if (myWorker == null) {
+				MessageBox.Show(Resources.ExcelWorkerIsNull, Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
 			}
-		}
 
-		public void ExportToExcel(bool forEmail) {
-			// Initialize excel interop and start application
-			var excel = new Excel.Application {Visible = false};
+			// Initialize excel interop and start application in a hidden mode
+			excel = new Excel.Application {Visible = false};
 
-			// Get a new workbook
-			Excel.Workbook workbook = excel.Workbooks.Add(Missing.Value);
+			// Set progressBook maximum value
+			ExportProgress.SheetCount = results.AllResults.Count + 2;
 
-			// Go through each website and write to the file
+			// Create a new workbook
+			workbook = excel.Workbooks.Add(Missing.Value);
+
+			// Iterate through WebsiteResults
 			int currentRow;
-			foreach (var website in results.AllResults) {
-				progressBook.Value++;
+			foreach (var website in results.AllResults.Reverse()) {
+				// Update progress information
+				ExportProgress.CurrentSheet++;
 
-				if (!website.StartedSearch) continue;
+				// Check if search on website was started
+				if (!website.StartedSearch) {
+					ExportProgress.RowCount = 1;
+					ExportProgress.CurrentRow = 1;
+					myWorker.ReportProgress(0);
+					continue;
+				}
 
-				currentRow = 1;
+				// Update progress information again
+				ExportProgress.RowCount = website.ResultList.Count;
 
-				// Add a new sheet
-				Excel._Worksheet sheet = workbook.Worksheets.Add();
+				// Add a new sheet for the website
+				Excel.Worksheet sheet = workbook.Worksheets.Add();
 				sheet.Name = website.RootWebsite.Name;
 
-				// Create sheet headers
-				if (website.ResultList.Count == 0) {
-					sheet.Cells[1, 1] = "No results found for enabled keywords";
-					continue;
+				// Create sheet title and table headers
+				sheet.Cells[1, 1] = website.RootWebsite.Name;
+				sheet.Cells[2, 1] = website.RootWebsite.Url;
+				sheet.Range["A1"].Font.Size = 18;
+				sheet.Range["A2"].Font.Size = 14;
+				sheet.Range["A1:C1"].Merge();
+				sheet.Range["A2:C2"].Merge();
+				if (website.ResultList.Count > 0) {
+					sheet.Cells[4, 1] = "Website Url";
+					sheet.Cells[4, 2] = "Keywords Found";
+					if (config.IncludeDate) {
+						sheet.Cells[4, 3] = "Date Discovered";
+					}
 				} else {
-					sheet.Cells[currentRow, 1] = "Website Url";
-					sheet.Cells[currentRow, 2] = "Keywords Found";
-					if (config.IncludeDate) sheet.Cells[currentRow, 3] = "Date Discovered";
+					sheet.Cells[4, 1] = "No results found for enabled keywords";
+					continue;
 				}
 
-				progressSheet.Maximum = website.ResultList.Count;
-				progressSheet.Value = 0;
-
+				currentRow = 4;
+				ExportProgress.CurrentRow = 0;
 				foreach (var result in website.ResultList) {
-					progressSheet.Value++;
-
-					if (config.OnlyNewResults) {
-						if (!result.IsNewResult) {
-							continue;
-						}
+					if (config.OnlyNewResults && !result.IsNewResult) {
+						ExportProgress.CurrentRow++;
+						myWorker.ReportProgress(0);
+						continue;
 					}
 
+					// Go to the next blank row and fill in informations
 					currentRow++;
 					var rng = sheet.Cells[currentRow, 1] as Excel.Range;
-					Debug.Assert(rng != null, "rng != null");
-
-					// Write page url
-					rng.Hyperlinks.Add(rng, result.PageUrl, Missing.Value, string.IsNullOrEmpty(result.Context) ? "" : result.Context, result.PageUrl);
-
-					// Write keywords
+					rng?.Hyperlinks.Add(rng, result.PageUrl, Missing.Value, string.IsNullOrEmpty(result.Context) ? "" : result.Context,
+						result.PageUrl);
 					var keywords = result.KeywordsOnPage.Aggregate("", (current, keyword) => current + (keyword.Text + ", "));
-					var substring = keywords.Substring(0, keywords.Length - 2);
-					sheet.Cells[currentRow, 2] = substring;
-
-					// Write date
+					var keywordText = keywords.Substring(0, keywords.Length - 2);
+					sheet.Cells[currentRow, 2] = keywordText;
 					if (config.IncludeDate) {
 						var date = "";
-						date += result.DiscoveryTimeUtc.ToLocalTime().Month + "/";
-						date += result.DiscoveryTimeUtc.ToLocalTime().Day + "/";
-						date += result.DiscoveryTimeUtc.ToLocalTime().Year;
-
+						var discoveryDate = result.DiscoveryTimeUtc.ToLocalTime();
+						date += discoveryDate.Month + "/";
+						date += discoveryDate.Day + "/";
+						date += discoveryDate.Year;
 						sheet.Cells[currentRow, 3] = date;
 					}
+
+					// Update progress information
+					ExportProgress.CurrentRow++;
+					myWorker.ReportProgress(0);
 				}
+
+				// Update progress information
+				ExportProgress.CurrentSheet++;
+				myWorker.ReportProgress(0);
 
 				// Autofit columns
 				var aRange = sheet.UsedRange;
@@ -125,7 +147,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 			}
 
 			// Create summary sheet
-			Excel._Worksheet summary = workbook.Worksheets.Add(Missing.Value);
+			Excel.Worksheet summary = workbook.Worksheets.Add(Missing.Value);
 
 			// General information
 			summary.Cells[1, 1] = "Visco Lighting Search Results";
@@ -167,7 +189,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 				}
 			}
 
-			// PageWords in search
+			// Keywords in search
 			currentRow += 2;
 			summary.Cells[currentRow, 1] = "Keywords Used";
 			summary.Range["A" + currentRow].Font.Bold = true;
@@ -188,27 +210,71 @@ namespace Visco_Web_Scrape_v2.Forms {
 			// Delete pre-existing "Sheet1"
 			((Excel.Worksheet) excel.ActiveWorkbook.Sheets["Sheet1"]).Delete();
 
+			ExportProgress.CurrentSheet++;
+			myWorker.ReportProgress(0);
+		}
+
+		private void worker_WorkCompleted(object sender, RunWorkerCompletedEventArgs args) {
 			btnStatusClose.Text = "Close";
 			btnStatusClose.Enabled = true;
 
-			if (forEmail) {
+			if (isForEmail) {
 				excel.Visible = false;
 				var date = results.LastRan;
-				var filename = Reference.Files.ExportDirectory + "Results_" + date.Month + date.Date + date.Year;
+				var filename = Reference.Files.ExportDirectory + "Results_" + date.Month + date.Day + date.Year;
 
-				if (File.Exists(filename + ".xlsx")) {
+				if (File.Exists(filename + ".xlsx"))
 					File.Delete(filename + ".xlsx");
-				}
 
 				workbook.SaveAs(filename, Excel.XlFileFormat.xlWorkbookDefault, Type.Missing, Type.Missing, false, false,
 					Excel.XlSaveAsAccessMode.xlNoChange, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
 				workbook.Close();
-
-				Marshal.ReleaseComObject(workbook);
-				Marshal.ReleaseComObject(excel);
 			} else {
 				excel.Visible = true;
 			}
+		}
+
+		private void worker_ProgressChanged(object sender, ProgressChangedEventArgs args) {
+			LogHelper.Debug("Sheet: " + ExportProgress.CurrentSheet + "/" + ExportProgress.SheetCount);
+			LogHelper.Debug("Row: " + ExportProgress.CurrentRow + "/" + ExportProgress.RowCount);
+
+			progressBook.Minimum = 0;
+			progressSheet.Minimum = 0;
+			
+			progressBook.Maximum = ExportProgress.SheetCount;
+			progressSheet.Maximum = ExportProgress.RowCount;
+
+			progressBook.Value = ExportProgress.CurrentSheet;
+			progressSheet.Value = ExportProgress.CurrentRow;
+		}
+
+		private void ExportToFile() {
+			// Indicate the program is saving the file
+			btnStatusClose.Text = "Saving...";
+			btnStatusClose.Enabled = false;
+
+			switch (config.ExportMethod) {
+				case Configuration.ExportType.Excel:
+					ExportToExcel(false);
+					break;
+
+				case Configuration.ExportType.Plain:
+					ExportToPlainText();
+					break;
+
+				case Configuration.ExportType.Xml:
+					ExportToXml();
+					break;
+
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+		}
+
+		public void ExportToExcel(bool email) {
+			isForEmail = email;
+
+			worker.RunWorkerAsync();
 		}
 
 		private void ExportToPlainText() {
@@ -220,6 +286,9 @@ namespace Visco_Web_Scrape_v2.Forms {
 		}
 
 		private void btnStatusClose_Click(object sender, EventArgs e) {
+			Marshal.ReleaseComObject(workbook);
+			Marshal.ReleaseComObject(excel);
+
 			Close();
 		}
 	}

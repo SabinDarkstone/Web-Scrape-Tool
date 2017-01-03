@@ -88,6 +88,12 @@ namespace Visco_Web_Scrape_v2.Forms {
 				FileHelper.SaveResults(MasterResults);
 				LogHelper.Debug("Command sent");
 				grantSearch.Close();
+
+				// Send Email if requested
+				if (MasterConfig.EnableSendEmail) {
+					var emailSender = new EmailProgress(MasterConfig, MasterResults);
+					emailSender.ShowDialog();
+				}
 			}
 
 			LogHelper.Debug("Searches started: " + MasterResults.AllResults.Count(i => i.StartedSearch));
