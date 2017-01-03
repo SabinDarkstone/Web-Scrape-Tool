@@ -2,19 +2,44 @@
 using System.Collections.Generic;
 using System.Linq;
 using Visco_Web_Scrape_v2.Scripts.Helpers;
+using Visco_Web_Scrape_v2.Search.Process;
 
 namespace Visco_Web_Scrape_v2.Search.Items {
 
 	[Serializable]
 	public class CombinedResults {
 
+		[Serializable]
+		public class History {
+
+			public DateTime StartTime { get; }
+			public DateTime EndTime { get; set; }
+			public Job JobInformation { get; }
+			public CrawlHelper.SearchCompletion Completion { get; set; }
+			public HashSet<Website> CompletedWebsites { get; set; }
+
+			public History(DateTime start, Job job) {
+				StartTime = start;
+				JobInformation = job;
+				CompletedWebsites = new HashSet<Website>();
+			}
+		}
+
 		public HashSet<WebsiteResults> AllResults { get; }
 		public DateTime LastRan { get; private set; }
+
+		public HashSet<History> SearchHistory { get; set; }
 
 		private int totalCrawlTime;
 
 		public CombinedResults() {
 			AllResults = new HashSet<WebsiteResults>();
+
+			/* UNDONE search history for stability
+			if (SearchHistory == null) {
+				SearchHistory = new HashSet<History>();
+			}
+			*/
 		}
 
 		public void StartNewSearch() {

@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Visco_Web_Scrape_v2.Search.Items;
 
 namespace Visco_Web_Scrape_v2.Search.Process {
 
+	[Serializable]
 	public class Job {
 
 		public HashSet<Website> WebsitesToCrawl { get; }

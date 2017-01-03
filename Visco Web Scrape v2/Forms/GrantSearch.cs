@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -25,6 +24,18 @@ namespace Visco_Web_Scrape_v2.Forms {
 			public static int CurrentMinutes { get; set; }
 			public static int CurrentHours { get; set; }
 			public static int CurrentTime { get; set; }
+
+			public static void ClearAll() {
+				TotalSeconds = 0;
+				TotalMinutes = 0;
+				TotalHours = 0;
+				TotalTime = 0;
+
+				CurrentSeconds = 0;
+				CurrentMinutes = 0;
+				CurrentHours = 0;
+				CurrentTime = 0;
+			}
 		}
 
 		public Configuration Config;
@@ -34,6 +45,9 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 		private BackgroundWorker worker;
 		private readonly Job jobToRun;
+		/* UNDONE search history for stability
+		private CombinedResults.History currentSearch;
+		*/
 
 		public GrantSearch(Configuration configuration, CombinedResults results, Job job) {
 			InitializeComponent();
@@ -57,6 +71,8 @@ namespace Visco_Web_Scrape_v2.Forms {
 		}
 
 		private void btnSaveResults_Click(object sender, EventArgs e) {
+			LogHelper.Debug("Saving results...");
+
 			foreach (var website in Results.AllResults) {
 				foreach (var result in website.ResultList) {
 					LogHelper.Info("Found result on " + website.RootWebsite.Name + "\n" + result.PageUrl);
@@ -77,8 +93,8 @@ namespace Visco_Web_Scrape_v2.Forms {
 					return;
 
 				worker.ReportProgress(0, new Progress(Progress.Status.Cancelling));
-				Debug.WriteLine("Sending cancellation request...");
 				worker.CancelAsync();
+				timerTotal.Enabled = false;
 			} else {
 				LastProgress.CurrentStatus = Progress.Status.Cancelled;
 				DialogResult = DialogResult.Cancel;
@@ -89,6 +105,10 @@ namespace Visco_Web_Scrape_v2.Forms {
 		private void GrantSearch_Shown(object sender, EventArgs e) {
 			// Initialize results
 			Results.StartNewSearch();
+			ElapsedTime.ClearAll();
+			CrawlHelper.SkippedPages = 0;
+			CrawlHelper.CurrentDomain = 0;
+			CrawlHelper.TotalPages = 0;
 
 			// Initialize the background worker
 			worker = new BackgroundWorker {
@@ -116,15 +136,12 @@ namespace Visco_Web_Scrape_v2.Forms {
 				MessageBox.Show(ex.Message);
 			}
 
-			// Go through each domain and setup a crawler to crawl it
 			var myJob = e.Argument as Job;
-
-			foreach (var website in myJob.WebsitesToCrawl.ToList().FindAll(i => i.IsEnabled)) {
-				LogHelper.Debug(website.Name);
-			}
-
 			var myWorker = sender as BackgroundWorker;
-			if (myJob == null) throw new NullReferenceException("No website list.");
+
+			if (myJob == null)
+				throw new NullReferenceException("No website list.");
+
 			foreach (var website in myJob.WebsitesToCrawl) {
 				// Reset current domain timer
 				ElapsedTime.CurrentHours = 0;
@@ -147,6 +164,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 					}
 
 					if (grantCrawler.Successful) {
+						// Mark the website as completed
 						var firstOrDefault = Results.AllResults.FirstOrDefault(i => i.RootWebsite.Url.Equals(website.Url));
 						if (firstOrDefault != null) {
 							firstOrDefault.CompletedSearch = true;
@@ -156,7 +174,6 @@ namespace Visco_Web_Scrape_v2.Forms {
 					LogHelper.Error(ex.Message);
 				}
 			}
-
 		}
 
 		private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
@@ -246,6 +263,10 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 			lblCurrentDomain.Text = "";
 			lblCurrentUrl.Text = "";
+
+			if (!timerTotal.Enabled) {
+				lblCurrentStatus.Text = "Cancelled";
+			}
 		}
 
 		private void GrantSearch_Load(object sender, EventArgs e) {

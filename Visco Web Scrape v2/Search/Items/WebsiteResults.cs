@@ -31,6 +31,7 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 		public Website RootWebsite { get; }
 
 		public int SearchTimeInSeconds { get; set; }
+		public bool StartedSearch { get; set; }
 		public bool CompletedSearch { get; set; }
 		public int CrawledPages { get; set; }
 		public int SkippedPages { get; set; }
@@ -74,7 +75,7 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 		public void AddResult(Result result) {
 			newResult = result;
 			newResult.DiscoveryTimeUtc = DateTime.UtcNow;
-			if (!ResultList.Any(i => i.PageUrl.Equals(result.PageUrl)) || !ResultList.Any(i => i.Context.Equals(result.Context))) {
+			if (!ResultList.Any(i => i.PageUrl.Equals(result.PageUrl)) && !ResultList.Any(i => i.Context.Equals(result.Context))) {
 				LogHelper.Debug("Adding new result: " + newResult.PageUrl);
 				newResult.IsNewResult = true;
 				ResultList.Add(newResult);

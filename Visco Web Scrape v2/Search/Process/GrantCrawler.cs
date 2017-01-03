@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading;
-using System.Windows.Forms;
-using System.Xml.XPath;
 using Abot.Core;
 using Abot.Crawler;
 using Abot.Poco;
@@ -66,6 +63,7 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 			if (this.config.EnableUrlFiltering) {
 				ConfigureDecisionMaker();
 			}
+
 			if (this.config.EnableUrlAnalysis) {
 				crawlConfig.MaxConcurrentThreads = 2;
 			}
@@ -111,28 +109,32 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 			CrawlHelper.TotalPages = 0;
 			CrawlHelper.SkippedPages = 0;
 
+			LogHelper.Info("BEGINNING CRAWL OF " + url);
+			Results.StartedSearch = true;
 			var results = crawler.Crawl(new Uri(url), cancelMe);
+			LogHelper.Info("CRAWL OF " + url + " COMPLETED");
 
-			LogHelper.Debug("Adding results to parent form...");
+			// Save crawl metadata to Results object before sending it over to GrantSearch
 			Results.CrawledPages = CrawlHelper.TotalPages;
 			Results.SkippedPages = CrawlHelper.SkippedPages;
 			Results.SearchTimeInSeconds = GrantSearch.ElapsedTime.CurrentTime;
+
+			// Add results to CombinedResults object in GrantSearch form
+			LogHelper.Debug("Adding results to parent form...");
 			parentForm.Results.AddWebsiteResults(Results);
 
 			if (results.ErrorOccurred) {
-				// Cancel crawl but report it as successful so that no errors are raised
 				if (cancelMe.IsCancellationRequested) {
-					Successful = true;
-					worker.ReportProgress(0, new Progress(Progress.Status.Cancelling));
+					LogHelper.Debug("Crawl was interrupted early by user request.");
+					if (CrawlHelper.TotalPages == 0) {
+						Results.StartedSearch = false;
+					}
+					Successful = false;
 					return;
 				}
 
-				// Report that there was an error and mark crawl as unsuccessful
-				Successful = false;
-				MessageBox.Show(Resources.DomainCrawlError + results.ErrorException.Message, Resources.Error,
-					MessageBoxButtons.OK, MessageBoxIcon.Error);
+				LogHelper.Error(results.ErrorException.Message);
 			} else {
-				// Crawl was completed successfully and without cancellation
 				Successful = true;
 			}
 		}

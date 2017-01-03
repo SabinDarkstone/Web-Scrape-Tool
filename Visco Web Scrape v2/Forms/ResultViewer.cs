@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Visco_Web_Scrape_v2.Scripts;
 using Visco_Web_Scrape_v2.Search.Items;
@@ -30,7 +31,6 @@ namespace Visco_Web_Scrape_v2.Forms {
 			ExportToFile();
 		}
 
-		// TODO: Change how the grants are outputted so that there is a website per line in the first column with the keywords found on the page in the second column
 		private void ExportToFile() {
 			// Indicate the program is saving the file
 			btnStatusClose.Text = "Saving...";
@@ -63,9 +63,12 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 			// Go through each website and write to the file
 			int currentRow;
-			foreach (var website in results.AllResults.Reverse()) {
-				currentRow = 1;
+			foreach (var website in results.AllResults) {
 				progressBook.Value++;
+
+				if (!website.StartedSearch) continue;
+
+				currentRow = 1;
 
 				// Add a new sheet
 				Excel._Worksheet sheet = workbook.Worksheets.Add();
@@ -77,7 +80,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 					continue;
 				} else {
 					sheet.Cells[currentRow, 1] = "Website Url";
-					sheet.Cells[currentRow, 2] = "PageWords Found";
+					sheet.Cells[currentRow, 2] = "Keywords Found";
 					if (config.IncludeDate) sheet.Cells[currentRow, 3] = "Date Discovered";
 				}
 
@@ -137,12 +140,25 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 			// Websites searched
 			summary.Cells[7, 1] = "Websites Searched";
+			summary.Cells[8, 1] = "Name";
+			summary.Cells[8, 2] = "Results";
+			summary.Cells[8, 3] = "Elapsed Time";
+			summary.Cells[8, 4] = "Status";
 			summary.Range["A7"].Font.Bold = true;
-			currentRow = 7;
+			currentRow = 8;
 			foreach (var website in results.AllResults) {
 				currentRow++;
 				summary.Cells[currentRow, 1] = website.RootWebsite.Name;
 				summary.Cells[currentRow, 3] = website.GetCrawlTime();
+				if (!website.StartedSearch) {
+					summary.Cells[currentRow, 4] = "Not Started";
+				} else {
+					if (website.CompletedSearch) {
+						summary.Cells[currentRow, 4] = "Completed";
+					} else {
+						summary.Cells[currentRow, 4] = "Interrupted";
+					}
+				}
 
 				if (config.OnlyNewResults) {
 					summary.Cells[currentRow, 2] = website.ResultList.Count(i => i.IsNewResult);
@@ -153,7 +169,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 			// PageWords in search
 			currentRow += 2;
-			summary.Cells[currentRow, 1] = "PageWords Used";
+			summary.Cells[currentRow, 1] = "Keywords Used";
 			summary.Range["A" + currentRow].Font.Bold = true;
 			foreach (var keyword in config.PageWords) {
 				currentRow++;
@@ -166,7 +182,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 			summary.Range["A1:H1"].Merge();
 			summary.Range["A2:H2"].Merge();
 			summary.Range["B4:D4"].Merge();
-			summary.Range["A:B"].Columns.AutoFit();
+			summary.Range["A:D"].Columns.AutoFit();
 			summary.Name = "Summary";
 
 			// Delete pre-existing "Sheet1"
@@ -187,7 +203,9 @@ namespace Visco_Web_Scrape_v2.Forms {
 				workbook.SaveAs(filename, Excel.XlFileFormat.xlWorkbookDefault, Type.Missing, Type.Missing, false, false,
 					Excel.XlSaveAsAccessMode.xlNoChange, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
 				workbook.Close();
-				excel.Quit();
+
+				Marshal.ReleaseComObject(workbook);
+				Marshal.ReleaseComObject(excel);
 			} else {
 				excel.Visible = true;
 			}

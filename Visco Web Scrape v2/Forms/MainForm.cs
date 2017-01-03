@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Forms;
 using Visco_Web_Scrape_v2.Properties;
 using Visco_Web_Scrape_v2.Scripts;
@@ -88,6 +89,8 @@ namespace Visco_Web_Scrape_v2.Forms {
 				LogHelper.Debug("Command sent");
 				grantSearch.Close();
 			}
+
+			LogHelper.Debug("Searches started: " + MasterResults.AllResults.Count(i => i.StartedSearch));
 		}
 
 		private void btnViewResults_Click(object sender, EventArgs e) {
