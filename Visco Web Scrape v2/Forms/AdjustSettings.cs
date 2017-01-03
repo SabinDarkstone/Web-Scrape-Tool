@@ -1,8 +1,11 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Forms;
+using Microsoft.Vbe.Interop;
 using Visco_Web_Scrape_v2.Properties;
 using Visco_Web_Scrape_v2.Scripts;
 using Visco_Web_Scrape_v2.Search.Items;
+using Reference = Visco_Web_Scrape_v2.Scripts.Reference;
 
 namespace Visco_Web_Scrape_v2.Forms {
 
@@ -47,6 +50,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 				MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
 			if (sure == DialogResult.Yes) {
+				File.Delete(Reference.Files.ResultsFile);
 				Results = new CombinedResults();
 				PopulateFields();
 			}

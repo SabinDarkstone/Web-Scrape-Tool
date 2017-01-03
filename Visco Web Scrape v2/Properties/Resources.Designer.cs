@@ -291,7 +291,7 @@ namespace Visco_Web_Scrape_v2.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 0.6.0 beta.
+        ///   Looks up a localized string similar to 0.6.1 beta.
         /// </summary>
         internal static string Version {
             get {
