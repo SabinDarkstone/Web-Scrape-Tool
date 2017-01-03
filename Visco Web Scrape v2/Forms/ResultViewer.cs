@@ -62,13 +62,14 @@ namespace Visco_Web_Scrape_v2.Forms {
 			excel = new Excel.Application {Visible = false};
 
 			// Set progressBook maximum value
-			ExportProgress.SheetCount = results.AllResults.Count + 2;
+			ExportProgress.SheetCount = results.AllResults.Count;
 
 			// Create a new workbook
 			workbook = excel.Workbooks.Add(Missing.Value);
 
 			// Iterate through WebsiteResults
 			int currentRow;
+			LogHelper.Debug(results.AllResults.Count);
 			foreach (var website in results.AllResults.Reverse()) {
 				// Update progress information
 				ExportProgress.CurrentSheet++;
@@ -92,7 +93,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 				sheet.Cells[1, 1] = website.RootWebsite.Name;
 				sheet.Cells[2, 1] = website.RootWebsite.Url;
 				sheet.Range["A1"].Font.Size = 18;
-				sheet.Range["A2"].Font.Size = 14;
+				sheet.Range["A2"].Font.Size = 12;
 				sheet.Range["A1:C1"].Merge();
 				sheet.Range["A2:C2"].Merge();
 				if (website.ResultList.Count > 0) {
@@ -137,17 +138,17 @@ namespace Visco_Web_Scrape_v2.Forms {
 					myWorker.ReportProgress(0);
 				}
 
-				// Update progress information
-				ExportProgress.CurrentSheet++;
-				myWorker.ReportProgress(0);
-
 				// Autofit columns
 				var aRange = sheet.UsedRange;
 				aRange.Columns.AutoFit();
 			}
 
+			// Delete pre-existing "Sheet1"
+			workbook.Worksheets["Sheet1"].Delete();
+
 			// Create summary sheet
 			Excel.Worksheet summary = workbook.Worksheets.Add(Missing.Value);
+			summary.Name = "Summary";
 
 			// General information
 			summary.Cells[1, 1] = "Visco Lighting Search Results";
@@ -206,12 +207,6 @@ namespace Visco_Web_Scrape_v2.Forms {
 			summary.Range["B4:D4"].Merge();
 			summary.Range["A:D"].Columns.AutoFit();
 			summary.Name = "Summary";
-
-			// Delete pre-existing "Sheet1"
-			((Excel.Worksheet) excel.ActiveWorkbook.Sheets["Sheet1"]).Delete();
-
-			ExportProgress.CurrentSheet++;
-			myWorker.ReportProgress(0);
 		}
 
 		private void worker_WorkCompleted(object sender, RunWorkerCompletedEventArgs args) {

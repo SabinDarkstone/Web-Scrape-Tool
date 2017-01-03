@@ -149,29 +149,25 @@ namespace Visco_Web_Scrape_v2.Forms {
 				ElapsedTime.CurrentSeconds = 0;
 				ElapsedTime.CurrentTime = 0;
 
-				try {
-					// Set website results as not being new
-					var websiteResults = Results.AllResults.FirstOrDefault(i => i.RootWebsite.Url.Equals(website.Url));
-					websiteResults?.StartNewSearch();
+				// Set website results as not being new
+				var websiteResults = Results.AllResults.FirstOrDefault(i => i.RootWebsite.Url.Equals(website.Url));
+				websiteResults?.StartNewSearch();
 
-					// Initialize and run the crawler
-					CrawlHelper.CurrentDomain++;
-					var grantCrawler = new GrantCrawler(jobToRun, Config, website, myWorker, Cts, this);
-					if (Cts.IsCancellationRequested) {
-						lblCurrentStatus.Text = "Cancelled";
-						LastProgress.CurrentStatus = Progress.Status.Cancelled;
-						return;
-					}
+				// Initialize and run the crawler
+				CrawlHelper.CurrentDomain++;
+				var grantCrawler = new GrantCrawler(jobToRun, Config, website, myWorker, Cts, this);
+				if (Cts.IsCancellationRequested) {
+					lblCurrentStatus.Text = "Cancelled";
+					LastProgress.CurrentStatus = Progress.Status.Cancelled;
+					return;
+				}
 
-					if (grantCrawler.Successful) {
-						// Mark the website as completed
-						var firstOrDefault = Results.AllResults.FirstOrDefault(i => i.RootWebsite.Url.Equals(website.Url));
-						if (firstOrDefault != null) {
-							firstOrDefault.CompletedSearch = true;
-						}
+				if (grantCrawler.Successful) {
+					// Mark the website as completed
+					var firstOrDefault = Results.AllResults.FirstOrDefault(i => i.RootWebsite.Url.Equals(website.Url));
+					if (firstOrDefault != null) {
+						firstOrDefault.CompletedSearch = true;
 					}
-				} catch (Exception ex) {
-					LogHelper.Error(ex.Message);
 				}
 			}
 		}
