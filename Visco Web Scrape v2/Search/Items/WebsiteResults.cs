@@ -27,11 +27,19 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 			}
 		}
 
+		private bool startedSearch;
+
 		public HashSet<Result> ResultList { get; }
 		public Website RootWebsite { get; }
 
 		public int SearchTimeInSeconds { get; set; }
-		public bool StartedSearch { get; set; }
+		public bool StartedSearch {
+			get { return startedSearch; }
+			set {
+				LogHelper.Debug("Started search changed from " + startedSearch + " to " + value);
+				startedSearch = value;
+			}
+		}
 		public bool CompletedSearch { get; set; }
 		public int CrawledPages { get; set; }
 		public int SkippedPages { get; set; }

@@ -127,6 +127,7 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 				if (cancelMe.IsCancellationRequested) {
 					LogHelper.Debug("Crawl was interrupted early by user request.");
 					if (CrawlHelper.TotalPages == 0) {
+						LogHelper.Debug("Website " + results.RootUri.AbsoluteUri + " was not started");
 						Results.StartedSearch = false;
 					}
 					Successful = false;
@@ -173,11 +174,11 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 				var keywordNodes = document.SelectSingleNode(xpathOfTag);
 
 				if (keywordNodes.OuterHtml.Contains("<a")) {
-					context = keywordNodes.OuterHtml;
+					context = keywordNodes.InnerText;
 					return false;
 				}
 
-				context = keywordNodes.OuterHtml;
+				context = keywordNodes.InnerText;
 				return true;
 			} catch (Exception e) {
 				LogHelper.Error(e.Message);

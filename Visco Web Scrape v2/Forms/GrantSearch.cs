@@ -127,20 +127,14 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 		private void worker_DoWork(object sender, DoWorkEventArgs e) {
 			// Update UI to match "in-progress" conditions
-			try {
-				btnCancelCrawl.Invoke(new MethodInvoker(delegate { btnCancelCrawl.Text = "Stop"; }));
-
-				btnCancelCrawl.Enabled = true;
-				btnSaveResults.Enabled = false;
-			} catch (Exception ex) {
-				MessageBox.Show(ex.Message);
-			}
+			btnCancelCrawl.Invoke(new MethodInvoker(delegate { btnCancelCrawl.Text = "Stop"; }));
+			btnCancelCrawl.Enabled = true;
+			btnSaveResults.Enabled = false;
 
 			var myJob = e.Argument as Job;
-			var myWorker = sender as BackgroundWorker;
+			if (myJob == null) throw new NullReferenceException("No website list.");
 
-			if (myJob == null)
-				throw new NullReferenceException("No website list.");
+			var myWorker = sender as BackgroundWorker;
 
 			foreach (var website in myJob.WebsitesToCrawl) {
 				// Reset current domain timer
@@ -157,7 +151,8 @@ namespace Visco_Web_Scrape_v2.Forms {
 				CrawlHelper.CurrentDomain++;
 				var grantCrawler = new GrantCrawler(jobToRun, Config, website, myWorker, Cts, this);
 				if (Cts.IsCancellationRequested) {
-					lblCurrentStatus.Text = "Cancelled";
+					lblCurrentStatus.Invoke(new MethodInvoker(delegate { lblCurrentStatus.Text = "Cancelled"; }));
+
 					LastProgress.CurrentStatus = Progress.Status.Cancelled;
 					return;
 				}

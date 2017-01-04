@@ -146,6 +146,7 @@
       <DependentUpon>GrantSearch.cs</DependentUpon>
     </Compile>
     <Compile Include="Scripts\Helpers\LogHelper.cs" />
+    <Compile Include="Scripts\Helpers\TextHelper.cs" />
     <Compile Include="Scripts\Reference.cs" />
     <Compile Include="Search\Items\CombinedResults.cs" />
     <Compile Include="Search\Items\Keyword.cs" />

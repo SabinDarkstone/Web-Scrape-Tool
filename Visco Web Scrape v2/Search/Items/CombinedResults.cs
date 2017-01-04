@@ -75,6 +75,11 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 				foreach (var result in resultsToAdd.ResultList) {
 					website.AddResult(result);
 				}
+				website.StartedSearch = resultsToAdd.StartedSearch;
+				website.CompletedSearch = resultsToAdd.CompletedSearch;
+				website.SkippedPages = resultsToAdd.SkippedPages;
+				website.CrawledPages = resultsToAdd.CrawledPages;
+				website.SearchTimeInSeconds = resultsToAdd.SearchTimeInSeconds;
 			} else {
 				AllResults.Add(resultsToAdd);
 			}
