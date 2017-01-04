@@ -26,6 +26,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 			PrintDebugInfo();
 
 			/* UNDONE: Temporarys
+			// Copy over settings
 			var keywords = MasterConfig.PageWords;
 			var websites = MasterConfig.Websites;
 			MasterConfig = new Configuration {
@@ -33,6 +34,13 @@ namespace Visco_Web_Scrape_v2.Forms {
 				Websites = websites
 			};
 			FileHelper.SaveConfiguration(MasterConfig);
+			
+			// Manually assign all results as strict
+			foreach (var website in MasterResults.AllResults) {
+				foreach (var result in website.ResultList) {
+					result.IsStrict = true;
+				}
+			}
 			*/
 		}
 

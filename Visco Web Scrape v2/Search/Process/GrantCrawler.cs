@@ -31,10 +31,12 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 			
 			public Keyword Keyword { get; }
 			public string Context { get; }
+			public bool IsLink { get; }
 
-			public KeywordMatch(Keyword keyword, string context) {
+			public KeywordMatch(Keyword keyword, string context, bool isLink) {
 				Keyword = keyword;
 				Context = context;
+				IsLink = isLink;
 			}
 		}
 
@@ -150,9 +152,9 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 					// Check to see if the text is inside a link
 					string context;
 					LogHelper.Debug("Keyword: " + keyword.Text + " found");
-					if (AnalyzePageKeyword(page, keyword, out context)) {
-						keywordsFound.Add(new KeywordMatch(keyword, context));
-					}
+					keywordsFound.Add(AnalyzePageKeyword(page, keyword, out context)
+						? new KeywordMatch(keyword, context, false)
+						: new KeywordMatch(keyword, context, true));
 				}
 			}
 
@@ -160,7 +162,7 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 
 			Results.AddResult(page.Uri.AbsoluteUri);
 			foreach (var match in keywordsFound) {
-				Results.AddResultKeyword(match.Keyword, match.Context);
+				Results.AddResultKeyword(match.Keyword, match.IsLink, match.Context);
 			}
 			Results.FinalizeResult();
 			return true;

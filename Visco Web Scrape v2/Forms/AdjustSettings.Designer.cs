@@ -42,6 +42,7 @@
 			this.chkbxSendEmail = new System.Windows.Forms.CheckBox();
 			this.chkbxDateFound = new System.Windows.Forms.CheckBox();
 			this.chkbxNewResultsOnly = new System.Windows.Forms.CheckBox();
+			this.chkbxStrictFiltering = new System.Windows.Forms.CheckBox();
 			this.flowLayoutPanel1.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -81,13 +82,14 @@
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.chkbxStrictFiltering);
 			this.groupBox1.Controls.Add(this.chkbxAnalyzeUrl);
 			this.groupBox1.Controls.Add(this.chkbxEnableUrlFilter);
 			this.groupBox1.Controls.Add(this.label1);
 			this.groupBox1.Controls.Add(this.txtPagesPerDomain);
 			this.groupBox1.Location = new System.Drawing.Point(12, 12);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(241, 108);
+			this.groupBox1.Size = new System.Drawing.Size(241, 134);
 			this.groupBox1.TabIndex = 1;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Crawl Settings";
@@ -132,7 +134,7 @@
 			// 
 			this.groupBox2.Controls.Add(this.btnClearSearchSettings);
 			this.groupBox2.Controls.Add(this.btnClearResults);
-			this.groupBox2.Location = new System.Drawing.Point(12, 126);
+			this.groupBox2.Location = new System.Drawing.Point(12, 152);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(132, 107);
 			this.groupBox2.TabIndex = 2;
@@ -164,7 +166,7 @@
 			this.groupBox3.Controls.Add(this.radioXml);
 			this.groupBox3.Controls.Add(this.radioPlainText);
 			this.groupBox3.Controls.Add(this.radioExcel);
-			this.groupBox3.Location = new System.Drawing.Point(150, 126);
+			this.groupBox3.Location = new System.Drawing.Point(150, 152);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(103, 107);
 			this.groupBox3.TabIndex = 3;
@@ -211,7 +213,7 @@
 			this.groupBox4.Controls.Add(this.chkbxSendEmail);
 			this.groupBox4.Controls.Add(this.chkbxDateFound);
 			this.groupBox4.Controls.Add(this.chkbxNewResultsOnly);
-			this.groupBox4.Location = new System.Drawing.Point(12, 239);
+			this.groupBox4.Location = new System.Drawing.Point(12, 265);
 			this.groupBox4.Name = "groupBox4";
 			this.groupBox4.Size = new System.Drawing.Size(241, 105);
 			this.groupBox4.TabIndex = 4;
@@ -247,6 +249,16 @@
 			this.chkbxNewResultsOnly.TabIndex = 0;
 			this.chkbxNewResultsOnly.Text = "Show New Results Only";
 			this.chkbxNewResultsOnly.UseVisualStyleBackColor = true;
+			// 
+			// chkbxStrictFiltering
+			// 
+			this.chkbxStrictFiltering.AutoSize = true;
+			this.chkbxStrictFiltering.Location = new System.Drawing.Point(21, 99);
+			this.chkbxStrictFiltering.Name = "chkbxStrictFiltering";
+			this.chkbxStrictFiltering.Size = new System.Drawing.Size(119, 17);
+			this.chkbxStrictFiltering.TabIndex = 5;
+			this.chkbxStrictFiltering.Text = "Force Strict Filtering";
+			this.chkbxStrictFiltering.UseVisualStyleBackColor = true;
 			// 
 			// AdjustSettings
 			// 
@@ -296,5 +308,6 @@
 		private System.Windows.Forms.CheckBox chkbxDateFound;
 		private System.Windows.Forms.CheckBox chkbxNewResultsOnly;
 		private System.Windows.Forms.CheckBox chkbxSendEmail;
+		private System.Windows.Forms.CheckBox chkbxStrictFiltering;
 	}
 }

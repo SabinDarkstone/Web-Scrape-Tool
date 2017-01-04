@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 using Visco_Web_Scrape_v2.Properties;
 using Visco_Web_Scrape_v2.Scripts;
@@ -69,10 +70,12 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 			// Iterate through WebsiteResults
 			int excelRow;
-			foreach (var website in results.AllResults.Where(i => i.StartedSearch)) {
+			foreach (var website in results.AllResults.Where(i => i.StartedSearch).Reverse()) {
 				// Check if displaying all or only new results and set sheet progress bar maximum accordingly
 				progress.RowCount = config.OnlyNewResults ? website.ResultList.Count(i => i.IsNewResult) : website.ResultList.Count;
-				if (progress.RowCount == 0) progress.RowCount = 1;
+
+				// Reset row counter
+				progress.CurrentRow = 0;
 
 				// Add a new sheet for the website
 				Excel.Worksheet sheet = workbook.Worksheets.Add(Missing.Value);
@@ -118,13 +121,10 @@ namespace Visco_Web_Scrape_v2.Forms {
 					if (config.IncludeDate) sheet.Cells[4, 3] = "Date Discovered";
 				}
 
-				// Reset row counter
-				progress.CurrentRow = 0;
-
 				excelRow = 4;
 				foreach (var result in website.ResultList) {
 					// Do we need to add this result to the table?
-					if ((config.OnlyNewResults && result.IsNewResult) || !config.OnlyNewResults) {
+					if ((config.OnlyNewResults && result.IsNewResult) || (config.EnableStrictFilter && result.IsStrict) || !config.OnlyNewResults) {
 						// Go to the next blank row and fill in informations
 						excelRow++;
 						var rng = sheet.Cells[excelRow, 1] as Excel.Range;
@@ -148,6 +148,8 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 					// Regardless of whether the result is new, increment the row counter and report progress
 					worker.ReportProgress(0, ++progress.CurrentRow);
+
+					Thread.Sleep(20);
 				}
 
 				// If there were results, they have been added at this point
@@ -166,19 +168,21 @@ namespace Visco_Web_Scrape_v2.Forms {
 			summary.Cells[4, 1] = "Run Date";
 			summary.Cells[4, 2] = results.LastRan.ToLocalTime().ToShortTimeString() +
 				" on " + results.LastRan.ToLocalTime().ToShortDateString();
-			summary.Cells[5, 1] = "Total Time";
-			summary.Cells[5, 2] = results.GetCrawlTime();
+			summary.Cells[5, 1] = "Results Included";
+			summary.Cells[5, 2] = (config.OnlyNewResults) ? "New Only" : "All Found";
+			summary.Cells[6, 1] = "Stict Filtering";
+			summary.Cells[6, 2] = (config.EnableStrictFilter) ? "On" : "Off";
 
 			// Websites searched
-			summary.Cells[7, 1] = "Websites Searched";
-			summary.Cells[8, 1] = "Name";
-			summary.Cells[8, 2] = "Results";
-			summary.Cells[8, 3] = "Searched";
-			summary.Cells[8, 4] = "Ignored";
-			summary.Cells[8, 5] = "Elapsed Time";
-			summary.Cells[8, 6] = "Status";
-			summary.Range["A7"].Font.Bold = true;
-			excelRow = 8;
+			summary.Cells[8, 1] = "Websites Searched";
+			summary.Cells[9, 1] = "Name";
+			summary.Cells[9, 2] = "Results";
+			summary.Cells[9, 3] = "Searched";
+			summary.Cells[9, 4] = "Ignored";
+			summary.Cells[9, 5] = "Elapsed Time";
+			summary.Cells[9, 6] = "Status";
+			summary.Range["A8"].Font.Bold = true;
+			excelRow = 9;
 			foreach (var website in results.AllResults) {
 				excelRow++;
 				summary.Cells[excelRow, 1] = website.RootWebsite.Name;

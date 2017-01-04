@@ -16,6 +16,7 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 			public DateTime DiscoveryTimeUtc { get; set; }
 			public string Context { get; set; }
 			public bool IsNewResult { get; set; }
+			public bool IsStrict { get; set; }
 
 			public Result(string url) {
 				PageUrl = url;
@@ -55,9 +56,10 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 			newResult = new Result(pageUrl);
 		}
 
-		public void AddResultKeyword(Keyword keyword, string context = "") {
+		public void AddResultKeyword(Keyword keyword, bool containsLink, string context = "") {
 			newResult.AddKeyword(keyword);
 			newResult.Context = context;
+			newResult.IsStrict = !containsLink;
 		}
 
 		public void FinalizeResult() {

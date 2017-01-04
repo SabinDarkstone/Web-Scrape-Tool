@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using Visco_Web_Scrape_v2.Search.Items;
 
 namespace Visco_Web_Scrape_v2.Scripts {
@@ -21,6 +22,7 @@ namespace Visco_Web_Scrape_v2.Scripts {
 		public bool OnlyNewResults { get; set; }
 		public bool EnableSendEmail { get; set; }
 		public ExportType ExportMethod { get; set; }
+		public bool EnableStrictFilter { get; set; }
 
 		public Configuration() {
 			Websites = new HashSet<Website>();
