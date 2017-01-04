@@ -19,7 +19,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 		public CombinedResults Results;
 
 		private string fileName;
-		private List<Recipient> sendToList;
+		private readonly List<Recipient> sendToList;
 
 		public EmailProgress(Configuration config, CombinedResults res) {
 			InitializeComponent();

@@ -34,11 +34,15 @@
 			this.btnAccept = new System.Windows.Forms.Button();
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.chklistboxWebsites = new System.Windows.Forms.CheckedListBox();
+			this.radioGrantSource = new System.Windows.Forms.RadioButton();
+			this.radioOtherSource = new System.Windows.Forms.RadioButton();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.radioOtherSource);
+			this.groupBox1.Controls.Add(this.radioGrantSource);
 			this.groupBox1.Controls.Add(this.btnRemoveWebsite);
 			this.groupBox1.Controls.Add(this.btnSaveWebsite);
 			this.groupBox1.Controls.Add(this.txtWebsiteUrl);
@@ -47,14 +51,14 @@
 			this.groupBox1.Controls.Add(this.label1);
 			this.groupBox1.Location = new System.Drawing.Point(235, 12);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(332, 130);
+			this.groupBox1.Size = new System.Drawing.Size(332, 155);
 			this.groupBox1.TabIndex = 1;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Website";
 			// 
 			// btnRemoveWebsite
 			// 
-			this.btnRemoveWebsite.Location = new System.Drawing.Point(157, 87);
+			this.btnRemoveWebsite.Location = new System.Drawing.Point(197, 117);
 			this.btnRemoveWebsite.Name = "btnRemoveWebsite";
 			this.btnRemoveWebsite.Size = new System.Drawing.Size(75, 23);
 			this.btnRemoveWebsite.TabIndex = 11;
@@ -64,7 +68,7 @@
 			// 
 			// btnSaveWebsite
 			// 
-			this.btnSaveWebsite.Location = new System.Drawing.Point(76, 87);
+			this.btnSaveWebsite.Location = new System.Drawing.Point(197, 88);
 			this.btnSaveWebsite.Name = "btnSaveWebsite";
 			this.btnSaveWebsite.Size = new System.Drawing.Size(75, 23);
 			this.btnSaveWebsite.TabIndex = 10;
@@ -106,7 +110,7 @@
 			// 
 			// btnAccept
 			// 
-			this.btnAccept.Location = new System.Drawing.Point(349, 159);
+			this.btnAccept.Location = new System.Drawing.Point(347, 180);
 			this.btnAccept.Name = "btnAccept";
 			this.btnAccept.Size = new System.Drawing.Size(100, 23);
 			this.btnAccept.TabIndex = 2;
@@ -116,7 +120,7 @@
 			// 
 			// btnCancel
 			// 
-			this.btnCancel.Location = new System.Drawing.Point(349, 188);
+			this.btnCancel.Location = new System.Drawing.Point(347, 209);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(100, 23);
 			this.btnCancel.TabIndex = 3;
@@ -135,11 +139,33 @@
 			this.chklistboxWebsites.SelectedIndexChanged += new System.EventHandler(this.chklistboxWebsites_SelectedIndexChanged);
 			this.chklistboxWebsites.Validated += new System.EventHandler(this.chklistboxWebsites_Validated);
 			// 
+			// radioGrantSource
+			// 
+			this.radioGrantSource.AutoSize = true;
+			this.radioGrantSource.Checked = true;
+			this.radioGrantSource.Location = new System.Drawing.Point(36, 91);
+			this.radioGrantSource.Name = "radioGrantSource";
+			this.radioGrantSource.Size = new System.Drawing.Size(88, 17);
+			this.radioGrantSource.TabIndex = 12;
+			this.radioGrantSource.TabStop = true;
+			this.radioGrantSource.Text = "Grant Source";
+			this.radioGrantSource.UseVisualStyleBackColor = true;
+			// 
+			// radioOtherSource
+			// 
+			this.radioOtherSource.AutoSize = true;
+			this.radioOtherSource.Location = new System.Drawing.Point(36, 114);
+			this.radioOtherSource.Name = "radioOtherSource";
+			this.radioOtherSource.Size = new System.Drawing.Size(51, 17);
+			this.radioOtherSource.TabIndex = 13;
+			this.radioOtherSource.Text = "Other";
+			this.radioOtherSource.UseVisualStyleBackColor = true;
+			// 
 			// WebsiteList
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(588, 238);
+			this.ClientSize = new System.Drawing.Size(588, 243);
 			this.Controls.Add(this.chklistboxWebsites);
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.btnAccept);
@@ -166,5 +192,7 @@
 		private System.Windows.Forms.Button btnAccept;
 		private System.Windows.Forms.Button btnCancel;
 		private System.Windows.Forms.CheckedListBox chklistboxWebsites;
+		private System.Windows.Forms.RadioButton radioOtherSource;
+		private System.Windows.Forms.RadioButton radioGrantSource;
 	}
 }

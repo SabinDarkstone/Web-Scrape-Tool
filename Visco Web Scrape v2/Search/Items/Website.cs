@@ -8,11 +8,13 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 		public string Name { get; }
 		public string Url { get; }
 		public bool IsEnabled { get; set; }
+		public bool IsGrantSource { get; set; }
 
-		public Website(string name, string url) {
+		public Website(string name, string url, bool grant) {
 			Name = name;
 			Url = url;
 			IsEnabled = true;
+			IsGrantSource = grant;
 		}
 
 		public override string ToString() => Name;

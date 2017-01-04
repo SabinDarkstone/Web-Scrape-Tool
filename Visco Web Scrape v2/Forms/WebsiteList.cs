@@ -45,6 +45,9 @@ namespace Visco_Web_Scrape_v2.Forms {
 		private void ClearTextboxes() {
 			txtWebsiteName.Text = "";
 			txtWebsiteUrl.Text = "";
+
+			radioGrantSource.Checked = false;
+			radioOtherSource.Checked = false;
 		}
 
 		private void btnAccept_Click(object sender, EventArgs e) {
@@ -76,7 +79,15 @@ namespace Visco_Web_Scrape_v2.Forms {
 		}
 
 		private void btnSaveWebsite_Click(object sender, EventArgs e) {
-			var myWebsite = new Website(txtWebsiteName.Text, txtWebsiteUrl.Text);
+			Website myWebsite;
+			if (radioGrantSource.Checked) {
+				myWebsite = new Website(txtWebsiteName.Text, txtWebsiteUrl.Text, true);
+			} else if (radioOtherSource.Checked) {
+				myWebsite = new Website(txtWebsiteName.Text, txtWebsiteUrl.Text, false);
+			} else {
+				MessageBox.Show("Please choose Grant Source or Other");
+				return;
+			}
 
 			CurrentWebsites.Add(myWebsite);
 			UpdateListbox();
@@ -105,6 +116,14 @@ namespace Visco_Web_Scrape_v2.Forms {
 			if (selectedWebsite == null) return;
 			txtWebsiteName.Text = selectedWebsite.Name;
 			txtWebsiteUrl.Text = selectedWebsite.Url;
+
+			if (selectedWebsite.IsGrantSource) {
+				radioGrantSource.Checked = true;
+				radioOtherSource.Checked = false;
+			} else {
+				radioGrantSource.Checked = false;
+				radioOtherSource.Checked = true;
+			}
 		}
 
 		private void chklistboxWebsites_ItemCheck(object sender, ItemCheckEventArgs e) {

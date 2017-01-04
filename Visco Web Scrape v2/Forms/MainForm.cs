@@ -41,6 +41,11 @@ namespace Visco_Web_Scrape_v2.Forms {
 					result.IsStrict = true;
 				}
 			}
+
+			// Set all current website to grant source
+			foreach (var website in MasterConfig.Websites) {
+				website.IsGrantSource = true;
+			}
 			*/
 		}
 
