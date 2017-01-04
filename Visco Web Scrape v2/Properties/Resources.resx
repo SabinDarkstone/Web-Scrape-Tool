@@ -2285,7 +2285,7 @@ If you have any questions, comments or errors to report, please contact the deve
     <value>Settings.bin</value>
   </data>
   <data name="Version" xml:space="preserve">
-    <value>0.6.2 beta</value>
+    <value>0.6.5 beta</value>
   </data>
   <data name="KeywordNotFound" xml:space="preserve">
     <value>The selected keyword does not exist in the records</value>

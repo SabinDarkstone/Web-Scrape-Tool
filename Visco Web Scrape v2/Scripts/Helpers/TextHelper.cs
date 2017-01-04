@@ -1,4 +1,5 @@
-﻿using Visco_Web_Scrape_v2.Search.Items;
+﻿using System;
+using Visco_Web_Scrape_v2.Search.Items;
 
 namespace Visco_Web_Scrape_v2.Scripts.Helpers {
 
@@ -22,7 +23,8 @@ namespace Visco_Web_Scrape_v2.Scripts.Helpers {
 					endingPoint = longString.IndexOf(" ", 300);
 					shortString = longString.Substring(0, endingPoint) + "...";
 				} else {
-					endingPoint = longString.Substring(startingPoint).IndexOf(" ", 300);
+					startingPoint -= 150;
+					endingPoint = longString.Substring(startingPoint).Length;
 					shortString = "..." + longString.Substring(startingPoint, endingPoint) + "...";
 				}
 			}
