@@ -148,7 +148,6 @@
       <DependentUpon>GrantSearch.cs</DependentUpon>
     </Compile>
     <Compile Include="Scripts\Helpers\LogHelper.cs" />
-    <Compile Include="Scripts\Helpers\TextHelper.cs" />
     <Compile Include="Scripts\Reference.cs" />
     <Compile Include="Search\Items\CombinedResults.cs" />
     <Compile Include="Search\Items\Keyword.cs" />
@@ -167,6 +166,7 @@
       <DependentUpon>ResultViewer.cs</DependentUpon>
     </Compile>
     <Compile Include="Scripts\Helpers\CrawlHelper.cs" />
+    <Compile Include="Search\Items\Result.cs" />
     <Compile Include="Search\Items\WebsiteResults.cs" />
     <Compile Include="Search\Process\GrantCrawler.cs" />
     <Compile Include="Search\Process\Job.cs" />
@@ -180,6 +180,7 @@
     </Compile>
     <Compile Include="Search\Items\Recipient.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="Utility.cs" />
     <EmbeddedResource Include="Forms\AboutHelp.resx">
       <DependentUpon>AboutHelp.cs</DependentUpon>
     </EmbeddedResource>

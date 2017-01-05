@@ -7,10 +7,12 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 
 		public string Name { get; set; }
 		public string Address { get; set; }
+		public bool IsEnabled { get; set; }
 
 		public Recipient(string name, string address) {
 			Name = name;
 			Address = address;
+			IsEnabled = true;
 		}
 
 		public override string ToString() {

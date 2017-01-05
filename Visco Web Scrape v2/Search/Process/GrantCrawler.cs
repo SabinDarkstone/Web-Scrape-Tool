@@ -55,7 +55,6 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 
 			// Read settings file and overwrite app.config settings for crawler
 			var crawlConfig = AbotConfigurationSectionHandler.LoadFromXml().Convert();
-			LogHelper.Debug("Respect robots.txt is " + crawlConfig.IsRespectRobotsDotTextEnabled);
 			crawlConfig.MaxPagesToCrawl = config.PagesToCrawlPerDomain;
 
 			// Initialize crawler
