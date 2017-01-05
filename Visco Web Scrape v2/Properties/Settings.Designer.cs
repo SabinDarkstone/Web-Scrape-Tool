@@ -26,9 +26,13 @@ namespace Visco_Web_Scrape_v2.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        public string Setting {
+        [global::System.Configuration.DefaultSettingValueAttribute("Server=tcp:visco.database.windows.net,1433;Initial Catalog=ViscoSearcher;Persist " +
+            "Security Info=False;User ID={your_username};Password={your_password};MultipleAct" +
+            "iveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout" +
+            "=30;")]
+        public string connString {
             get {
-                return ((string)(this["Setting"]));
+                return ((string)(this["connString"]));
             }
         }
     }
