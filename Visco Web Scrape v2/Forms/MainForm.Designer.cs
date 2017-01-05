@@ -23,6 +23,7 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
 			this.btnWebsiteList = new System.Windows.Forms.Button();
@@ -37,6 +38,7 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.lblVersion = new System.Windows.Forms.Label();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
+			this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
 			this.flowLayoutPanel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
@@ -225,6 +227,15 @@
 			this.pictureBox1.TabIndex = 1;
 			this.pictureBox1.TabStop = false;
 			// 
+			// notifyIcon
+			// 
+			this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
+			this.notifyIcon.Text = "NotifyIcon";
+			this.notifyIcon.Visible = true;
+			this.notifyIcon.BalloonTipClicked += new System.EventHandler(this.notifyIcon_BalloonTipClicked);
+			this.notifyIcon.Click += new System.EventHandler(this.notifyIcon_Click);
+			this.notifyIcon.DoubleClick += new System.EventHandler(this.notifyIcon_DoubleClick);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -240,6 +251,7 @@
 			this.Text = "Visco Grant Search";
 			this.Load += new System.EventHandler(this.MainForm_Load);
 			this.Shown += new System.EventHandler(this.Form1_Shown);
+			this.Resize += new System.EventHandler(this.MainForm_Resize);
 			this.flowLayoutPanel1.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.ResumeLayout(false);
@@ -261,6 +273,7 @@
 		private System.Windows.Forms.Button btnChangeSettings;
 		private System.Windows.Forms.Button btnManageEmails;
 		private System.Windows.Forms.Button btnSendEmail;
+		private System.Windows.Forms.NotifyIcon notifyIcon;
 	}
 }
 

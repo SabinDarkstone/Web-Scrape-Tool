@@ -16,6 +16,14 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 		public MainForm() {
 			InitializeComponent();
+
+			InitializeTrayIcon();
+		}
+
+		private void InitializeTrayIcon() {
+			notifyIcon.BalloonTipText = "The searcher is still running...";
+			notifyIcon.BalloonTipTitle = "VISCO, Inc. Web Scraper";
+			notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
 		}
 
 		private void Form1_Shown(object sender, EventArgs e) {
@@ -165,6 +173,35 @@ namespace Visco_Web_Scrape_v2.Forms {
 		private void btnSendEmail_Click(object sender, EventArgs e) {
 			var emailSender = new EmailProgress(MasterConfig, MasterResults);
 			emailSender.ShowDialog();
+		}
+
+		private void MainForm_Resize(object sender, EventArgs e) {
+			if (WindowState == FormWindowState.Minimized) {
+				notifyIcon.Visible = true;
+				notifyIcon.ShowBalloonTip(500);
+				Hide();
+			} else if (WindowState == FormWindowState.Normal) {
+				notifyIcon.Visible = false;
+			}
+		}
+
+		private void notifyIcon_DoubleClick(object sender, EventArgs e) {
+
+		}
+
+		private void notifyIcon_Click(object sender, EventArgs e) {
+			// TODO: Check if search is running
+			notifyIcon.BalloonTipTitle = "VISCO Search Progress";
+			notifyIcon.BalloonTipText = "Show progress here if search is running";
+			notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
+			notifyIcon.ShowBalloonTip(1000);
+		}
+		
+		private void notifyIcon_BalloonTipClicked(object sender, EventArgs e) {
+			// TODO: Make this come to front
+			notifyIcon.Visible = false;
+			this.Show();
+			this.BringToFront();
 		}
 	}
 
