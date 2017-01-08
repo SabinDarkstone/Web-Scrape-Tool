@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 		private readonly BackgroundWorker worker;
 
 		private Excel.Application excel;
-		private Excel.Workbook grantWorkbook, otherWorkbook;
+		private Excel.Workbook grantWorkbook;
 
 		private bool isForEmail;
 		private ExportProgress progress;
@@ -60,21 +61,28 @@ namespace Visco_Web_Scrape_v2.Forms {
 			}
 
 			// Initialize excel
-			excel = new Excel.Application {Visible = false};
+			excel = new Excel.Application { Visible = false };
 
 			#region Grant Workbook
 
 			// Initialize progress tracker with expected sheet count
 			progress = new ExportProgress {
-				SheetCount = results.AllResults.Count(i => i.StartedSearch && i.RootWebsite.IsGrantSource)
+				SheetCount =
+					results.AllResults.Count(
+						website =>
+							website.WebsiteStatus == WebsiteResults.Status.Completed ||
+							website.WebsiteStatus == WebsiteResults.Status.Interrupted)
 			};
+			LogHelper.Debug("Website count: " + progress.SheetCount);
 
 			// Create a new workbook
 			grantWorkbook = excel.Workbooks.Add();
 
 			// Iterate through WebsiteResults of GRANT SOURCES
 			int excelRow;
-			foreach (var website in results.AllResults.Where(i => i.StartedSearch && i.RootWebsite.IsGrantSource).Reverse()) {
+			foreach (
+				var website in
+				results.AllResults.Where(Comparisons.SearchStarted).Where(i => i.RootWebsite.IsGrantSource)) {
 				// Check if displaying all or only new results and set sheet progress bar maximum accordingly
 				progress.RowCount = config.OnlyNewResults ? website.ResultList.Count(i => i.IsNewResult) : website.ResultList.Count;
 
@@ -95,7 +103,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 				// If no new results are found
 				if (config.OnlyNewResults && website.ResultList.Count(i => i.IsNewResult) == 0) {
-					sheet.Cells[4, 1] = "No new results were found on the " + website.CrawledPages +
+					sheet.Cells[4, 1] = "No new results were found on the " + website.Counts.IgnoredPages +
 						" pages with the specified keywords since the last search";
 					// Sheet is finished, increment the counter and move to the next one
 					worker.ReportProgress(0, ++progress.CurrentSheet);
@@ -104,7 +112,8 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 				// If no results were found at all
 				if (website.ResultList.Count == 0) {
-					sheet.Cells[4, 1] = "No results were found on the " + website.CrawledPages + " pages with the specified keywords";
+					sheet.Cells[4, 1] = "No results were found on the " + website.Counts.SearchPages +
+						" pages with the specified keywords";
 					// Sheet is finished, increment the counter and move to the next one
 					worker.ReportProgress(0, ++progress.CurrentSheet);
 					continue;
@@ -130,33 +139,69 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 				excelRow = 4;
 				foreach (var result in website.ResultList) {
-					// Do we need to add this result to the table?
-					if ((config.OnlyNewResults && result.IsNewResult) || (config.EnableStrictFilter && result.IsStrict) ||
-						!config.OnlyNewResults) {
-						// Go to the next blank row and fill in informations
-						excelRow++;
-						var rng = sheet.Cells[excelRow, 1] as Excel.Range;
-						if (result.Context.Length > 300) {
-							result.Context = TextHelper.ShortenContext(result, config);
+					if (config.OnlyNewResults && !result.IsNewResult) {
+						LogHelper.Debug(result.PageUrl + " is not new, skipping...");
+						continue;
+					}
+
+					progress.CurrentRow++;
+
+					// Go to the next blank row and fill in informations
+					excelRow++;
+					var rng = sheet.Cells[excelRow, 1] as Excel.Range;
+					var context = "";
+					var keywords = "";
+					// TODO: Fix context shortening method
+					if (result.Hits.Count == 1) {
+						if (config.EnableStrictFilter && result.Hits.Any(i => i.IsLink)) {
+							excelRow--;
+							continue;
 						}
-						rng.Hyperlinks.Add(rng, result.PageUrl, Missing.Value,
-							string.IsNullOrWhiteSpace(result.Context) ? "" : result.Context,
-							result.PageUrl);
-						var keywords = result.KeywordsOnPage.Aggregate("", (current, keyword) => current + (keyword.Text + ", "));
-						var keywordText = keywords.Substring(0, keywords.Length - 2);
-						sheet.Cells[excelRow, 2] = keywordText;
-						if (config.IncludeDate) {
-							var date = "";
-							var discoveryDate = result.DiscoveryTimeUtc.ToLocalTime();
-							date += discoveryDate.Month + "/";
-							date += discoveryDate.Day + "/";
-							date += discoveryDate.Year;
-							sheet.Cells[excelRow, 3] = date;
+
+						context = result.Hits.First().Context;
+						keywords = result.Hits.First().Keyword.Text;
+					} else if (result.Hits.Count > 1) {
+						var keywordCountTracker = new Dictionary<string, int>();
+						context = "<MULTIPLE RESULTS FOUND>";
+						foreach (var keyword in result.Hits) {
+							if (config.EnableStrictFilter && keyword.IsLink)
+								continue;
+
+							if (keywordCountTracker.ContainsKey(keyword.Keyword.Text)) {
+								keywordCountTracker[keyword.Keyword.Text]++;
+							} else {
+								keywordCountTracker.Add(keyword.Keyword.Text, 1);
+							}
 						}
+						foreach (var keyword in keywordCountTracker.Keys) {
+							if (keywordCountTracker[keyword] > 1) {
+								keywords += keyword + " (x" + keywordCountTracker[keyword] + "), ";
+							} else {
+								keywords += keyword + ", ";
+							}
+						}
+
+						keywords = keywords.Substring(0, keywords.Length - 2);
+					} else {
+						context = "<ERROR>";
+					}
+
+					if (context.Length > 300) {
+						context = context.Substring(0, 300);
+					}
+					rng.Hyperlinks.Add(rng, result.PageUrl, Missing.Value, context, result.PageUrl);
+					sheet.Cells[excelRow, 2] = keywords;
+					if (config.IncludeDate) {
+						var date = "";
+						var discoveryDate = result.DiscoveryTimeUtc.ToLocalTime();
+						date += discoveryDate.Month + "/";
+						date += discoveryDate.Day + "/";
+						date += discoveryDate.Year;
+						sheet.Cells[excelRow, 3] = date;
 					}
 
 					// Regardless of whether the result is new, increment the row counter and report progress
-					worker.ReportProgress(0, ++progress.CurrentRow);
+					worker.ReportProgress(0, progress.CurrentRow);
 
 					Thread.Sleep(20);
 				}
@@ -195,24 +240,23 @@ namespace Visco_Web_Scrape_v2.Forms {
 			foreach (var website in results.AllResults) {
 				excelRow++;
 				summary.Cells[excelRow, 1] = website.RootWebsite.Name;
-				summary.Cells[excelRow, 3] = website.CrawledPages;
-				summary.Cells[excelRow, 4] = website.SkippedPages;
-				summary.Cells[excelRow, 5] = website.GetCrawlTime();
-				if (!website.StartedSearch) {
-					summary.Cells[excelRow, 6] = "Not Started";
+				summary.Cells[excelRow, 3] = website.Counts.SearchPages;
+				summary.Cells[excelRow, 4] = website.Counts.IgnoredPages;
+				summary.Cells[excelRow, 5] = website.SearchTime.ToString();
+				summary.Cells[excelRow, 6] = website.WebsiteStatus.ToString();
+
+				int resultCount;
+				if (config.EnableStrictFilter && config.OnlyNewResults) {
+					resultCount = website.ResultList.Count(i => i.IsNewResult && i.Hits.Any(j => !j.IsLink));
+				} else if (config.EnableStrictFilter) {
+					resultCount = website.ResultList.Count(i => i.Hits.Any(j => !j.IsLink));
+				} else if (config.OnlyNewResults) {
+					resultCount = website.ResultList.Count(i => i.IsNewResult);
 				} else {
-					if (website.CompletedSearch) {
-						summary.Cells[excelRow, 6] = "Completed";
-					} else {
-						summary.Cells[excelRow, 6] = "Interrupted";
-					}
+					resultCount = website.ResultList.Count;
 				}
 
-				if (config.OnlyNewResults) {
-					summary.Cells[excelRow, 2] = website.ResultList.Count(i => i.IsNewResult);
-				} else {
-					summary.Cells[excelRow, 2] = website.ResultList.Count;
-				}
+				summary.Cells[excelRow, 2] = resultCount;
 			}
 
 			// Keywords in search
@@ -243,185 +287,6 @@ namespace Visco_Web_Scrape_v2.Forms {
 			grantWorkbook.Worksheets["Sheet1"].Delete();
 
 			#endregion
-
-			#region Other Workbook
-
-			// Initialize progress tracker with expected sheet count
-			progress = new ExportProgress {
-				SheetCount = results.AllResults.Count(i => i.StartedSearch && !i.RootWebsite.IsGrantSource)
-			};
-
-			// Create a new workbook
-			otherWorkbook = excel.Workbooks.Add();
-
-			// Iterate through WebsiteResults of GRANT SOURCES
-			excelRow = 0;
-			foreach (var website in results.AllResults.Where(i => i.StartedSearch && !i.RootWebsite.IsGrantSource).Reverse()) {
-				// Check if displaying all or only new results and set sheet progress bar maximum accordingly
-				progress.RowCount = config.OnlyNewResults ? website.ResultList.Count(i => i.IsNewResult) : website.ResultList.Count;
-
-				// Reset row counter
-				progress.CurrentRow = 0;
-
-				// Add a new sheet for the website
-				Excel.Worksheet sheet = otherWorkbook.Worksheets.Add(Missing.Value);
-				sheet.Name = website.RootWebsite.Name.Replace('/', ' ')
-					.Substring(0, (website.RootWebsite.Name.Length > 30 ? 30 : website.RootWebsite.Name.Length));
-
-				// Create sheet title
-				sheet.Cells[1, 1] = website.RootWebsite.Name;
-				sheet.Cells[2, 1] = website.RootWebsite.Url;
-				sheet.Range["A1"].Font.Size = 18;
-				sheet.Range["A2"].Font.Size = 12;
-				sheet.Range["A1:F1"].Merge();
-				sheet.Range["A2:F2"].Merge();
-
-				// If no new results are found
-				if (config.OnlyNewResults && website.ResultList.Count(i => i.IsNewResult) == 0) {
-					sheet.Cells[4, 1] = "No new results were found on the " + website.CrawledPages + " pages with the specified keywords since the last search";
-					// Sheet is finished, increment the counter and move to the next one
-					worker.ReportProgress(0, ++progress.CurrentSheet);
-					continue;
-				}
-
-				// If no results were found at all
-				if (website.ResultList.Count == 0) {
-					sheet.Cells[4, 1] = "No results were found on the " + website.CrawledPages + " pages with the specified keywords";
-					// Sheet is finished, increment the counter and move to the next one
-					worker.ReportProgress(0, ++progress.CurrentSheet);
-					continue;
-				}
-
-				// If only displaying new results
-				if (config.OnlyNewResults && website.ResultList.Count(i => i.IsNewResult) > 0) {
-					// Create sheet headers
-					sheet.Cells[4, 1] = "NEW Website Url";
-					sheet.Cells[4, 2] = "Keywords Found";
-					if (config.IncludeDate)
-						sheet.Cells[4, 3] = "Date Discovered";
-				}
-
-				// Showing all results
-				if (website.ResultList.Count > 0) {
-					// Create sheet headers
-					sheet.Cells[4, 1] = "Website Url";
-					sheet.Cells[4, 2] = "Keywords Found";
-					if (config.IncludeDate)
-						sheet.Cells[4, 3] = "Date Discovered";
-				}
-
-				excelRow = 4;
-				foreach (var result in website.ResultList) {
-					// Do we need to add this result to the table?
-					if ((config.OnlyNewResults && result.IsNewResult) || (config.EnableStrictFilter && result.IsStrict) || !config.OnlyNewResults) {
-						// Go to the next blank row and fill in informations
-						excelRow++;
-						var rng = sheet.Cells[excelRow, 1] as Excel.Range;
-						if (result.Context.Length > 300) {
-							result.Context = TextHelper.ShortenContext(result, config);
-						}
-						rng.Hyperlinks.Add(rng, result.PageUrl, Missing.Value, string.IsNullOrWhiteSpace(result.Context) ? "" : result.Context,
-							result.PageUrl);
-						var keywords = result.KeywordsOnPage.Aggregate("", (current, keyword) => current + (keyword.Text + ", "));
-						var keywordText = keywords.Substring(0, keywords.Length - 2);
-						sheet.Cells[excelRow, 2] = keywordText;
-						if (config.IncludeDate) {
-							var date = "";
-							var discoveryDate = result.DiscoveryTimeUtc.ToLocalTime();
-							date += discoveryDate.Month + "/";
-							date += discoveryDate.Day + "/";
-							date += discoveryDate.Year;
-							sheet.Cells[excelRow, 3] = date;
-						}
-					}
-
-					// Regardless of whether the result is new, increment the row counter and report progress
-					worker.ReportProgress(0, ++progress.CurrentRow);
-
-					Thread.Sleep(20);
-				}
-
-				// If there were results, they have been added at this point
-				worker.ReportProgress(0, ++progress.CurrentSheet);
-			}
-
-			// Create summary sheet
-			summary = otherWorkbook.Worksheets.Add(Missing.Value);
-			summary.Name = "Summary";
-
-			// General information
-			summary.Cells[1, 1] = "VISCO, Inc. Search Results (Other Sources)";
-			summary.Cells[2, 1] = "Auto-generated by search application";
-
-			// Settings file information
-			summary.Cells[4, 1] = "Run Date";
-			summary.Cells[4, 2] = results.LastRan.ToLocalTime().ToShortTimeString() +
-				" on " + results.LastRan.ToLocalTime().ToShortDateString();
-			summary.Cells[5, 1] = "Results Included";
-			summary.Cells[5, 2] = (config.OnlyNewResults) ? "New Only" : "All Found";
-			summary.Cells[6, 1] = "Stict Filtering";
-			summary.Cells[6, 2] = (config.EnableStrictFilter) ? "On" : "Off";
-
-			// Websites searched
-			summary.Cells[8, 1] = "Websites Searched";
-			summary.Cells[9, 1] = "Name";
-			summary.Cells[9, 2] = "Results";
-			summary.Cells[9, 3] = "Searched";
-			summary.Cells[9, 4] = "Ignored";
-			summary.Cells[9, 5] = "Elapsed Time";
-			summary.Cells[9, 6] = "Status";
-			summary.Range["A8"].Font.Bold = true;
-			excelRow = 9;
-			foreach (var website in results.AllResults) {
-				excelRow++;
-				summary.Cells[excelRow, 1] = website.RootWebsite.Name;
-				summary.Cells[excelRow, 3] = website.CrawledPages;
-				summary.Cells[excelRow, 4] = website.SkippedPages;
-				summary.Cells[excelRow, 5] = website.GetCrawlTime();
-				if (!website.StartedSearch) {
-					summary.Cells[excelRow, 6] = "Not Started";
-				} else {
-					if (website.CompletedSearch) {
-						summary.Cells[excelRow, 6] = "Completed";
-					} else {
-						summary.Cells[excelRow, 6] = "Interrupted";
-					}
-				}
-
-				if (config.OnlyNewResults) {
-					summary.Cells[excelRow, 2] = website.ResultList.Count(i => i.IsNewResult);
-				} else {
-					summary.Cells[excelRow, 2] = website.ResultList.Count;
-				}
-			}
-
-			// Keywords in search
-			excelRow += 2;
-			summary.Cells[excelRow, 1] = "Keywords Used";
-			summary.Range["A" + excelRow].Font.Bold = true;
-			foreach (var keyword in config.PageWords) {
-				excelRow++;
-				summary.Cells[excelRow, 1] = keyword.Text;
-				summary.Cells[excelRow, 2] = (keyword.IsEnabled) ? "Enabled" : "Disabled";
-			}
-
-			// Finish formatting
-			summary.Range["A1"].Font.Size = 28;
-			summary.Range["A1:H1"].Merge();
-			summary.Range["A2:H2"].Merge();
-			summary.Range["B4:D4"].Merge();
-			summary.Range["A:D"].Columns.AutoFit();
-			summary.Name = "Summary";
-
-			// Autofit all the columns of every sheet in workbook
-			foreach (Excel.Worksheet currSheet in otherWorkbook.Worksheets) {
-				var aRng = currSheet.UsedRange;
-				aRng.Columns.AutoFit();
-			}
-
-			// Delete pre-existing "Sheet1"
-			otherWorkbook.Worksheets["Sheet1"].Delete();
-			#endregion
 		}
 
 		private void worker_ProgressChanged(object sender, ProgressChangedEventArgs args) {
@@ -439,8 +304,17 @@ namespace Visco_Web_Scrape_v2.Forms {
 			progressBook.Maximum = progress.SheetCount;
 			progressSheet.Maximum = progress.RowCount;
 
-			progressBook.Value = progress.CurrentSheet;
-			progressSheet.Value = progress.CurrentRow;
+			if (progress.CurrentRow <= progressSheet.Maximum) {
+				progressSheet.Value = progress.CurrentRow;
+			} else {
+				LogHelper.Warn("Progress bar for sheet overflow");
+			}
+
+			if (progress.CurrentSheet <= progressBook.Maximum) {
+				progressBook.Value = progress.CurrentSheet;
+			} else {
+				LogHelper.Warn("Progress bar for book overflow");
+			}
 		}
 
 		private void worker_WorkCompleted(object sender, RunWorkerCompletedEventArgs args) {
@@ -453,19 +327,12 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 				// Save Grant workbook
 				var filename = Reference.Files.ExportDirectory + "Grant-Results_" + date.Month + date.Day + date.Year;
-				if (File.Exists(filename + ".xlsx")) File.Delete(filename + ".xlsx");
+				if (File.Exists(filename + ".xlsx"))
+					File.Delete(filename + ".xlsx");
 
 				grantWorkbook.SaveAs(filename, Excel.XlFileFormat.xlWorkbookDefault, Type.Missing, Type.Missing, false, false,
 					Excel.XlSaveAsAccessMode.xlNoChange, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
 				grantWorkbook.Close();
-
-				// Save other workbook
-				filename = Reference.Files.ExportDirectory + "Other-Results_" + date.Month + date.Day + date.Year;
-				if (File.Exists(filename + ".xlsx")) File.Delete(filename + ".xlsx");
-
-				otherWorkbook.SaveAs(filename, Excel.XlFileFormat.xlWorkbookDefault, Type.Missing, Type.Missing, false, false,
-					Excel.XlSaveAsAccessMode.xlNoChange, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-				otherWorkbook.Close();
 			} else {
 				excel.Visible = true;
 			}
@@ -510,7 +377,6 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 		private void btnStatusClose_Click(object sender, EventArgs e) {
 			Marshal.ReleaseComObject(grantWorkbook);
-			Marshal.ReleaseComObject(otherWorkbook);
 			Marshal.ReleaseComObject(excel);
 
 			Close();
