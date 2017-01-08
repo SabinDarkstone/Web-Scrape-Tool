@@ -7,6 +7,7 @@ using System.Threading;
 using Abot.Core;
 using Abot.Crawler;
 using Abot.Poco;
+using CsQuery.ExtensionMethods.Internal;
 using Visco_Web_Scrape_v2.Forms;
 using Visco_Web_Scrape_v2.Properties;
 using Visco_Web_Scrape_v2.Scripts;
@@ -17,7 +18,6 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 
 	public class GrantCrawler {
 
-		public bool Successful { get; private set; }
 		public WebsiteResults Results { get; }
 
 		private readonly PoliteWebCrawler crawler;
@@ -27,8 +27,11 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 		private readonly CancellationTokenSource cancelMe;
 		private readonly GrantSearch parentForm;
 
+		private readonly Progress currentProgress;
+
+		[Serializable]
 		public struct KeywordMatch {
-			
+
 			public Keyword Keyword { get; }
 			public string Context { get; }
 			public bool IsLink { get; }
@@ -42,6 +45,9 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 
 		public GrantCrawler(Job job, Configuration config, Website website, BackgroundWorker worker,
 			CancellationTokenSource cancelToken, GrantSearch searchForm) {
+			// Initialize progress tracker
+			currentProgress = new Progress(website);
+
 			this.job = job;
 			this.worker = worker;
 			this.config = config;
@@ -70,7 +76,7 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 			}
 
 			// Run Crawler
-			Run(url);
+			Run();
 		}
 
 		private string VerifyCrawl() {
@@ -93,12 +99,14 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 				var crawlDecision = new CrawlDecision {Allow = true};
 
 				if (Reference.IgnoreExtensions.Any(word => url.Contains(word))) {
-					CrawlHelper.SkippedPages++;
+					currentProgress.Increment(Progress.PageType.Ignored);
+					Results.Counts.IgnoredPages++;
 					return new CrawlDecision {Allow = false, Reason = Resources.BadExtension};
 				}
 
 				if (config.UrlWords.Any(word => url.Contains(word.Text) && word.IsEnabled)) {
-					CrawlHelper.SkippedPages++;
+					currentProgress.Increment(Progress.PageType.Ignored);
+					Results.Counts.IgnoredPages++;
 					return new CrawlDecision {Allow = false, Reason = Resources.UrlFiltered};
 				}
 
@@ -106,113 +114,101 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 			});
 		}
 
-		private void Run(string url) {
-			CrawlHelper.TotalPages = 0;
-			CrawlHelper.SkippedPages = 0;
+		private void Run() {
+			// Start crawler with the cancellation token in mind
+			var url = VerifyCrawl();
+			var crawlResults = crawler.Crawl(new Uri(url), cancelMe);
 
-			LogHelper.Info("BEGINNING CRAWL OF " + url);
-			Results.StartedSearch = true;
-			var results = crawler.Crawl(new Uri(url), cancelMe);
-			LogHelper.Info("CRAWL OF " + url + " COMPLETED");
-
-			// Save crawl metadata to Results object before sending it over to GrantSearch
-			Results.CrawledPages = CrawlHelper.TotalPages;
-			Results.SkippedPages = CrawlHelper.SkippedPages;
-			Results.SearchTimeInSeconds = GrantSearch.ElapsedTime.CurrentTime;
-
-			// Add results to CombinedResults object in GrantSearch form
-			LogHelper.Debug("Adding results to parent form...");
-			parentForm.Results.AddWebsiteResults(Results);
-
-			if (results.ErrorOccurred) {
-				if (cancelMe.IsCancellationRequested) {
-					LogHelper.Debug("Crawl was interrupted early by user request.");
-					if (CrawlHelper.TotalPages == 0) {
-						LogHelper.Debug("Website " + results.RootUri.AbsoluteUri + " was not started");
-						Results.StartedSearch = false;
-					}
-					Successful = false;
-					return;
+			if (cancelMe.IsCancellationRequested) {
+				LogHelper.Info("Skipping website " + currentProgress.Website.Url);
+				if (Results.Counts.SearchPages > 0) {
+					Results.WebsiteStatus = WebsiteResults.Status.Interrupted;
+				} else {
+					Results.WebsiteStatus = WebsiteResults.Status.Skipped;
 				}
-
-				LogHelper.Error(results.ErrorException.Message);
 			} else {
-				Successful = true;
+				LogHelper.Info("Beginning crawl of " + currentProgress.Website.Url);
+				if (crawlResults.ErrorOccurred) {
+					if (cancelMe.IsCancellationRequested) {
+						// No error really occurred, only a user-initiated cancel
+						LogHelper.Debug("Crawl cancelled by user");
+						Results.WebsiteStatus = WebsiteResults.Status.Interrupted;
+						currentProgress.SearchStatus = Progress.Status.Cancelling;
+						worker.ReportProgress(0, currentProgress);
+					} else {
+						// An error has occurred
+						LogHelper.Error(crawlResults.ErrorException.Message);
+						Results.WebsiteStatus = WebsiteResults.Status.Completed;
+					}
+				}
 			}
+
+			LogHelper.Info("Results found: " + Results.ResultList.Count);
+			parentForm.Results.UpdateResults(Results);
 		}
 
-		private bool SearchPageForKeywords(CrawledPage page) {
-			worker.ReportProgress(0, new Progress(Progress.Status.Searching));
+		private void SearchPageForKeywords(CrawledPage page) {
+			currentProgress.SearchStatus = Progress.Status.Searching;
+			worker.ReportProgress(0, currentProgress);
 
 			var keywordsFound = new HashSet<KeywordMatch>();
 			var text = page.Content.Text;
 			foreach (var keyword in job.KeywordsToSearchFor) {
 				if (text.Contains(keyword.Text)) {
-					// Check to see if the text is inside a link
-					string context;
 					LogHelper.Debug("Keyword: " + keyword.Text + " found");
-					keywordsFound.Add(AnalyzePageKeyword(page, keyword, out context)
-						? new KeywordMatch(keyword, context, false)
-						: new KeywordMatch(keyword, context, true));
+					keywordsFound.AddRange(AnalyzePageKeyword(page, keyword));
 				}
 			}
 
-			if (keywordsFound.Count == 0) return false;
+			if (keywordsFound.Count == 0) return;
 
-			Results.AddResult(page.Uri.AbsoluteUri);
-			foreach (var match in keywordsFound) {
-				Results.AddResultKeyword(match.Keyword, match.IsLink, match.Context);
-			}
-			Results.FinalizeResult();
-			return true;
+			currentProgress.Increment(Progress.PageType.Result);
+			var resultToAdd = new Result(page.Uri.AbsoluteUri, keywordsFound);
+			LogHelper.Info(resultToAdd);
+			Results.AddResult(resultToAdd);
 		}
 
-		private bool AnalyzePageKeyword(CrawledPage page, Keyword keyword, out string context) {
-			try {
-				var document = page.HtmlDocument.DocumentNode;
-//				var xpathOfText = "//*[text()[contains(., '" + keyword.Text + "')]]";
-				var xpathOfTag = "//text()[contains(., '" + keyword.Text + "')]/..";
-				var keywordNodes = document.SelectSingleNode(xpathOfTag);
+		// TODO: Cleanup
+		private List<KeywordMatch> AnalyzePageKeyword(CrawledPage page, Keyword keyword) {
+			var document = page.HtmlDocument.DocumentNode;
+			var xpathOfTag = "//text()[contains(., '" + keyword.Text + "')]/..";
+			var keywordNodes = document.SelectNodes(xpathOfTag);
 
-				if (keywordNodes.OuterHtml.Contains("<a")) {
-					context = keywordNodes.InnerText;
-					return false;
+			var output = new List<KeywordMatch>();
+			foreach (var node in keywordNodes) {
+				if (node.OuterHtml.Contains("<a")) {
+					output.Add(new KeywordMatch(keyword, node.InnerText, true));
+				} else {
+					output.Add(new KeywordMatch(keyword, node.InnerText, false));
 				}
-
-				context = keywordNodes.InnerText;
-				return true;
-			} catch (Exception e) {
-				LogHelper.Error(e.Message);
-				context = "<ERROR>";
-				return true;
 			}
 
+			foreach (var item in output) {
+				LogHelper.Debug(item.Keyword + " " + item.Context + " " + page.Uri.AbsoluteUri);
+			}
+			return output;
 		}
 
-		/* UNDONE: For now
-		private void ExamineUrl(CrawledPage page, bool relevance) {
-			var fullUrl = page.Uri.AbsoluteUri.ToLower();
-
-			var url = fullUrl.Split('/').ToList();
-			url.RemoveAt(0);
-			url.RemoveAt(url.Count - 1);
-
-			Results.AddUrlParts(url.ToArray(), relevance);
+		public WebsiteResults.PageCounts GetPageCounts() {
+			return new WebsiteResults.PageCounts {
+				IgnoredPages = currentProgress.IgnoredPages,
+				SearchPages = currentProgress.SearchedPages
+			};
 		}
-		*/
 
+		// TODO: Report progress
 		private void crawler_ProcessPageCrawlStarting(object sender, PageCrawlStartingArgs args) {
-			CrawlHelper.TotalPages++;
-
+			currentProgress.SearchStatus = Progress.Status.Crawling;
+			Results.Counts.SearchPages++;
+			currentProgress.Increment(Progress.PageType.Searched);
 			if (worker.CancellationPending) {
-				worker.ReportProgress(0, new Progress(Progress.Status.Cancelling));
+				currentProgress.SearchStatus = Progress.Status.Cancelling;
 				cancelMe.Cancel();
+				worker.ReportProgress(0, currentProgress);
 				return;
 			}
 
-			var progress = new Progress(args.PageToCrawl.Uri.AbsoluteUri, Results.RootWebsite.Name, Results.ResultList.Count,
-				CrawlHelper.CurrentDomain, Progress.Status.Crawling);
-			worker.ReportProgress(0, progress);
+			worker.ReportProgress(0, currentProgress);
 		}
 
 		private void crawler_ProcessPageCrawlCompleted(object sender, PageCrawlCompletedArgs args) {
@@ -226,13 +222,11 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 				return;
 			}
 
-			var keywordsFound = SearchPageForKeywords(crawledPage);
+			SearchPageForKeywords(crawledPage);
 
-			/* UNDONE: For now
-			if (configuration.EnableUrlAnalysis) {
-				ExamineUrl(crawledPage, keywordsFound);
-			}
-			*/
+			currentProgress.CurrentUrl = crawledPage.Uri.AbsoluteUri;
+			worker.ReportProgress(0, currentProgress);
 		}
 	}
+
 }
