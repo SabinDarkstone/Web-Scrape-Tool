@@ -134,6 +134,7 @@
       <DependentUpon>GrantTracker.cs</DependentUpon>
     </Compile>
     <Compile Include="Scripts\Configuration.cs" />
+    <Compile Include="Scripts\Helpers\Comparisons.cs" />
     <Compile Include="Scripts\Helpers\FileHelper.cs" />
     <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
@@ -148,6 +149,7 @@
       <DependentUpon>GrantSearch.cs</DependentUpon>
     </Compile>
     <Compile Include="Scripts\Helpers\LogHelper.cs" />
+    <Compile Include="Scripts\Helpers\TextHelper.cs" />
     <Compile Include="Scripts\Reference.cs" />
     <Compile Include="Search\Items\CombinedResults.cs" />
     <Compile Include="Search\Items\Keyword.cs" />
@@ -170,7 +172,6 @@
     <Compile Include="Search\Items\WebsiteResults.cs" />
     <Compile Include="Search\Process\GrantCrawler.cs" />
     <Compile Include="Search\Process\Job.cs" />
-    <Compile Include="Search\Process\Progress.cs" />
     <Compile Include="Search\Items\Website.cs" />
     <Compile Include="Forms\WebsiteList.cs">
       <SubType>Form</SubType>
@@ -179,6 +180,7 @@
       <DependentUpon>WebsiteList.cs</DependentUpon>
     </Compile>
     <Compile Include="Search\Items\Recipient.cs" />
+    <Compile Include="Search\Process\Progress.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Utility.cs" />
     <EmbeddedResource Include="Forms\AboutHelp.resx">
