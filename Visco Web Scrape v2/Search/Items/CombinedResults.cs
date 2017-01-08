@@ -9,7 +9,7 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 
 		public HashSet<WebsiteResults> AllResults { get; }
 		public DateTime LastRan { get; private set; }
-		public TimeSpan TotalSearchTime;
+		public TimeSpan TotalSearchTime { get; private set; }
 
 		private DateTime startTime;
 
@@ -19,49 +19,35 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 
 		public void Begin() {
 			startTime = DateTime.UtcNow;
+			foreach (var website in AllResults) {
+				foreach (var result in website.ResultList) {
+					result.IsNewResult = false;
+				}
+			}
 		}
 
 		public void End() {
 			TotalSearchTime = DateTime.UtcNow - startTime;
+			LastRan = startTime;
 		}
 
-		public void StartNewSearch() {
-			LastRan = DateTime.UtcNow;
-
-			if (AllResults.Count == 0) return;
-			foreach (var websiteResult in AllResults) {
-				websiteResult.StartNewSearch();
-			}
-		}
-
-		public HashSet<WebsiteResults> GetNewResults() {
-			var newResults = new HashSet<WebsiteResults>();
-
-			foreach (var websiteResult in AllResults) {
-				var innerList = new WebsiteResults(websiteResult.RootWebsite);
-				foreach (var result in websiteResult.ResultList) {
-					if (!result.IsNewResult) {
-						innerList.AddResult(result);
-					}
-				}
-				newResults.Add(innerList);
-			}
-
-			return newResults;
-		}
-
-		public void AddWebsiteResults(WebsiteResults resultsToAdd) {
-			if (AllResults.Any(results => results.RootWebsite.Url.Equals(resultsToAdd.RootWebsite.Url))) {
-				var website = AllResults.FirstOrDefault(i => i.RootWebsite.Url.Equals(resultsToAdd.RootWebsite.Url));
-				if (website != null) {
-					website.AddResultRange(resultsToAdd.ResultList);
-					website.UpdateMetadata(resultsToAdd);
-				}
-			}
+		public WebsiteResults GetCurrentResults(Website website) {
+			return AllResults.FirstOrDefault(i => i.RootWebsite.Equals(website));
 		}
 
 		public string GetCrawlTime() {
 			return TotalSearchTime.Hours + ":" + TotalSearchTime.Minutes + ":" + TotalSearchTime.Seconds;
+		}
+
+		public void UpdateResults(WebsiteResults results) {
+			foreach (var result in results.ResultList) {
+				var firstOrDefault = AllResults.FirstOrDefault(i => i.RootWebsite.Url.Equals(results.RootWebsite.Url));
+				if (firstOrDefault != null) {
+					firstOrDefault.AddResult(result);
+				} else {
+					AllResults.Add(results);
+				}
+			}
 		}
 	}
 }

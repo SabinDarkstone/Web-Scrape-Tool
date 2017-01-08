@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Visco_Web_Scrape_v2.Search.Process;
 
 namespace Visco_Web_Scrape_v2.Search.Items {
@@ -17,11 +18,27 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 			Hits = new HashSet<GrantCrawler.KeywordMatch>();
 		}
 
-		public Result(string url, GrantCrawler.KeywordMatch[] keywordMatches, DateTime date) {
+		public Result(string url, IEnumerable<GrantCrawler.KeywordMatch> keywordMatches) {
 			PageUrl = url;
-			DiscoveryTimeUtc = date.ToUniversalTime();
+			DiscoveryTimeUtc = DateTime.UtcNow;
 			Hits = new HashSet<GrantCrawler.KeywordMatch>(keywordMatches);
 			IsNewResult = true;
+		}
+
+		public override string ToString() {
+			var str = PageUrl + " contains: ";
+			str = Hits.Aggregate(str, (current, result) => current + (result.Keyword.Text + ", "));
+			str = str.Substring(0, str.Length - 2);
+
+			return str;
+;		}
+
+		protected bool Equals(Result other) {
+			return string.Equals(PageUrl, other.PageUrl);
+		}
+
+		public override int GetHashCode() {
+			return (PageUrl != null ? PageUrl.GetHashCode() : 0);
 		}
 	}
 }

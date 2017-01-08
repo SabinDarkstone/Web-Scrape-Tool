@@ -2,81 +2,63 @@
 using System.Collections.Generic;
 using System.Linq;
 using Visco_Web_Scrape_v2.Scripts.Helpers;
-using Visco_Web_Scrape_v2.Search.Process;
 
 namespace Visco_Web_Scrape_v2.Search.Items {
 
+	// TODO: Add metadata update to GrantSearch class (do I want to do this in GrantSearch or GrantCrawler?)
 	[Serializable]
 	public class WebsiteResults {
 
-		public enum Status {
-			Interrupted,		// Search on website was started but never finished
-			Completed,			// Search was started and finished successfully
-			Skipped,			// Search never started website
-			Disabled			// Search skipped due to IsEnabled being false
-		}
-
+		[Serializable]
 		public class PageCounts {
 			public int SearchPages { get; set; }
-			public int IgnoredPaged { get; set; }
+			public int IgnoredPages { get; set; }
 		}
 
-		public HashSet<Result> ResultList { get; }
-		public Website RootWebsite { get; }
+		public enum Status {
+			Skipped,  // Not started
+			Interrupted,  // Started but not finished
+			Completed  // Started and finished
+		}
+
+		public Website RootWebsite { get; set; }
+		public HashSet<Result> ResultList { get; private set; }
 		public TimeSpan SearchTime { get; set; }
-		public Status SearchStatus { get; set; }
 		public PageCounts Counts { get; set; }
+		public Status WebsiteStatus { get; set; }
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="website"></param>
 		public WebsiteResults(Website website) {
+			// On creation, a website has to be assigned so the collection of Result objects know what domain they are part of.
 			RootWebsite = website;
+			// Create an empty HashSet of Result objects
 			ResultList = new HashSet<Result>();
-		}
-
-		public void AddResult(string url, GrantCrawler.KeywordMatch[] hits) {
-			if (!ResultList.Any(i => i.PageUrl.Equals(url))) {
-				ResultList.Add(new Result(url, hits, DateTime.Now));
-			}
-		}
-
-		public void AddResult(Result result) {
-			ResultList.Add(result);
-		}
-
-		public void AddResultRange(IEnumerable<Result> results) {
-			// AddRange is not usable since we only want to look at the url and nothing else
-			foreach (var page in results) {
-				if (!ResultList.Any(result => result.PageUrl.Equals(page.PageUrl))) {
-					ResultList.Add(page);
-				}
-			}
-		}
-
-		public void UpdateMetadata(WebsiteResults results) {
-			if (ResultList.Any(result => result.IsNewResult)) {
-				LogHelper.Debug("Updating metadata for " + RootWebsite.Name);
-				Counts = results.Counts;
-				SearchStatus = results.SearchStatus;
-				SearchTime = results.SearchTime;
-			} else {
-				LogHelper.Debug("No new results were found, skipping metadata update");
-			}
-		}
-
-		public void SetPageCounts(int searched, int ignored) {
+			// Set Counts and SearchTime to zero
+			SearchTime = TimeSpan.Zero;
 			Counts = new PageCounts {
-				SearchPages = searched,
-				IgnoredPaged = ignored
+				IgnoredPages = 0,
+				SearchPages = 0
 			};
 		}
 
-		public void StartNewSearch() {
-			foreach (var result in ResultList) {
-				result.IsNewResult = false;
-			}
+		// Completely clear out ResultList
+		public void ClearResults() {
+			ResultList.Clear();
+			ResultList = new HashSet<Result>();
 		}
 
-		public string GetCrawlTime() {
-			return SearchTime.Hours + ":" + SearchTime.Minutes + ":" + SearchTime.Seconds;
+		/// <summary>
+		/// Add a new result. Compares results before merging to prevent duplication.
+		/// </summary>
+		/// <param name="result">Result to add</param>
+		public void AddResult(Result result) {
+			var matchingResult = ResultList.FirstOrDefault(i => i.PageUrl.Equals(result.PageUrl));
+			if (matchingResult == null) {
+				ResultList.Add(result);
+			}
 		}
 	}
 }

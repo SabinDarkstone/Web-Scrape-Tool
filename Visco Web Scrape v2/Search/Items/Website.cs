@@ -20,7 +20,7 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 		public override string ToString() => Name;
 
 		protected bool Equals(Website other) {
-			return string.Equals(Name, other.Name) && string.Equals(Url, other.Url);
+			return Url.Equals(other.Url) && IsGrantSource.Equals(IsGrantSource);
 		}
 
 		public override int GetHashCode() {
