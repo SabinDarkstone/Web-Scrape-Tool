@@ -13,6 +13,9 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 		public Configuration MasterConfig { get; set; }
 		public CombinedResults MasterResults { get; set; }
+		public double PercentSearchComplete { get; set; }
+
+		private bool isSearchRunning;
 
 		public MainForm() {
 			InitializeComponent();
@@ -95,7 +98,8 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 		private void btnBeginSearch_Click(object sender, EventArgs e) {
 			// Open grant search window
-			var grantSearch = new GrantSearch(MasterConfig, MasterResults, new Job(MasterConfig.Websites, MasterConfig.PageWords));
+			isSearchRunning = true;
+			var grantSearch = new GrantSearch(MasterConfig, MasterResults, new Job(MasterConfig.Websites, MasterConfig.PageWords), this);
 			grantSearch.ShowDialog();
 
 			// Check to see if the results need to be saved
@@ -117,7 +121,8 @@ namespace Visco_Web_Scrape_v2.Forms {
 				}
 			}
 
-			LogHelper.Debug("Searches started: " + MasterResults.AllResults.Count(i => i.StartedSearch));
+			LogHelper.Debug("Searches started: " + MasterResults.AllResults.Count(Comparisons.SearchStarted));
+			isSearchRunning = false;
 		}
 
 		private void btnViewResults_Click(object sender, EventArgs e) {
@@ -190,11 +195,17 @@ namespace Visco_Web_Scrape_v2.Forms {
 		}
 
 		private void notifyIcon_Click(object sender, EventArgs e) {
-			// TODO: Check if search is running
-			notifyIcon.BalloonTipTitle = "VISCO Search Progress";
-			notifyIcon.BalloonTipText = "Show progress here if search is running";
-			notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
-			notifyIcon.ShowBalloonTip(1000);
+			if (isSearchRunning) {
+				notifyIcon.BalloonTipTitle = "VISCO Search Progress";
+				notifyIcon.BalloonTipText = "Search Running:\n" + Math.Round(PercentSearchComplete, 2) + "% Complete";
+				notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
+				notifyIcon.ShowBalloonTip(1000);
+			} else {
+				notifyIcon.BalloonTipTitle = "VISCO Search Program";
+				notifyIcon.BalloonTipText = "Program is currently idle";
+				notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
+				notifyIcon.ShowBalloonTip(1000);
+			}
 		}
 		
 		private void notifyIcon_BalloonTipClicked(object sender, EventArgs e) {
