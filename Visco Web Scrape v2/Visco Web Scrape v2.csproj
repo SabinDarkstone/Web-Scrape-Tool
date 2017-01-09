@@ -181,8 +181,6 @@
     </Compile>
     <Compile Include="Search\Items\Recipient.cs" />
     <Compile Include="Search\Process\Progress.cs" />
-    <Compile Include="Settings.cs" />
-    <Compile Include="Utility.cs" />
     <EmbeddedResource Include="Forms\AboutHelp.resx">
       <DependentUpon>AboutHelp.cs</DependentUpon>
     </EmbeddedResource>

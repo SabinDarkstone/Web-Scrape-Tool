@@ -11,6 +11,7 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 		public string PageUrl { get; }
 		public DateTime DiscoveryTimeUtc { get; }
 		public bool IsNewResult { get; set; }
+//		public bool SimilarContext { get; set; } TODO: How to integrate this into settings
 		public HashSet<GrantCrawler.KeywordMatch> Hits { get; }
 
 		public Result(string url) {
