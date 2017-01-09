@@ -13,7 +13,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 	public partial class GrantSearch : Form {
 
-		public TimeSpan CurrentDomaim;
+		public TimeSpan CurrentDomain;
 		public TimeSpan TotalSearch;
 		public Configuration Config;
 		public CombinedResults Results { get; set; }
@@ -21,7 +21,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 		private BackgroundWorker worker;
 		private readonly Job jobToRun;
-		private MainForm parent;
+		private readonly MainForm parent;
 
 		public GrantSearch(Configuration configuration, CombinedResults results, Job job, MainForm parent) {
 			InitializeComponent();
@@ -75,6 +75,9 @@ namespace Visco_Web_Scrape_v2.Forms {
 			// Initialize results
 			Results.Begin();
 
+			// Prepare progress bar
+			progressbar.Maximum = jobToRun.WebsitesToCrawl.Count + 1;
+
 			// Initialize the background worker
 			worker = new BackgroundWorker {
 				WorkerReportsProgress = true,
@@ -96,7 +99,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 		/// </summary>
 		private void worker_DoWork(object sender, DoWorkEventArgs e) {
 			// Update UI to match "in-progress" conditions
-			btnCancelCrawl.Invoke(new MethodInvoker(delegate { btnCancelCrawl.Text = "Stop"; }));
+			btnCancelCrawl.Invoke(new MethodInvoker(delegate { btnCancelCrawl.Text = Resources.ButtonStopText; }));
 			btnCancelCrawl.Enabled = true;
 			btnSaveResults.Enabled = false;
 
@@ -110,7 +113,9 @@ namespace Visco_Web_Scrape_v2.Forms {
 			foreach (var website in myJob.WebsitesToCrawl) {
 				i++;
 				parent.PercentSearchComplete = (i / myJob.WebsitesToCrawl.Count) * 100;
-				MessageBox.Show(i + " " + parent.PercentSearchComplete.ToString());
+				progressbar.Invoke(new MethodInvoker(
+					delegate { progressbar.Value = jobToRun.WebsitesToCrawl.ToList().IndexOf(website) + 1; }));
+				CurrentDomain = TimeSpan.Zero;
 
 				// Check for cancellation
 				if (Cts.IsCancellationRequested) {
@@ -123,9 +128,8 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 				// After website search is deemed completed
 				var resultsToAdd = grantCrawler.Results;
-				LogHelper.Debug("Current domain time: " + CurrentDomaim.ToString());
-				resultsToAdd.SearchTime = CurrentDomaim;
-				Results.UpdateResults(resultsToAdd);
+				LogHelper.Debug("Current domain time: " + CurrentDomain);
+				resultsToAdd.SearchTime = CurrentDomain;
 			}
 			
 			Results.End();
@@ -140,9 +144,9 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 		private void timerTotal_Tick(object sender, EventArgs e) {
 			TotalSearch += TimeSpan.FromSeconds(1);
-			CurrentDomaim += TimeSpan.FromSeconds(1);
+			CurrentDomain += TimeSpan.FromSeconds(1);
 
-			lblCurrentDomainTime.Text = TextHelper.FormatTime(CurrentDomaim);
+			lblCurrentDomainTime.Text = TextHelper.FormatTime(CurrentDomain);
 			lblTotalTime.Text = TextHelper.FormatTime(TotalSearch);
 		}
 
@@ -150,7 +154,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 		private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
 			Results.End();
 			btnCancelCrawl.Enabled = true;
-			btnCancelCrawl.Text = "Close";
+			btnCancelCrawl.Text = Resources.ButtonCloseText;
 			btnSaveResults.Enabled = true;
 		}
 
