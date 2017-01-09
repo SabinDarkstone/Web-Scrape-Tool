@@ -2285,7 +2285,7 @@ If you have any questions, comments or errors to report, please contact the deve
     <value>Settings.bin</value>
   </data>
   <data name="Version" xml:space="preserve">
-    <value>0.6.5 beta</value>
+    <value>0.7.0 beta</value>
   </data>
   <data name="KeywordNotFound" xml:space="preserve">
     <value>The selected keyword does not exist in the records</value>
@@ -2329,5 +2329,11 @@ If you have any questions, comments or errors to report, please contact the deve
   </data>
   <data name="ExcelWorkerIsNull" xml:space="preserve">
     <value>An error occurred while starting the excel file creation.  Please try again</value>
+  </data>
+	<data name="ButtonStopText" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+	<data name="ButtonCloseText" xml:space="preserve">
+    <value>Close</value>
   </data>
 </root>

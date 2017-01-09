@@ -70,6 +70,24 @@ namespace Visco_Web_Scrape_v2.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        internal static string ButtonCloseText {
+            get {
+                return ResourceManager.GetString("ButtonCloseText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop.
+        /// </summary>
+        internal static string ButtonStopText {
+            get {
+                return ResourceManager.GetString("ButtonStopText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirmation Required.
         /// </summary>
         internal static string ConfirmationRequired {
@@ -300,7 +318,7 @@ namespace Visco_Web_Scrape_v2.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 0.6.5 beta.
+        ///   Looks up a localized string similar to 0.7.0 beta.
         /// </summary>
         internal static string Version {
             get {
