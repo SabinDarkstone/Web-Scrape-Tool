@@ -7,7 +7,8 @@ namespace Visco_Web_Scrape_v2.Scripts {
 
 	[Serializable]
 	public class Configuration {
-
+	
+		// TODO: Remove
 		public enum ExportType { Excel, Plain, Xml }
 
 		public HashSet<Website> Websites { get; set; }
