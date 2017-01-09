@@ -162,10 +162,11 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 
 			if (keywordsFound.Count == 0) return;
 
-			currentProgress.Increment(Progress.PageType.Result);
 			var resultToAdd = new Result(page.Uri.AbsoluteUri, keywordsFound);
-			LogHelper.Info(resultToAdd);
-			Results.AddResult(resultToAdd);
+			if (Results.AddResult(resultToAdd)) {
+				currentProgress.Increment(Progress.PageType.Result);
+				LogHelper.Info(resultToAdd);
+			}
 		}
 
 		// TODO: Cleanup
