@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Visco_Web_Scrape_v2.Forms;
 
 namespace Visco_Web_Scrape_v2 {
+
 	static class Program {
 		/// <summary>
 		/// The main entry point for the application.
@@ -17,4 +15,5 @@ namespace Visco_Web_Scrape_v2 {
 			Application.Run(new MainForm());
 		}
 	}
+
 }
