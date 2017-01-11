@@ -121,7 +121,8 @@ namespace Visco_Web_Scrape_v2.Forms {
 				}
 			}
 
-			LogHelper.Debug("Searches started: " + MasterResults.AllResults.Count(Comparisons.SearchStarted));
+			LogHelper.Debug("Searches started: " +
+				MasterResults.AllResults.Count(i => i.WebsiteStatus != WebsiteResults.Status.Skipped));
 			isSearchRunning = false;
 		}
 
