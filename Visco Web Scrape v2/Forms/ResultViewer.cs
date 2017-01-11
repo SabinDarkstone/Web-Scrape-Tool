@@ -67,11 +67,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 			// Initialize progress tracker with expected sheet count
 			progress = new ExportProgress {
-				SheetCount =
-					results.AllResults.Count(
-						website =>
-							website.WebsiteStatus == WebsiteResults.Status.Completed ||
-							website.WebsiteStatus == WebsiteResults.Status.Interrupted)
+				SheetCount = results.AllResults.Count(i => i.RootWebsite.IsGrantSource && i.RootWebsite.IsEnabled)
 			};
 			LogHelper.Debug("Website count: " + progress.SheetCount);
 
@@ -79,10 +75,14 @@ namespace Visco_Web_Scrape_v2.Forms {
 			grantWorkbook = excel.Workbooks.Add();
 
 			// Iterate through WebsiteResults of GRANT SOURCES
+			var websitesToReport = results.AllResults.Where(i => i.RootWebsite.IsGrantSource).Reverse();
 			int excelRow;
-			foreach (
-				var website in
-				results.AllResults.Where(Comparisons.SearchStarted).Where(i => i.RootWebsite.IsGrantSource)) {
+			foreach (var website in websitesToReport) {
+				if (website.WebsiteStatus == WebsiteResults.Status.Skipped) {
+					worker.ReportProgress(0, ++progress.CurrentSheet);
+					continue;
+				}
+
 				// Check if displaying all or only new results and set sheet progress bar maximum accordingly
 				progress.RowCount = config.OnlyNewResults ? website.ResultList.Count(i => i.IsNewResult) : website.ResultList.Count;
 
@@ -237,8 +237,9 @@ namespace Visco_Web_Scrape_v2.Forms {
 			summary.Cells[9, 6] = "Status";
 			summary.Range["A8"].Font.Bold = true;
 			excelRow = 9;
-			foreach (var website in results.AllResults) {
+			foreach (var website in results.AllResults.Where(i => i.RootWebsite.IsGrantSource && i.RootWebsite.IsEnabled)) {
 				excelRow++;
+				LogHelper.Debug("Adding summary row for " + website.RootWebsite.Name);
 				summary.Cells[excelRow, 1] = website.RootWebsite.Name;
 				summary.Cells[excelRow, 3] = website.Counts.SearchPages;
 				summary.Cells[excelRow, 4] = website.Counts.IgnoredPages;

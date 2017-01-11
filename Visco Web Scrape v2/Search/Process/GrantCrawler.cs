@@ -8,7 +8,6 @@ using Abot.Core;
 using Abot.Crawler;
 using Abot.Poco;
 using CsQuery.ExtensionMethods.Internal;
-using Visco_Web_Scrape_v2.Forms;
 using Visco_Web_Scrape_v2.Properties;
 using Visco_Web_Scrape_v2.Scripts;
 using Visco_Web_Scrape_v2.Scripts.Helpers;
@@ -20,13 +19,12 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 
 		public WebsiteResults Results { get; }
 
-		private readonly PoliteWebCrawler crawler;
+		private PoliteWebCrawler crawler;
+
 		private readonly Job job;
 		private readonly Configuration config;
 		private readonly BackgroundWorker worker;
 		private readonly CancellationTokenSource cancelMe;
-		private readonly GrantSearch parentForm;
-
 		private readonly Progress currentProgress;
 
 		[Serializable]
@@ -44,39 +42,41 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 		}
 
 		public GrantCrawler(Job job, Configuration config, Website website, BackgroundWorker worker,
-			CancellationTokenSource cancelToken, GrantSearch searchForm) {
+			CancellationTokenSource cancelToken) {
 			// Initialize progress tracker
 			currentProgress = new Progress(website);
 
 			this.job = job;
 			this.worker = worker;
 			this.config = config;
-			parentForm = searchForm;
 			cancelMe = cancelToken;
 
+			// Load crawl settings and events
+			InitializeCrawl();
+			RegisterEvents();
+
+			// Create a new list to store results from this search
 			Results = new WebsiteResults(website);
 
-			// Check format of URL
-			var url = VerifyCrawl();
+			// Run Crawler
+			Run();
+		}
 
+		private void InitializeCrawl() {
 			// Read settings file and overwrite app.config settings for crawler
 			var crawlConfig = AbotConfigurationSectionHandler.LoadFromXml().Convert();
 			crawlConfig.MaxPagesToCrawl = config.PagesToCrawlPerDomain;
 
 			// Initialize crawler
 			crawler = new PoliteWebCrawler(crawlConfig);
-			RegisterEvents();
 
-			if (this.config.EnableUrlFiltering) {
+			if (config.EnableUrlFiltering) {
 				ConfigureDecisionMaker();
 			}
 
-			if (this.config.EnableUrlAnalysis) {
+			if (config.EnableUrlAnalysis) {
 				crawlConfig.MaxConcurrentThreads = 2;
 			}
-
-			// Run Crawler
-			Run();
 		}
 
 		private string VerifyCrawl() {
@@ -119,32 +119,20 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 			var url = VerifyCrawl();
 			var crawlResults = crawler.Crawl(new Uri(url), cancelMe);
 
-			if (cancelMe.IsCancellationRequested) {
-				LogHelper.Info("Skipping website " + currentProgress.Website.Url);
-				if (Results.Counts.SearchPages > 0) {
-					Results.WebsiteStatus = WebsiteResults.Status.Interrupted;
-				} else {
-					Results.WebsiteStatus = WebsiteResults.Status.Skipped;
-				}
-			} else {
-				LogHelper.Info("Beginning crawl of " + currentProgress.Website.Url);
-				if (crawlResults.ErrorOccurred) {
-					if (cancelMe.IsCancellationRequested) {
-						// No error really occurred, only a user-initiated cancel
-						LogHelper.Debug("Crawl cancelled by user");
-						Results.WebsiteStatus = WebsiteResults.Status.Interrupted;
-						currentProgress.SearchStatus = Progress.Status.Cancelling;
-						worker.ReportProgress(0, currentProgress);
-					} else {
-						// An error has occurred
-						LogHelper.Error(crawlResults.ErrorException.Message);
-						Results.WebsiteStatus = WebsiteResults.Status.Completed;
-					}
-				}
+			// Cancellation requested
+			if (cancelMe.IsCancellationRequested || crawlResults.ErrorOccurred) {
+				Results.WebsiteStatus = WebsiteResults.Status.Interrupted;
+				currentProgress.SearchStatus = Progress.Status.Cancelling;
 			}
 
-			LogHelper.Info("Results found: " + Results.ResultList.Count);
-			parentForm.Results.UpdateResults(Results);
+			// Crawl ran to completion
+			if (!crawlResults.ErrorOccurred) {
+				LogHelper.Debug("Reached domain page crawl limit or crawl is completed.");
+				Results.WebsiteStatus = WebsiteResults.Status.Completed;
+			}
+
+			// Regardless of result, send the results off to the parent form so nothing is lost
+			worker.ReportProgress(0, currentProgress);
 		}
 
 		private void SearchPageForKeywords(CrawledPage page) {
@@ -169,7 +157,6 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 			}
 		}
 
-		// TODO: Cleanup
 		private List<KeywordMatch> AnalyzePageKeyword(CrawledPage page, Keyword keyword) {
 			var document = page.HtmlDocument.DocumentNode;
 			var xpathOfTag = "//text()[contains(., '" + keyword.Text + "')]/..";
@@ -197,11 +184,11 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 			};
 		}
 
-		// TODO: Report progress
 		private void crawler_ProcessPageCrawlStarting(object sender, PageCrawlStartingArgs args) {
 			currentProgress.SearchStatus = Progress.Status.Crawling;
 			Results.Counts.SearchPages++;
 			currentProgress.Increment(Progress.PageType.Searched);
+
 			if (worker.CancellationPending) {
 				currentProgress.SearchStatus = Progress.Status.Cancelling;
 				cancelMe.Cancel();

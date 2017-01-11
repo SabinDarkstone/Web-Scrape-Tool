@@ -58,7 +58,6 @@ namespace Visco_Web_Scrape_v2.Forms {
 			Hide();
 		}
 
-		// TODO
 		private void btnCancelCrawl_Click(object sender, EventArgs e) {
 			if (worker.IsBusy) {
 				var confirm = MessageBox.Show(Resources.ConfirmCancelCrawl, Resources.ConfirmationRequired, MessageBoxButtons.YesNo,
@@ -68,6 +67,8 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 				worker.CancelAsync();
 				timerTotal.Enabled = false;
+			} else {
+				Close();
 			}
 		}
 
@@ -120,22 +121,37 @@ namespace Visco_Web_Scrape_v2.Forms {
 				// Check for cancellation
 				if (Cts.IsCancellationRequested) {
 					LogHelper.Debug("Cancellation requested, skipping " + website.Name);
+					var skippedResults = new WebsiteResults(website) {WebsiteStatus = WebsiteResults.Status.Skipped};
+					if (Results.AllResults.Any(site => site.RootWebsite.Url.Equals(website.Url))) {
+						var firstOrDefault = Results.AllResults.FirstOrDefault(j => j.RootWebsite.Url.Equals(website.Url));
+						if (firstOrDefault != null)
+							firstOrDefault.WebsiteStatus = WebsiteResults.Status.Skipped;
+					} else {
+						Results.AllResults.Add(skippedResults);
+					}
 					continue;
 				}
 
 				// Start the crawl
-				var grantCrawler = new GrantCrawler(jobToRun, Config, website, myWorker, Cts, this);
+				var grantCrawler = new GrantCrawler(jobToRun, Config, website, myWorker, Cts);
 
-				// After website search is deemed completed
+				if (grantCrawler.Results.WebsiteStatus == WebsiteResults.Status.Interrupted) {
+					LogHelper.Debug(website.Name + " cancelled early");
+				} else {
+					LogHelper.Debug("Crawl completed, saving results");
+				}
+
 				var resultsToAdd = grantCrawler.Results;
-				LogHelper.Debug("Current domain time: " + CurrentDomain);
 				resultsToAdd.SearchTime = CurrentDomain;
+				Results.UpdateResults(resultsToAdd);
+				LogHelper.Debug("Finished writing results of " + resultsToAdd.RootWebsite.Name + " to master list");
 			}
 			
 			Results.End();
+
+			worker.ReportProgress(0, new Progress(Progress.Status.Cancelled));
 		}
 
-		// TODO
 		private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
 			var progress = e.UserState as Progress;
 
@@ -150,7 +166,6 @@ namespace Visco_Web_Scrape_v2.Forms {
 			lblTotalTime.Text = TextHelper.FormatTime(TotalSearch);
 		}
 
-		// TODO
 		private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
 			Results.End();
 			btnCancelCrawl.Enabled = true;
@@ -158,7 +173,6 @@ namespace Visco_Web_Scrape_v2.Forms {
 			btnSaveResults.Enabled = true;
 		}
 
-		// TODO
 		private void GrantSearch_Load(object sender, EventArgs e) {
 			lblCurrentStatus.Text = "";
 			lblCurrentDomain.Text = "";

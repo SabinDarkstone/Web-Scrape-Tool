@@ -40,14 +40,27 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 		}
 
 		public void UpdateResults(WebsiteResults results) {
-			foreach (var result in results.ResultList) {
-				var firstOrDefault = AllResults.FirstOrDefault(i => i.RootWebsite.Url.Equals(results.RootWebsite.Url));
-				if (firstOrDefault != null) {
-					firstOrDefault.AddResult(result);
-				} else {
-					AllResults.Add(results);
+			if (AllResults.Any(domain => domain.RootWebsite.Url.Equals(results.RootWebsite.Url))) {
+				var existingResults = GetCurrentResults(results.RootWebsite);
+
+				if (results.ResultList.Count != 0) {
+					foreach (var result in results.ResultList) {
+						existingResults.AddResult(result);
+					}
 				}
+
+				UpdateMetadata(results);
+			} else {
+				AllResults.Add(results);
 			}
+		}
+
+		private void UpdateMetadata(WebsiteResults results) {
+			var existingResults = GetCurrentResults(results.RootWebsite);
+
+			existingResults.Counts = results.Counts;
+			existingResults.WebsiteStatus = results.WebsiteStatus;
+			existingResults.SearchTime = results.SearchTime;
 		}
 	}
 }
