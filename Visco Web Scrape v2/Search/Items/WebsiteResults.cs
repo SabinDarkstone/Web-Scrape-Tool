@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Visco_Web_Scrape_v2.Scripts;
 using Visco_Web_Scrape_v2.Scripts.Helpers;
 
 namespace Visco_Web_Scrape_v2.Search.Items {
 
-	// TODO: Add metadata update to GrantSearch class (do I want to do this in GrantSearch or GrantCrawler?)
 	[Serializable]
 	public class WebsiteResults {
 
@@ -19,7 +17,8 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 		public enum Status {
 			Skipped,  // Not started
 			Interrupted,  // Started but not finished
-			Completed  // Started and finished
+			Completed,  // Started and finished
+			Errored
 		}
 
 		public Website RootWebsite { get; set; }
