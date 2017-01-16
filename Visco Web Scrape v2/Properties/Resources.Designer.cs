@@ -79,11 +79,29 @@ namespace Visco_Web_Scrape_v2.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Saving....
+        /// </summary>
+        internal static string ButtonSaveText {
+            get {
+                return ResourceManager.GetString("ButtonSaveText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Stop.
         /// </summary>
         internal static string ButtonStopText {
             get {
                 return ResourceManager.GetString("ButtonStopText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please choose Grant Source or Other.
+        /// </summary>
+        internal static string ChooseSourceTypeText {
+            get {
+                return ResourceManager.GetString("ChooseSourceTypeText", resourceCulture);
             }
         }
         
@@ -233,6 +251,33 @@ namespace Visco_Web_Scrape_v2.Properties {
         internal static string KeywordNotFound {
             get {
                 return ResourceManager.GetString("KeywordNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File saved.
+        /// </summary>
+        internal static string LabelExcelSavedTest {
+            get {
+                return ResourceManager.GetString("LabelExcelSavedTest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error saving file.
+        /// </summary>
+        internal static string LabelExcelSaveErrorText {
+            get {
+                return ResourceManager.GetString("LabelExcelSaveErrorText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Generating excel file.
+        /// </summary>
+        internal static string LabelGeneratingExcelText {
+            get {
+                return ResourceManager.GetString("LabelGeneratingExcelText", resourceCulture);
             }
         }
         

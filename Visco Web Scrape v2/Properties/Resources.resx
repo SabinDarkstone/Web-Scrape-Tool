@@ -2336,4 +2336,19 @@ If you have any questions, comments or errors to report, please contact the deve
 	<data name="ButtonCloseText" xml:space="preserve">
     <value>Close</value>
   </data>
+	<data name="ButtonSaveText" xml:space="preserve">
+    <value>Saving...</value>
+  </data>
+	<data name="ChooseSourceTypeText" xml:space="preserve">
+    <value>Please choose Grant Source or Other</value>
+  </data>
+	<data name="LabelGeneratingExcelText" xml:space="preserve">
+    <value>Generating excel file</value>
+  </data>
+	<data name="LabelExcelSavedTest" xml:space="preserve">
+    <value>File saved</value>
+  </data>
+	<data name="LabelExcelSaveErrorText" xml:space="preserve">
+    <value>Error saving file</value>
+  </data>
 </root>

@@ -4,12 +4,12 @@ using System.IO;
 using System.Net;
 using System.Net.Mail;
 using System.Net.Mime;
+using System.Threading;
 using System.Windows.Forms;
 using Visco_Web_Scrape_v2.Properties;
 using Visco_Web_Scrape_v2.Scripts;
 using Visco_Web_Scrape_v2.Scripts.Helpers;
 using Visco_Web_Scrape_v2.Search.Items;
-
 
 namespace Visco_Web_Scrape_v2.Forms {
 
@@ -32,22 +32,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 		}
 
 		private bool PrepareExcelDocument() {
-			lblCurrentStatus.Text = "Generating excel file";
-			var excelExport = new ResultViewer(Config, Results);
-			excelExport.ExportToExcel(true);
-			excelExport.Close();
-
-			var date = Results.LastRan;
-			fileName = Reference.Files.AppFileDirectory + "Results_"
-				+ date.Month + date.Day + date.Year + ".xlsx";
-
-			if (File.Exists(fileName)) {
-				lblCurrentStatus.Text = "File saved";
-				return true;
-			} else {
-				lblCurrentStatus.Text = "Error saving file";
-				return false;
-			}
+			return false;
 		}
 
 		private void SendEmail() {

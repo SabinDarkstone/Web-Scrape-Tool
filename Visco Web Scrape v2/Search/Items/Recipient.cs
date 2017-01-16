@@ -5,8 +5,19 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 	[Serializable]
 	public class Recipient : IComparable {
 
+		/// <summary>
+		/// Name of recipient
+		/// </summary>
 		public string Name { get; set; }
+
+		/// <summary>
+		/// Email address of recipient
+		/// </summary>
 		public string Address { get; set; }
+
+		/// <summary>
+		/// Whether to send email to this recipient
+		/// </summary>
 		public bool IsEnabled { get; set; }
 
 		public Recipient(string name, string address) {
@@ -21,7 +32,7 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 
 		public int CompareTo(object obj) {
 			var other = (Recipient)obj;
-			return String.Compare(this.Name, other.Name);
+			return string.CompareOrdinal(Name, other.Name);
 		}
 	}
 }

@@ -17,6 +17,9 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 
 	public class GrantCrawler {
 
+		/// <summary>
+		/// Results for specified website
+		/// </summary>
 		public WebsiteResults Results { get; }
 
 		private PoliteWebCrawler crawler;

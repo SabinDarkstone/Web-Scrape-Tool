@@ -23,7 +23,7 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 
 		public int CompareTo(object obj) {
 			var other = (Keyword)obj;
-			return String.Compare(this.Text, other.Text);
+			return string.CompareOrdinal(Text, other.Text);
 		}
 	}
 }

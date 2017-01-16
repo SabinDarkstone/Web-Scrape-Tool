@@ -85,7 +85,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 			} else if (radioOtherSource.Checked) {
 				myWebsite = new Website(txtWebsiteName.Text, txtWebsiteUrl.Text, false);
 			} else {
-				MessageBox.Show("Please choose Grant Source or Other");
+				MessageBox.Show(Resources.ChooseSourceTypeText, Resources.Error, MessageBoxButtons.OK);
 				return;
 			}
 

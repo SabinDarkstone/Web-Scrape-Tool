@@ -39,7 +39,6 @@
 			this.btnStatusClose.TabIndex = 1;
 			this.btnStatusClose.Text = "Close";
 			this.btnStatusClose.UseVisualStyleBackColor = true;
-			this.btnStatusClose.Click += new System.EventHandler(this.btnStatusClose_Click);
 			// 
 			// progressBook
 			// 

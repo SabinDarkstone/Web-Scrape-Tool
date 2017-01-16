@@ -1,20 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Visco_Web_Scrape_v2.Scripts;
+using Visco_Web_Scrape_v2.Scripts.Helpers;
 
 namespace Visco_Web_Scrape_v2.Search.Items {
 
 	[Serializable]
 	public class CombinedResults {
 
+		/// <summary>
+		/// Complete list of all results, organized by website
+		/// </summary>
 		public HashSet<WebsiteResults> AllResults { get; }
-		public DateTime LastRan { get; private set; }
-		public TimeSpan TotalSearchTime { get; private set; }
+
+		/// <summary>
+		/// Date and time the last search was started
+		/// </summary>
+		public DateTime LastRan { get; set; }
+
+		/// <summary>
+		/// Length of time previous search ran for
+		/// </summary>
+		public TimeSpan TotalSearchTime { get; set; }
 
 		private DateTime startTime;
 
 		public CombinedResults() {
 			AllResults = new HashSet<WebsiteResults>();
+		}
+
+		public static HashSet<WebsiteResults> FillWithBlanks(Configuration configToFollow) {
+			var blankSet = new HashSet<WebsiteResults>();
+			foreach (var website in configToFollow.Websites) {
+				var blankResultsList = new WebsiteResults(website);
+				blankSet.Add(blankResultsList);
+			}
+
+			return blankSet;
 		}
 
 		public void Begin() {
@@ -32,7 +55,15 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 		}
 
 		public WebsiteResults GetCurrentResults(Website website) {
-			return AllResults.FirstOrDefault(i => i.RootWebsite.Equals(website));
+//			return AllResults.FirstOrDefault(i => i.RootWebsite.Equals(website));
+			foreach (var websiteResults in this.AllResults) {
+				if (websiteResults.RootWebsite.Url.Equals(website.Url)) {
+					return websiteResults;
+				}
+			}
+
+			LogHelper.Debug("No matching website found");
+			return null;
 		}
 
 		public string GetCrawlTime() {
@@ -52,6 +83,19 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 				UpdateMetadata(results);
 			} else {
 				AllResults.Add(results);
+			}
+		}
+
+		public void AddResults(WebsiteResults results, bool includeData) {
+			if (includeData) {
+				AllResults.Add(results);
+			} else {
+				var website = new WebsiteResults(results.RootWebsite) {
+					Counts = results.Counts,
+					SearchTime = results.SearchTime,
+					WebsiteStatus = results.WebsiteStatus
+				};
+				AllResults.Add(website);
 			}
 		}
 

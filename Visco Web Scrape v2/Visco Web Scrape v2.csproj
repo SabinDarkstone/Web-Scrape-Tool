@@ -103,6 +103,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exporters\BasicExport.cs" />
+    <Compile Include="Exporters\ExcelExport.cs" />
+    <Compile Include="Exporters\ExportProgress.cs" />
+    <Compile Include="Exporters\IExportable.cs" />
+    <Compile Include="Exporters\XmlExport.cs" />
     <Compile Include="Forms\AboutHelp.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -135,6 +140,8 @@
     </Compile>
     <Compile Include="Scripts\Configuration.cs" />
     <Compile Include="Scripts\Helpers\Comparisons.cs" />
+    <Compile Include="Scripts\Helpers\ExcelHelper.cs" />
+    <Compile Include="Scripts\Helpers\FieldChoices.cs" />
     <Compile Include="Scripts\Helpers\FileHelper.cs" />
     <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
@@ -149,6 +156,7 @@
       <DependentUpon>GrantSearch.cs</DependentUpon>
     </Compile>
     <Compile Include="Scripts\Helpers\LogHelper.cs" />
+    <Compile Include="Scripts\Helpers\LogLevel.cs" />
     <Compile Include="Scripts\Helpers\TextHelper.cs" />
     <Compile Include="Scripts\Reference.cs" />
     <Compile Include="Search\Items\CombinedResults.cs" />

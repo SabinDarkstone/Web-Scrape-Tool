@@ -11,8 +11,19 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 	public partial class MainForm : Form {
 
+		/// <summary>
+		/// Configuration information loaded from file to be used by the rest of the application
+		/// </summary>
 		public Configuration MasterConfig { get; set; }
+
+		/// <summary>
+		/// Results information loaded from file to be used by the rest of the application
+		/// </summary>
 		public CombinedResults MasterResults { get; set; }
+
+		/// <summary>
+		/// Completion percentage of search
+		/// </summary>
 		public double PercentSearchComplete { get; set; }
 
 		private bool isSearchRunning;
@@ -64,7 +75,11 @@ namespace Visco_Web_Scrape_v2.Forms {
 			LogHelper.Debug("Number of websites in results file: " + MasterResults.AllResults.Count);
 			foreach (var website in MasterResults.AllResults) {
 				LogHelper.Debug(website.RootWebsite.Name + " " + website.RootWebsite.Url);
+				website.RootWebsite.IsEnabled = true;
 			}
+
+			FileHelper.SaveConfiguration(MasterConfig);
+			FileHelper.SaveResults(MasterResults);
 		}
 
 		private void btnWebsiteList_Click(object sender, EventArgs e) {
