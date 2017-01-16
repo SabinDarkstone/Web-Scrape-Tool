@@ -2285,7 +2285,7 @@ If you have any questions, comments or errors to report, please contact the deve
     <value>Settings.bin</value>
   </data>
   <data name="Version" xml:space="preserve">
-    <value>0.7.0 beta</value>
+    <value>0.9.0 beta</value>
   </data>
   <data name="KeywordNotFound" xml:space="preserve">
     <value>The selected keyword does not exist in the records</value>
@@ -2330,25 +2330,25 @@ If you have any questions, comments or errors to report, please contact the deve
   <data name="ExcelWorkerIsNull" xml:space="preserve">
     <value>An error occurred while starting the excel file creation.  Please try again</value>
   </data>
-	<data name="ButtonStopText" xml:space="preserve">
+  <data name="ButtonStopText" xml:space="preserve">
     <value>Stop</value>
   </data>
-	<data name="ButtonCloseText" xml:space="preserve">
+  <data name="ButtonCloseText" xml:space="preserve">
     <value>Close</value>
   </data>
-	<data name="ButtonSaveText" xml:space="preserve">
+  <data name="ButtonSaveText" xml:space="preserve">
     <value>Saving...</value>
   </data>
-	<data name="ChooseSourceTypeText" xml:space="preserve">
+  <data name="ChooseSourceTypeText" xml:space="preserve">
     <value>Please choose Grant Source or Other</value>
   </data>
-	<data name="LabelGeneratingExcelText" xml:space="preserve">
+  <data name="LabelGeneratingExcelText" xml:space="preserve">
     <value>Generating excel file</value>
   </data>
-	<data name="LabelExcelSavedTest" xml:space="preserve">
+  <data name="LabelExcelSavedTest" xml:space="preserve">
     <value>File saved</value>
   </data>
-	<data name="LabelExcelSaveErrorText" xml:space="preserve">
+  <data name="LabelExcelSaveErrorText" xml:space="preserve">
     <value>Error saving file</value>
   </data>
 </root>
