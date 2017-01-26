@@ -5,7 +5,6 @@ using System.Windows.Forms;
 using CsQuery.ExtensionMethods.Internal;
 using Visco_Web_Scrape_v2.Properties;
 using Visco_Web_Scrape_v2.Scripts;
-using Visco_Web_Scrape_v2.Scripts.Helpers;
 using Visco_Web_Scrape_v2.Search.Items;
 
 namespace Visco_Web_Scrape_v2.Forms {
@@ -15,8 +14,6 @@ namespace Visco_Web_Scrape_v2.Forms {
 		public HashSet<Website> CurrentWebsites { get; private set; }
 		public Configuration Config { get; set; }
 
-		private readonly List<Website> checkedItems;
-
 		public WebsiteList(Configuration configuration) {
 			InitializeComponent();
 
@@ -24,25 +21,17 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 			CurrentWebsites = new HashSet<Website>();
 			CurrentWebsites.AddRange(Config.Websites);
-			checkedItems = new List<Website>();
-			if (CurrentWebsites == null || CurrentWebsites.Count == 0) return;
-			checkedItems.AddRange(CurrentWebsites.ToList().FindAll(i => i.IsEnabled));
 		}
 
 		private void UpdateListbox() {
-			checkedItems.Clear();
-			checkedItems.AddRange(CurrentWebsites.ToList().FindAll(i => i.IsEnabled));
-
 			chklistboxWebsites.Items.Clear();
-			foreach (var checkedWebsite in checkedItems) {
-				chklistboxWebsites.Items.Add(checkedWebsite, true);
-			}
-			foreach (var uncheckedWebsite in CurrentWebsites.ToList().FindAll(i => i.IsEnabled == false)) {
-				chklistboxWebsites.Items.Add(uncheckedWebsite, false);
+
+			foreach (var website in CurrentWebsites.ToList()) {
+				chklistboxWebsites.Items.Add(website, website.IsEnabled);
 			}
 		}
 
-		private void ClearTextboxes() {
+		private void ClearForm() {
 			txtWebsiteName.Text = "";
 			txtWebsiteUrl.Text = "";
 
@@ -51,15 +40,6 @@ namespace Visco_Web_Scrape_v2.Forms {
 		}
 
 		private void btnAccept_Click(object sender, EventArgs e) {
-			foreach (Website checkedWebsite in chklistboxWebsites.CheckedItems) {
-				LogHelper.Debug(checkedWebsite.Name);
-				CurrentWebsites.First(i => i.Url.Equals(checkedWebsite.Url)).IsEnabled = true;
-			}
-
-			foreach (var website in CurrentWebsites) {
-				LogHelper.Debug(website.Name + " " + website.IsEnabled);
-			}
-
 			DialogResult = DialogResult.OK;
 			Hide();
 		}
@@ -91,7 +71,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 			CurrentWebsites.Add(myWebsite);
 			UpdateListbox();
-			ClearTextboxes();
+			ClearForm();
 		}
 
 		private void btnRemoveWebsite_Click(object sender, EventArgs e) {
@@ -105,7 +85,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 			if (dialog == DialogResult.Yes) {
 				CurrentWebsites.Remove(selectedWebsite);
 				UpdateListbox();
-				ClearTextboxes();
+				ClearForm();
 			}
 		}
 
@@ -127,7 +107,6 @@ namespace Visco_Web_Scrape_v2.Forms {
 		}
 
 		private void chklistboxWebsites_ItemCheck(object sender, ItemCheckEventArgs e) {
-			LogHelper.Debug("Selected index: " + e.Index);
 			var websiteToChange = chklistboxWebsites.Items[e.Index] as Website;
 
 			CurrentWebsites.Remove(websiteToChange);
@@ -135,11 +114,23 @@ namespace Visco_Web_Scrape_v2.Forms {
 			if (websiteToChange == null) return;
 			websiteToChange.IsEnabled = e.NewValue == CheckState.Checked;
 			CurrentWebsites.Add(websiteToChange);
-			LogHelper.Debug(websiteToChange.Name + " " + websiteToChange.IsEnabled);
 		}
 
-		private void chklistboxWebsites_Validated(object sender, EventArgs e) {
-			
+		private void btnCheckAll_Click(object sender, EventArgs e) {
+			ChangeAll(true);
+		}
+
+		private void btnUncheckAll_Click(object sender, EventArgs e) {
+			ChangeAll(false);
+		}
+
+		private void ChangeAll(bool newValue) {
+			foreach (var website in CurrentWebsites) {
+				website.IsEnabled = newValue;
+			}
+
+			UpdateListbox();
+			ClearForm();
 		}
 	}
 

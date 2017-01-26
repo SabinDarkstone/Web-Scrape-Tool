@@ -242,7 +242,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "KeywordList";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "Manage PageWords";
+			this.Text = "Manage Keywords";
 			this.Shown += new System.EventHandler(this.KeywordList_Shown);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();

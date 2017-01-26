@@ -25,6 +25,8 @@
 		private void InitializeComponent() {
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WebsiteList));
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.radioOtherSource = new System.Windows.Forms.RadioButton();
+			this.radioGrantSource = new System.Windows.Forms.RadioButton();
 			this.btnRemoveWebsite = new System.Windows.Forms.Button();
 			this.btnSaveWebsite = new System.Windows.Forms.Button();
 			this.txtWebsiteUrl = new System.Windows.Forms.TextBox();
@@ -34,8 +36,8 @@
 			this.btnAccept = new System.Windows.Forms.Button();
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.chklistboxWebsites = new System.Windows.Forms.CheckedListBox();
-			this.radioGrantSource = new System.Windows.Forms.RadioButton();
-			this.radioOtherSource = new System.Windows.Forms.RadioButton();
+			this.btnCheckAll = new System.Windows.Forms.Button();
+			this.btnUncheckAll = new System.Windows.Forms.Button();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -56,9 +58,31 @@
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Website";
 			// 
+			// radioOtherSource
+			// 
+			this.radioOtherSource.AutoSize = true;
+			this.radioOtherSource.Location = new System.Drawing.Point(87, 114);
+			this.radioOtherSource.Name = "radioOtherSource";
+			this.radioOtherSource.Size = new System.Drawing.Size(51, 17);
+			this.radioOtherSource.TabIndex = 13;
+			this.radioOtherSource.Text = "Other";
+			this.radioOtherSource.UseVisualStyleBackColor = true;
+			// 
+			// radioGrantSource
+			// 
+			this.radioGrantSource.AutoSize = true;
+			this.radioGrantSource.Checked = true;
+			this.radioGrantSource.Location = new System.Drawing.Point(87, 91);
+			this.radioGrantSource.Name = "radioGrantSource";
+			this.radioGrantSource.Size = new System.Drawing.Size(88, 17);
+			this.radioGrantSource.TabIndex = 12;
+			this.radioGrantSource.TabStop = true;
+			this.radioGrantSource.Text = "Grant Source";
+			this.radioGrantSource.UseVisualStyleBackColor = true;
+			// 
 			// btnRemoveWebsite
 			// 
-			this.btnRemoveWebsite.Location = new System.Drawing.Point(197, 117);
+			this.btnRemoveWebsite.Location = new System.Drawing.Point(191, 117);
 			this.btnRemoveWebsite.Name = "btnRemoveWebsite";
 			this.btnRemoveWebsite.Size = new System.Drawing.Size(75, 23);
 			this.btnRemoveWebsite.TabIndex = 11;
@@ -68,7 +92,7 @@
 			// 
 			// btnSaveWebsite
 			// 
-			this.btnSaveWebsite.Location = new System.Drawing.Point(197, 88);
+			this.btnSaveWebsite.Location = new System.Drawing.Point(191, 88);
 			this.btnSaveWebsite.Name = "btnSaveWebsite";
 			this.btnSaveWebsite.Size = new System.Drawing.Size(75, 23);
 			this.btnSaveWebsite.TabIndex = 10;
@@ -133,39 +157,38 @@
 			this.chklistboxWebsites.FormattingEnabled = true;
 			this.chklistboxWebsites.Location = new System.Drawing.Point(12, 12);
 			this.chklistboxWebsites.Name = "chklistboxWebsites";
-			this.chklistboxWebsites.Size = new System.Drawing.Size(207, 214);
+			this.chklistboxWebsites.Size = new System.Drawing.Size(207, 184);
 			this.chklistboxWebsites.TabIndex = 4;
 			this.chklistboxWebsites.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.chklistboxWebsites_ItemCheck);
 			this.chklistboxWebsites.SelectedIndexChanged += new System.EventHandler(this.chklistboxWebsites_SelectedIndexChanged);
-			this.chklistboxWebsites.Validated += new System.EventHandler(this.chklistboxWebsites_Validated);
 			// 
-			// radioGrantSource
+			// btnCheckAll
 			// 
-			this.radioGrantSource.AutoSize = true;
-			this.radioGrantSource.Checked = true;
-			this.radioGrantSource.Location = new System.Drawing.Point(36, 91);
-			this.radioGrantSource.Name = "radioGrantSource";
-			this.radioGrantSource.Size = new System.Drawing.Size(88, 17);
-			this.radioGrantSource.TabIndex = 12;
-			this.radioGrantSource.TabStop = true;
-			this.radioGrantSource.Text = "Grant Source";
-			this.radioGrantSource.UseVisualStyleBackColor = true;
+			this.btnCheckAll.Location = new System.Drawing.Point(32, 209);
+			this.btnCheckAll.Name = "btnCheckAll";
+			this.btnCheckAll.Size = new System.Drawing.Size(85, 23);
+			this.btnCheckAll.TabIndex = 5;
+			this.btnCheckAll.Text = "Check All";
+			this.btnCheckAll.UseVisualStyleBackColor = true;
+			this.btnCheckAll.Click += new System.EventHandler(this.btnCheckAll_Click);
 			// 
-			// radioOtherSource
+			// btnUncheckAll
 			// 
-			this.radioOtherSource.AutoSize = true;
-			this.radioOtherSource.Location = new System.Drawing.Point(36, 114);
-			this.radioOtherSource.Name = "radioOtherSource";
-			this.radioOtherSource.Size = new System.Drawing.Size(51, 17);
-			this.radioOtherSource.TabIndex = 13;
-			this.radioOtherSource.Text = "Other";
-			this.radioOtherSource.UseVisualStyleBackColor = true;
+			this.btnUncheckAll.Location = new System.Drawing.Point(123, 209);
+			this.btnUncheckAll.Name = "btnUncheckAll";
+			this.btnUncheckAll.Size = new System.Drawing.Size(85, 23);
+			this.btnUncheckAll.TabIndex = 6;
+			this.btnUncheckAll.Text = "Uncheck All";
+			this.btnUncheckAll.UseVisualStyleBackColor = true;
+			this.btnUncheckAll.Click += new System.EventHandler(this.btnUncheckAll_Click);
 			// 
 			// WebsiteList
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(588, 243);
+			this.Controls.Add(this.btnUncheckAll);
+			this.Controls.Add(this.btnCheckAll);
 			this.Controls.Add(this.chklistboxWebsites);
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.btnAccept);
@@ -194,5 +217,7 @@
 		private System.Windows.Forms.CheckedListBox chklistboxWebsites;
 		private System.Windows.Forms.RadioButton radioOtherSource;
 		private System.Windows.Forms.RadioButton radioGrantSource;
+		private System.Windows.Forms.Button btnCheckAll;
+		private System.Windows.Forms.Button btnUncheckAll;
 	}
 }
