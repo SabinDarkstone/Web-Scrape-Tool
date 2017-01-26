@@ -9,16 +9,43 @@ namespace Visco_Web_Scrape_v2.Scripts.Helpers {
 
 	public static class FileHelper {
 
+		public static class Email {
+			public static string GetBody() {
+				var stream = CheckForFile(Reference.Files.EmailBodyFile);
+				if (stream.Length == 0) {
+					// Backup email text
+					return "This email contains the search results attached as two excel documents.";
+				}
+				stream.Close();
+
+				var text = File.ReadAllText(Reference.Files.EmailBodyFile);
+				return text;
+			}
+
+			public static string GetSubject() {
+				var stream = CheckForFile(Reference.Files.EmailSubjectFile);
+				if (stream.Length == 0) {
+					// Backup email text
+					return "Web Scrape Results";
+				}
+				stream.Close();
+
+				var text = File.ReadAllText(Reference.Files.EmailSubjectFile);
+				return text;
+			}
+
+		}
+
 		public static Configuration LoadConfiguration() {
 			var stream = CheckForFile(Reference.Files.SettingsFile);
 			if (stream.Length == 0) {
 				return null;
-			} else {
-				IFormatter formatter = new BinaryFormatter();
-				var config = formatter.Deserialize(stream) as Configuration;
-				stream.Close();
-				return config;
 			}
+
+			IFormatter formatter = new BinaryFormatter();
+			var config = formatter.Deserialize(stream) as Configuration;
+			stream.Close();
+			return config;
 		}
 
 		public static void SaveConfiguration(Configuration config) {
@@ -33,13 +60,13 @@ namespace Visco_Web_Scrape_v2.Scripts.Helpers {
 			if (stream.Length == 0) {
 				LogHelper.Debug("Results file is empty");
 				return null;
-			} else {
-				IFormatter formatter = new BinaryFormatter();
-				var res = formatter.Deserialize(stream) as CombinedResults;
-				stream.Close();
-				LogHelper.Debug("Loading results file");
-				return res;
 			}
+
+			IFormatter formatter = new BinaryFormatter();
+			var res = formatter.Deserialize(stream) as CombinedResults;
+			stream.Close();
+			LogHelper.Debug("Loading results file");
+			return res;
 		}
 
 		public static void SaveResults(CombinedResults results) {
@@ -54,6 +81,10 @@ namespace Visco_Web_Scrape_v2.Scripts.Helpers {
 		private static Stream CheckForFile(string filename) {
 			if (!Directory.Exists(Reference.Files.AppFileDirectory)) {
 				Directory.CreateDirectory(Reference.Files.AppFileDirectory);
+			}
+
+			if (!Directory.Exists(Reference.Files.ExportDirectory)) {
+				Directory.CreateDirectory(Reference.Files.ExportDirectory);
 			}
 
 			if (!File.Exists(filename)) {
