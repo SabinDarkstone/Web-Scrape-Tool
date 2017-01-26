@@ -18,9 +18,22 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 		/// </summary>
 		public HashSet<Keyword> KeywordsToSearchFor { get; }
 
-		public Job(IEnumerable<Website> websites, IEnumerable<Keyword> keywords) {
+		/// <summary>
+		/// List of keywords to ignore in urls
+		/// </summary>
+		public HashSet<Keyword> UrlBlacklist { get; }
+
+		/// <summary>
+		/// Whether the job is initiated automatically by scheduler
+		/// </summary>
+		public bool IsScheduledJob { get; }
+
+		public Job(IEnumerable<Website> websites, IEnumerable<Keyword> whitelist, IEnumerable<Keyword> blacklist, bool isScheduled = false) {
 			WebsitesToCrawl = new HashSet<Website>(websites.Where(site => site.IsEnabled));
-			KeywordsToSearchFor = new HashSet<Keyword>(keywords.Where(keyword => keyword.IsEnabled));
+			KeywordsToSearchFor = new HashSet<Keyword>(whitelist.Where(keyword => keyword.IsEnabled));
+			UrlBlacklist = new HashSet<Keyword>(blacklist.Where(keyword => keyword.IsEnabled));
+
+			IsScheduledJob = isScheduled;
 		}
 	}
 }
