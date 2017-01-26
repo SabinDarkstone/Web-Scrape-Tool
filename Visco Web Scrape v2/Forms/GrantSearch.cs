@@ -171,6 +171,13 @@ namespace Visco_Web_Scrape_v2.Forms {
 			btnCancelCrawl.Enabled = true;
 			btnCancelCrawl.Text = Resources.ButtonCloseText;
 			btnSaveResults.Enabled = true;
+
+			if (jobToRun.IsScheduledJob) {
+				LogHelper.Debug("Automated search complete");
+				Thread.Sleep(2000);
+				DialogResult = DialogResult.OK;
+				Hide();
+			}
 		}
 
 		private void GrantSearch_Load(object sender, EventArgs e) {
