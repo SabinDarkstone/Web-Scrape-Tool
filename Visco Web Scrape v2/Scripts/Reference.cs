@@ -43,6 +43,16 @@ namespace Visco_Web_Scrape_v2.Scripts {
 			/// Location of excel template file
 			/// </summary>
 			public static string GrantTemplateFile = AppFileDirectory + @"ExcelResultsTemplate.xlsx";
+
+			/// <summary>
+			/// Location of the email body text that can be changed
+			/// </summary>
+			public static string EmailBodyFile = AppFileDirectory + @"emailBody.txt";
+
+			/// <summary>
+			/// Location of the email subject text that can be changed
+			/// </summary>
+			public static string EmailSubjectFile = AppFileDirectory + @"emailSubject.txt";
 		}
 
 	}
