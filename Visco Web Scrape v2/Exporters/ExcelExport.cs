@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
-using System.Windows.Forms;
 using Visco_Web_Scrape_v2.Forms;
 using Visco_Web_Scrape_v2.Scripts;
 using Visco_Web_Scrape_v2.Scripts.Helpers;
@@ -22,16 +24,16 @@ namespace Visco_Web_Scrape_v2.Exporters {
 			Grants, Other
 		}
 
+		public bool IsCompleted { get; private set; }
+		public AutoResetEvent Completion = new AutoResetEvent(false);
+
 		private Excel.Application excel;
 		private Excel.Workbook grantWorkbook;
 		private Excel.Workbook otherWorkbook;
 
-		private BackgroundWorker worker;
 		private ExportProgress progress;
 		private readonly ResultViewer parentForm;
-
-		private readonly int grantCount;
-		private readonly int otherCount;
+		private readonly BackgroundWorker worker;
 
 		public ExcelExport(Configuration configuration, CombinedResults results, ResultViewer resultViewer) : base(configuration, results) {
 			parentForm = resultViewer;
@@ -43,22 +45,12 @@ namespace Visco_Web_Scrape_v2.Exporters {
 			worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
 			worker.WorkerReportsProgress = true;
 
-			foreach (var website in ResultsToExport.AllResults.ToList()) {
-				if (website == null) {
-					ResultsToExport.AllResults.Remove(website);
-				}
-			}
-
-			grantCount = ResultsToExport.AllResults.Count(i => i.RootWebsite.IsGrantSource);
-			otherCount = ResultsToExport.AllResults.Count - grantCount;
-
 			worker.RunWorkerAsync();
 		}
 
 		private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-			LogHelper.Debug("Complete!");
-
-			excel.Visible = true;
+			CloseExcel();
+			IsCompleted = true;
 		}
 
 		private void Worker_OnProgressChanged(object sender, ProgressChangedEventArgs e) {
@@ -67,27 +59,34 @@ namespace Visco_Web_Scrape_v2.Exporters {
 
 		private void Worker_DoWork(object sender, DoWorkEventArgs e) {
 			// Prepare excel
-			excel = new Excel.Application {Visible = false};
-			grantWorkbook = excel.Workbooks.Add();
-			otherWorkbook = excel.Workbooks.Add();
+			excel = new Excel.Application { Visible = false };
 
 			// Setup progress tracker
 			progress = new ExportProgress(ResultsToExport.AllResults.Count);
 
-			// Create the GRANTS workbook
-			GenerateFile(BookType.Grants);
-			GenerateFile(BookType.Other);
+			// Create the workbooks
+			GenerateFiles();
+
+			// Save the workbooks
+			SaveFile(BookType.Grants, parentForm.Filenames[0]);
+			SaveFile(BookType.Other, parentForm.Filenames[1]);
+
+			// Unblock thread
+			LogHelper.Debug(Completion.Set());
 		}
 
-		public void GenerateFile(BookType bookType) {
+		private void GenerateFiles() {
+			grantWorkbook = GenerateFile(BookType.Grants);
+			otherWorkbook = GenerateFile(BookType.Other);
+		}
+
+		public Excel.Workbook GenerateFile(BookType bookType) {
 			// Assign workbook to use and filter results for proper list
-			Excel.Workbook book;
+			Excel.Workbook book = excel.Workbooks.Add();
 			List<WebsiteResults> myResults;
 			if (bookType == BookType.Grants) {
-				book = grantWorkbook;
 				myResults = ResultsToExport.AllResults.ToList().FindAll(i => i.RootWebsite.IsGrantSource);
 			} else {
-				book = otherWorkbook;
 				myResults = ResultsToExport.AllResults.ToList().FindAll(i => !i.RootWebsite.IsGrantSource);
 			}
 
@@ -140,10 +139,29 @@ namespace Visco_Web_Scrape_v2.Exporters {
 			book.Worksheets["Sheet1"].Delete();
 
 			LogHelper.Debug("Excel file generated");
+			return book;
 		}
 
-		public void SaveFile(BookType bookType) {
-			
+		public void SaveFile(BookType bookType, string filename) {
+			var file = Reference.Files.ExportDirectory + filename;
+			if (File.Exists(file)) File.Delete(file);
+
+			try {
+				switch (bookType) {
+					case BookType.Grants:
+						grantWorkbook.SaveAs(file, Excel.XlFileFormat.xlWorkbookDefault, Type.Missing, Type.Missing, false, false,
+							Excel.XlSaveAsAccessMode.xlShared, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+						break;
+					case BookType.Other:
+						otherWorkbook.SaveAs(file, Excel.XlFileFormat.xlWorkbookDefault, Type.Missing, Type.Missing, false, false,
+							Excel.XlSaveAsAccessMode.xlShared, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+						break;
+				}
+			} catch (Exception ex) {
+				LogHelper.Fatal(ex.Message);
+				LogHelper.Trace(ex.StackTrace);
+			}
+
 		}
 
 		private void SetSheetTitle(Excel.Worksheet sheet, string title) {
@@ -248,8 +266,8 @@ namespace Visco_Web_Scrape_v2.Exporters {
 			summarySheet.Cells[5, 2] = Config.OnlyNewResults ? "Only New Results" : "All Results";
 			// Whether link results are reported
 			summarySheet.Cells[6, 1] = "Strict Filtering";
-			summarySheet.Cells[6, 2] = Config.EnableStrictFilter ? "Enabled" : "Disabled";
-			
+			summarySheet.Cells[6, 2] = Config.EnableLinkResultFilter ? "Enabled" : "Disabled";
+
 			// List of websites searched
 			lastRow = ListWebsites(summarySheet, type);
 
@@ -325,6 +343,12 @@ namespace Visco_Web_Scrape_v2.Exporters {
 				sheet.Cells[excelRow, 1] = keyword.Text;
 				sheet.Cells[excelRow, 2] = keyword.IsEnabled ? "Enabled" : "Disabled";
 			}
+		}
+
+		private void CloseExcel() {
+			Marshal.ReleaseComObject(grantWorkbook);
+			Marshal.ReleaseComObject(otherWorkbook);
+			Marshal.ReleaseComObject(excel);
 		}
 	}
 }
