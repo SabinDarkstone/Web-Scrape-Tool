@@ -68,13 +68,48 @@ namespace Visco_Web_Scrape_v2.Scripts {
 		/// <summary>
 		/// Whether to allow links as results
 		/// </summary>
-		public bool EnableStrictFilter { get; set; }
+		public bool EnableLinkResultFilter { get; set; }
+
+		/// <summary>
+		/// Whether to allow results with the same contexts
+		/// </summary>
+		public bool EnableContextSensitiveFilter { get; set; }
+
+		/// <summary>
+		/// Whether to run searches automatically based on a schedule
+		/// </summary>
+		public bool EnableScheduler { get; set; }
+
+		/// <summary>
+		/// The time to start the search
+		/// </summary>
+		public int SearchHour { get; set; }
+
+		/// <summary>
+		/// The day of the week to start the search
+		/// </summary>
+		public Dictionary<DayOfWeek, bool> ScheduleDaysOfWeek { get; set; }
+
+		/// <summary>
+		/// The number of weeks between searches
+		/// </summary>
+		public int RepeatWeekCount { get; set; }
 
 		public Configuration() {
 			Websites = new HashSet<Website>();
 			PageWords = new HashSet<Keyword>();
 			UrlWords = new HashSet<Keyword>();
 			Recipients = new HashSet<Recipient>();
+			ScheduleDaysOfWeek = new Dictionary<DayOfWeek, bool> {
+				{DayOfWeek.Sunday, false},
+				{DayOfWeek.Monday, false},
+				{DayOfWeek.Tuesday, false},
+				{DayOfWeek.Wednesday, false},
+				{DayOfWeek.Thursday, false},
+				{DayOfWeek.Friday, false},
+				{DayOfWeek.Saturday, false}
+			};
+
 		}
 	}
 }
