@@ -17,10 +17,12 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 			IsEnabled = true;
 		}
 
+		/// <inheritdoc />
 		public override string ToString() {
 			return Text;
 		}
 
+		/// <inheritdoc />
 		public int CompareTo(object obj) {
 			var other = (Keyword)obj;
 			return string.CompareOrdinal(Text, other.Text);

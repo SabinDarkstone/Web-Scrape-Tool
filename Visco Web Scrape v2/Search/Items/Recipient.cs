@@ -2,6 +2,9 @@
 
 namespace Visco_Web_Scrape_v2.Search.Items {
 
+	/// <summary>
+	/// Information about people to send email results
+	/// </summary>
 	[Serializable]
 	public class Recipient : IComparable {
 
