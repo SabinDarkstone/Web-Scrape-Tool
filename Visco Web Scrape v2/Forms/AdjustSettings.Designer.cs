@@ -26,27 +26,47 @@
 			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
 			this.btnApply = new System.Windows.Forms.Button();
 			this.btnCancel = new System.Windows.Forms.Button();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.chkbxAnalyzeUrl = new System.Windows.Forms.CheckBox();
+			this.chkbxStrictFiltering = new System.Windows.Forms.CheckBox();
 			this.chkbxEnableUrlFilter = new System.Windows.Forms.CheckBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.txtPagesPerDomain = new System.Windows.Forms.TextBox();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.btnClearSearchSettings = new System.Windows.Forms.Button();
 			this.btnClearResults = new System.Windows.Forms.Button();
-			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.radioXml = new System.Windows.Forms.RadioButton();
-			this.radioPlainText = new System.Windows.Forms.RadioButton();
-			this.radioExcel = new System.Windows.Forms.RadioButton();
-			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.chkbxSendEmail = new System.Windows.Forms.CheckBox();
 			this.chkbxDateFound = new System.Windows.Forms.CheckBox();
 			this.chkbxNewResultsOnly = new System.Windows.Forms.CheckBox();
-			this.chkbxStrictFiltering = new System.Windows.Forms.CheckBox();
+			this.chkbxContextSensitive = new System.Windows.Forms.CheckBox();
+			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+			this.chkbxSunday = new System.Windows.Forms.CheckBox();
+			this.chkbxMonday = new System.Windows.Forms.CheckBox();
+			this.chkbxTuesday = new System.Windows.Forms.CheckBox();
+			this.chkbxWednesday = new System.Windows.Forms.CheckBox();
+			this.chkbxThursday = new System.Windows.Forms.CheckBox();
+			this.chkbxFriday = new System.Windows.Forms.CheckBox();
+			this.chkbxSaturday = new System.Windows.Forms.CheckBox();
+			this.label2 = new System.Windows.Forms.Label();
+			this.label3 = new System.Windows.Forms.Label();
+			this.txtTimeOfDayHour = new System.Windows.Forms.TextBox();
+			this.txtTimeOfDayMinute = new System.Windows.Forms.TextBox();
+			this.label4 = new System.Windows.Forms.Label();
+			this.radioAm = new System.Windows.Forms.RadioButton();
+			this.radioPm = new System.Windows.Forms.RadioButton();
+			this.panel1 = new System.Windows.Forms.Panel();
+			this.label5 = new System.Windows.Forms.Label();
+			this.txtRepeatWeeks = new System.Windows.Forms.TextBox();
+			this.label6 = new System.Windows.Forms.Label();
+			this.panel2 = new System.Windows.Forms.Panel();
+			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.flowLayoutPanel1.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
+			this.flowLayoutPanel2.SuspendLayout();
+			this.panel1.SuspendLayout();
+			this.panel2.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -55,7 +75,7 @@
 			this.flowLayoutPanel1.AutoSize = true;
 			this.flowLayoutPanel1.Controls.Add(this.btnApply);
 			this.flowLayoutPanel1.Controls.Add(this.btnCancel);
-			this.flowLayoutPanel1.Location = new System.Drawing.Point(91, 402);
+			this.flowLayoutPanel1.Location = new System.Drawing.Point(231, 581);
 			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
 			this.flowLayoutPanel1.Size = new System.Drawing.Size(162, 29);
 			this.flowLayoutPanel1.TabIndex = 0;
@@ -80,70 +100,45 @@
 			this.btnCancel.UseVisualStyleBackColor = true;
 			this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
 			// 
-			// groupBox1
+			// chkbxStrictFiltering
 			// 
-			this.groupBox1.Controls.Add(this.chkbxStrictFiltering);
-			this.groupBox1.Controls.Add(this.chkbxAnalyzeUrl);
-			this.groupBox1.Controls.Add(this.chkbxEnableUrlFilter);
-			this.groupBox1.Controls.Add(this.label1);
-			this.groupBox1.Controls.Add(this.txtPagesPerDomain);
-			this.groupBox1.Location = new System.Drawing.Point(12, 12);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(241, 134);
-			this.groupBox1.TabIndex = 1;
-			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "Crawl Settings";
-			// 
-			// chkbxAnalyzeUrl
-			// 
-			this.chkbxAnalyzeUrl.AutoSize = true;
-			this.chkbxAnalyzeUrl.Location = new System.Drawing.Point(21, 76);
-			this.chkbxAnalyzeUrl.Name = "chkbxAnalyzeUrl";
-			this.chkbxAnalyzeUrl.Size = new System.Drawing.Size(168, 17);
-			this.chkbxAnalyzeUrl.TabIndex = 4;
-			this.chkbxAnalyzeUrl.Text = "Run URL Analysis (Very Slow)";
-			this.chkbxAnalyzeUrl.UseVisualStyleBackColor = true;
+			this.chkbxStrictFiltering.AutoSize = true;
+			this.chkbxStrictFiltering.Location = new System.Drawing.Point(19, 28);
+			this.chkbxStrictFiltering.Name = "chkbxStrictFiltering";
+			this.chkbxStrictFiltering.Size = new System.Drawing.Size(255, 17);
+			this.chkbxStrictFiltering.TabIndex = 5;
+			this.chkbxStrictFiltering.Text = "Do not report results that are links to other pages";
+			this.chkbxStrictFiltering.UseVisualStyleBackColor = true;
 			// 
 			// chkbxEnableUrlFilter
 			// 
 			this.chkbxEnableUrlFilter.AutoSize = true;
-			this.chkbxEnableUrlFilter.Location = new System.Drawing.Point(21, 53);
+			this.chkbxEnableUrlFilter.Location = new System.Drawing.Point(19, 74);
 			this.chkbxEnableUrlFilter.Name = "chkbxEnableUrlFilter";
-			this.chkbxEnableUrlFilter.Size = new System.Drawing.Size(123, 17);
+			this.chkbxEnableUrlFilter.Size = new System.Drawing.Size(322, 17);
 			this.chkbxEnableUrlFilter.TabIndex = 1;
-			this.chkbxEnableUrlFilter.Text = "Enable URL Filtering";
+			this.chkbxEnableUrlFilter.Text = "Speed up search by filtering out URLs associated with blacklist";
 			this.chkbxEnableUrlFilter.UseVisualStyleBackColor = true;
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(18, 26);
+			this.label1.Location = new System.Drawing.Point(16, 28);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(142, 13);
+			this.label1.Size = new System.Drawing.Size(273, 13);
 			this.label1.TabIndex = 2;
-			this.label1.Text = "Maximum Pages Per Domain";
+			this.label1.Text = "Maximum number of pages to search on a single website";
 			// 
 			// txtPagesPerDomain
 			// 
-			this.txtPagesPerDomain.Location = new System.Drawing.Point(166, 23);
+			this.txtPagesPerDomain.Location = new System.Drawing.Point(295, 25);
 			this.txtPagesPerDomain.Name = "txtPagesPerDomain";
-			this.txtPagesPerDomain.Size = new System.Drawing.Size(62, 20);
+			this.txtPagesPerDomain.Size = new System.Drawing.Size(70, 20);
 			this.txtPagesPerDomain.TabIndex = 3;
-			// 
-			// groupBox2
-			// 
-			this.groupBox2.Controls.Add(this.btnClearSearchSettings);
-			this.groupBox2.Controls.Add(this.btnClearResults);
-			this.groupBox2.Location = new System.Drawing.Point(12, 152);
-			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(132, 107);
-			this.groupBox2.TabIndex = 2;
-			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "App Settings";
 			// 
 			// btnClearSearchSettings
 			// 
-			this.btnClearSearchSettings.Location = new System.Drawing.Point(19, 53);
+			this.btnClearSearchSettings.Location = new System.Drawing.Point(19, 51);
 			this.btnClearSearchSettings.Name = "btnClearSearchSettings";
 			this.btnClearSearchSettings.Size = new System.Drawing.Size(96, 43);
 			this.btnClearSearchSettings.TabIndex = 1;
@@ -153,7 +148,7 @@
 			// 
 			// btnClearResults
 			// 
-			this.btnClearResults.Location = new System.Drawing.Point(19, 24);
+			this.btnClearResults.Location = new System.Drawing.Point(19, 22);
 			this.btnClearResults.Name = "btnClearResults";
 			this.btnClearResults.Size = new System.Drawing.Size(96, 23);
 			this.btnClearResults.TabIndex = 0;
@@ -161,110 +156,298 @@
 			this.btnClearResults.UseVisualStyleBackColor = true;
 			this.btnClearResults.Click += new System.EventHandler(this.btnClearResults_Click);
 			// 
-			// groupBox3
-			// 
-			this.groupBox3.Controls.Add(this.radioXml);
-			this.groupBox3.Controls.Add(this.radioPlainText);
-			this.groupBox3.Controls.Add(this.radioExcel);
-			this.groupBox3.Location = new System.Drawing.Point(150, 152);
-			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(103, 107);
-			this.groupBox3.TabIndex = 3;
-			this.groupBox3.TabStop = false;
-			this.groupBox3.Text = "Export File Type";
-			// 
-			// radioXml
-			// 
-			this.radioXml.AutoSize = true;
-			this.radioXml.Location = new System.Drawing.Point(18, 73);
-			this.radioXml.Name = "radioXml";
-			this.radioXml.Size = new System.Drawing.Size(66, 17);
-			this.radioXml.TabIndex = 2;
-			this.radioXml.TabStop = true;
-			this.radioXml.Text = "XML File";
-			this.radioXml.UseVisualStyleBackColor = true;
-			this.radioXml.CheckedChanged += new System.EventHandler(this.radioXml_CheckedChanged);
-			// 
-			// radioPlainText
-			// 
-			this.radioPlainText.AutoSize = true;
-			this.radioPlainText.Location = new System.Drawing.Point(18, 50);
-			this.radioPlainText.Name = "radioPlainText";
-			this.radioPlainText.Size = new System.Drawing.Size(72, 17);
-			this.radioPlainText.TabIndex = 1;
-			this.radioPlainText.TabStop = true;
-			this.radioPlainText.Text = "Plain Text";
-			this.radioPlainText.UseVisualStyleBackColor = true;
-			this.radioPlainText.CheckedChanged += new System.EventHandler(this.radioPlainText_CheckedChanged);
-			// 
-			// radioExcel
-			// 
-			this.radioExcel.AutoSize = true;
-			this.radioExcel.Location = new System.Drawing.Point(18, 27);
-			this.radioExcel.Name = "radioExcel";
-			this.radioExcel.Size = new System.Drawing.Size(70, 17);
-			this.radioExcel.TabIndex = 0;
-			this.radioExcel.TabStop = true;
-			this.radioExcel.Text = "Excel File";
-			this.radioExcel.UseVisualStyleBackColor = true;
-			// 
-			// groupBox4
-			// 
-			this.groupBox4.Controls.Add(this.chkbxSendEmail);
-			this.groupBox4.Controls.Add(this.chkbxDateFound);
-			this.groupBox4.Controls.Add(this.chkbxNewResultsOnly);
-			this.groupBox4.Location = new System.Drawing.Point(12, 265);
-			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(241, 105);
-			this.groupBox4.TabIndex = 4;
-			this.groupBox4.TabStop = false;
-			this.groupBox4.Text = "Export Content";
-			// 
 			// chkbxSendEmail
 			// 
 			this.chkbxSendEmail.AutoSize = true;
-			this.chkbxSendEmail.Location = new System.Drawing.Point(21, 74);
+			this.chkbxSendEmail.Location = new System.Drawing.Point(19, 29);
 			this.chkbxSendEmail.Name = "chkbxSendEmail";
-			this.chkbxSendEmail.Size = new System.Drawing.Size(156, 17);
+			this.chkbxSendEmail.Size = new System.Drawing.Size(291, 17);
 			this.chkbxSendEmail.TabIndex = 2;
-			this.chkbxSendEmail.Text = "Send Emails On Completion";
+			this.chkbxSendEmail.Text = "Automatically send results via emal when search finishes";
 			this.chkbxSendEmail.UseVisualStyleBackColor = true;
 			// 
 			// chkbxDateFound
 			// 
 			this.chkbxDateFound.AutoSize = true;
-			this.chkbxDateFound.Location = new System.Drawing.Point(21, 51);
+			this.chkbxDateFound.Location = new System.Drawing.Point(19, 51);
 			this.chkbxDateFound.Name = "chkbxDateFound";
-			this.chkbxDateFound.Size = new System.Drawing.Size(120, 17);
+			this.chkbxDateFound.Size = new System.Drawing.Size(247, 17);
 			this.chkbxDateFound.TabIndex = 1;
-			this.chkbxDateFound.Text = "Include Date Found";
+			this.chkbxDateFound.Text = "Include when the result was found in export file";
 			this.chkbxDateFound.UseVisualStyleBackColor = true;
 			// 
 			// chkbxNewResultsOnly
 			// 
 			this.chkbxNewResultsOnly.AutoSize = true;
-			this.chkbxNewResultsOnly.Location = new System.Drawing.Point(21, 28);
+			this.chkbxNewResultsOnly.Location = new System.Drawing.Point(19, 74);
 			this.chkbxNewResultsOnly.Name = "chkbxNewResultsOnly";
-			this.chkbxNewResultsOnly.Size = new System.Drawing.Size(140, 17);
+			this.chkbxNewResultsOnly.Size = new System.Drawing.Size(274, 17);
 			this.chkbxNewResultsOnly.TabIndex = 0;
-			this.chkbxNewResultsOnly.Text = "Show New Results Only";
+			this.chkbxNewResultsOnly.Text = "Only export results that are new since the last search";
 			this.chkbxNewResultsOnly.UseVisualStyleBackColor = true;
 			// 
-			// chkbxStrictFiltering
+			// chkbxContextSensitive
 			// 
-			this.chkbxStrictFiltering.AutoSize = true;
-			this.chkbxStrictFiltering.Location = new System.Drawing.Point(21, 99);
-			this.chkbxStrictFiltering.Name = "chkbxStrictFiltering";
-			this.chkbxStrictFiltering.Size = new System.Drawing.Size(119, 17);
-			this.chkbxStrictFiltering.TabIndex = 5;
-			this.chkbxStrictFiltering.Text = "Force Strict Filtering";
-			this.chkbxStrictFiltering.UseVisualStyleBackColor = true;
+			this.chkbxContextSensitive.AutoSize = true;
+			this.chkbxContextSensitive.Location = new System.Drawing.Point(19, 51);
+			this.chkbxContextSensitive.Name = "chkbxContextSensitive";
+			this.chkbxContextSensitive.Size = new System.Drawing.Size(287, 17);
+			this.chkbxContextSensitive.TabIndex = 6;
+			this.chkbxContextSensitive.Text = "Compare surrounding context of results when searching";
+			this.chkbxContextSensitive.UseVisualStyleBackColor = true;
+			// 
+			// groupBox1
+			// 
+			this.groupBox1.Controls.Add(this.label1);
+			this.groupBox1.Controls.Add(this.chkbxContextSensitive);
+			this.groupBox1.Controls.Add(this.txtPagesPerDomain);
+			this.groupBox1.Controls.Add(this.chkbxEnableUrlFilter);
+			this.groupBox1.Location = new System.Drawing.Point(12, 12);
+			this.groupBox1.Name = "groupBox1";
+			this.groupBox1.Size = new System.Drawing.Size(381, 106);
+			this.groupBox1.TabIndex = 7;
+			this.groupBox1.TabStop = false;
+			this.groupBox1.Text = "Search Options";
+			// 
+			// groupBox2
+			// 
+			this.groupBox2.Controls.Add(this.chkbxStrictFiltering);
+			this.groupBox2.Controls.Add(this.chkbxNewResultsOnly);
+			this.groupBox2.Controls.Add(this.chkbxDateFound);
+			this.groupBox2.Location = new System.Drawing.Point(12, 124);
+			this.groupBox2.Name = "groupBox2";
+			this.groupBox2.Size = new System.Drawing.Size(381, 107);
+			this.groupBox2.TabIndex = 8;
+			this.groupBox2.TabStop = false;
+			this.groupBox2.Text = "Export Options";
+			// 
+			// groupBox3
+			// 
+			this.groupBox3.Controls.Add(this.panel2);
+			this.groupBox3.Controls.Add(this.label5);
+			this.groupBox3.Controls.Add(this.panel1);
+			this.groupBox3.Controls.Add(this.label3);
+			this.groupBox3.Controls.Add(this.label2);
+			this.groupBox3.Controls.Add(this.flowLayoutPanel2);
+			this.groupBox3.Controls.Add(this.chkbxSendEmail);
+			this.groupBox3.Location = new System.Drawing.Point(12, 237);
+			this.groupBox3.Name = "groupBox3";
+			this.groupBox3.Size = new System.Drawing.Size(381, 262);
+			this.groupBox3.TabIndex = 9;
+			this.groupBox3.TabStop = false;
+			this.groupBox3.Text = "Scheduling Options";
+			// 
+			// flowLayoutPanel2
+			// 
+			this.flowLayoutPanel2.AutoSize = true;
+			this.flowLayoutPanel2.Controls.Add(this.chkbxSunday);
+			this.flowLayoutPanel2.Controls.Add(this.chkbxMonday);
+			this.flowLayoutPanel2.Controls.Add(this.chkbxTuesday);
+			this.flowLayoutPanel2.Controls.Add(this.chkbxWednesday);
+			this.flowLayoutPanel2.Controls.Add(this.chkbxThursday);
+			this.flowLayoutPanel2.Controls.Add(this.chkbxFriday);
+			this.flowLayoutPanel2.Controls.Add(this.chkbxSaturday);
+			this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+			this.flowLayoutPanel2.Location = new System.Drawing.Point(19, 86);
+			this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+			this.flowLayoutPanel2.Size = new System.Drawing.Size(90, 161);
+			this.flowLayoutPanel2.TabIndex = 10;
+			// 
+			// chkbxSunday
+			// 
+			this.chkbxSunday.AutoSize = true;
+			this.chkbxSunday.Location = new System.Drawing.Point(3, 3);
+			this.chkbxSunday.Name = "chkbxSunday";
+			this.chkbxSunday.Size = new System.Drawing.Size(62, 17);
+			this.chkbxSunday.TabIndex = 0;
+			this.chkbxSunday.Text = "Sunday";
+			this.chkbxSunday.UseVisualStyleBackColor = true;
+			// 
+			// chkbxMonday
+			// 
+			this.chkbxMonday.AutoSize = true;
+			this.chkbxMonday.Location = new System.Drawing.Point(3, 26);
+			this.chkbxMonday.Name = "chkbxMonday";
+			this.chkbxMonday.Size = new System.Drawing.Size(64, 17);
+			this.chkbxMonday.TabIndex = 1;
+			this.chkbxMonday.Text = "Monday";
+			this.chkbxMonday.UseVisualStyleBackColor = true;
+			// 
+			// chkbxTuesday
+			// 
+			this.chkbxTuesday.AutoSize = true;
+			this.chkbxTuesday.Location = new System.Drawing.Point(3, 49);
+			this.chkbxTuesday.Name = "chkbxTuesday";
+			this.chkbxTuesday.Size = new System.Drawing.Size(67, 17);
+			this.chkbxTuesday.TabIndex = 2;
+			this.chkbxTuesday.Text = "Tuesday";
+			this.chkbxTuesday.UseVisualStyleBackColor = true;
+			// 
+			// chkbxWednesday
+			// 
+			this.chkbxWednesday.AutoSize = true;
+			this.chkbxWednesday.Location = new System.Drawing.Point(3, 72);
+			this.chkbxWednesday.Name = "chkbxWednesday";
+			this.chkbxWednesday.Size = new System.Drawing.Size(83, 17);
+			this.chkbxWednesday.TabIndex = 3;
+			this.chkbxWednesday.Text = "Wednesday";
+			this.chkbxWednesday.UseVisualStyleBackColor = true;
+			// 
+			// chkbxThursday
+			// 
+			this.chkbxThursday.AutoSize = true;
+			this.chkbxThursday.Location = new System.Drawing.Point(3, 95);
+			this.chkbxThursday.Name = "chkbxThursday";
+			this.chkbxThursday.Size = new System.Drawing.Size(70, 17);
+			this.chkbxThursday.TabIndex = 4;
+			this.chkbxThursday.Text = "Thursday";
+			this.chkbxThursday.UseVisualStyleBackColor = true;
+			// 
+			// chkbxFriday
+			// 
+			this.chkbxFriday.AutoSize = true;
+			this.chkbxFriday.Location = new System.Drawing.Point(3, 118);
+			this.chkbxFriday.Name = "chkbxFriday";
+			this.chkbxFriday.Size = new System.Drawing.Size(54, 17);
+			this.chkbxFriday.TabIndex = 5;
+			this.chkbxFriday.Text = "Friday";
+			this.chkbxFriday.UseVisualStyleBackColor = true;
+			// 
+			// chkbxSaturday
+			// 
+			this.chkbxSaturday.AutoSize = true;
+			this.chkbxSaturday.Location = new System.Drawing.Point(3, 141);
+			this.chkbxSaturday.Name = "chkbxSaturday";
+			this.chkbxSaturday.Size = new System.Drawing.Size(68, 17);
+			this.chkbxSaturday.TabIndex = 6;
+			this.chkbxSaturday.Text = "Saturday";
+			this.chkbxSaturday.UseVisualStyleBackColor = true;
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(125, 70);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(66, 13);
+			this.label2.TabIndex = 11;
+			this.label2.Text = "Time Of Day";
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(16, 70);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(88, 13);
+			this.label3.TabIndex = 12;
+			this.label3.Text = "Day of the Week";
+			// 
+			// txtTimeOfDayHour
+			// 
+			this.txtTimeOfDayHour.Location = new System.Drawing.Point(3, 3);
+			this.txtTimeOfDayHour.Name = "txtTimeOfDayHour";
+			this.txtTimeOfDayHour.Size = new System.Drawing.Size(35, 20);
+			this.txtTimeOfDayHour.TabIndex = 13;
+			// 
+			// txtTimeOfDayMinute
+			// 
+			this.txtTimeOfDayMinute.Location = new System.Drawing.Point(50, 3);
+			this.txtTimeOfDayMinute.Name = "txtTimeOfDayMinute";
+			this.txtTimeOfDayMinute.Size = new System.Drawing.Size(35, 20);
+			this.txtTimeOfDayMinute.TabIndex = 14;
+			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(39, 4);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(10, 13);
+			this.label4.TabIndex = 15;
+			this.label4.Text = ":";
+			// 
+			// radioAm
+			// 
+			this.radioAm.AutoSize = true;
+			this.radioAm.Location = new System.Drawing.Point(8, 29);
+			this.radioAm.Name = "radioAm";
+			this.radioAm.Size = new System.Drawing.Size(41, 17);
+			this.radioAm.TabIndex = 16;
+			this.radioAm.TabStop = true;
+			this.radioAm.Text = "AM";
+			this.radioAm.UseVisualStyleBackColor = true;
+			// 
+			// radioPm
+			// 
+			this.radioPm.AutoSize = true;
+			this.radioPm.Location = new System.Drawing.Point(8, 52);
+			this.radioPm.Name = "radioPm";
+			this.radioPm.Size = new System.Drawing.Size(41, 17);
+			this.radioPm.TabIndex = 17;
+			this.radioPm.TabStop = true;
+			this.radioPm.Text = "PM";
+			this.radioPm.UseVisualStyleBackColor = true;
+			// 
+			// panel1
+			// 
+			this.panel1.Controls.Add(this.radioPm);
+			this.panel1.Controls.Add(this.txtTimeOfDayHour);
+			this.panel1.Controls.Add(this.radioAm);
+			this.panel1.Controls.Add(this.txtTimeOfDayMinute);
+			this.panel1.Controls.Add(this.label4);
+			this.panel1.Location = new System.Drawing.Point(128, 86);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(89, 72);
+			this.panel1.TabIndex = 10;
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(234, 70);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(72, 13);
+			this.label5.TabIndex = 13;
+			this.label5.Text = "Repeat Every";
+			// 
+			// txtRepeatWeeks
+			// 
+			this.txtRepeatWeeks.Location = new System.Drawing.Point(3, 3);
+			this.txtRepeatWeeks.Name = "txtRepeatWeeks";
+			this.txtRepeatWeeks.Size = new System.Drawing.Size(33, 20);
+			this.txtRepeatWeeks.TabIndex = 14;
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(42, 6);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(44, 13);
+			this.label6.TabIndex = 15;
+			this.label6.Text = "week(s)";
+			// 
+			// panel2
+			// 
+			this.panel2.Controls.Add(this.label6);
+			this.panel2.Controls.Add(this.txtRepeatWeeks);
+			this.panel2.Location = new System.Drawing.Point(237, 86);
+			this.panel2.Name = "panel2";
+			this.panel2.Size = new System.Drawing.Size(90, 28);
+			this.panel2.TabIndex = 10;
+			// 
+			// groupBox4
+			// 
+			this.groupBox4.Controls.Add(this.btnClearResults);
+			this.groupBox4.Controls.Add(this.btnClearSearchSettings);
+			this.groupBox4.Location = new System.Drawing.Point(12, 505);
+			this.groupBox4.Name = "groupBox4";
+			this.groupBox4.Size = new System.Drawing.Size(134, 105);
+			this.groupBox4.TabIndex = 10;
+			this.groupBox4.TabStop = false;
+			this.groupBox4.Text = "Other Options";
 			// 
 			// AdjustSettings
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(266, 443);
+			this.ClientSize = new System.Drawing.Size(406, 622);
 			this.Controls.Add(this.groupBox4);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
@@ -278,10 +461,16 @@
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
+			this.groupBox2.PerformLayout();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
+			this.flowLayoutPanel2.ResumeLayout(false);
+			this.flowLayoutPanel2.PerformLayout();
+			this.panel1.ResumeLayout(false);
+			this.panel1.PerformLayout();
+			this.panel2.ResumeLayout(false);
+			this.panel2.PerformLayout();
 			this.groupBox4.ResumeLayout(false);
-			this.groupBox4.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -292,22 +481,39 @@
 		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
 		private System.Windows.Forms.Button btnApply;
 		private System.Windows.Forms.Button btnCancel;
-		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.CheckBox chkbxEnableUrlFilter;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.TextBox txtPagesPerDomain;
-		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.Button btnClearSearchSettings;
 		private System.Windows.Forms.Button btnClearResults;
-		private System.Windows.Forms.GroupBox groupBox3;
-		private System.Windows.Forms.RadioButton radioXml;
-		private System.Windows.Forms.RadioButton radioPlainText;
-		private System.Windows.Forms.RadioButton radioExcel;
-		private System.Windows.Forms.CheckBox chkbxAnalyzeUrl;
-		private System.Windows.Forms.GroupBox groupBox4;
 		private System.Windows.Forms.CheckBox chkbxDateFound;
 		private System.Windows.Forms.CheckBox chkbxNewResultsOnly;
 		private System.Windows.Forms.CheckBox chkbxSendEmail;
 		private System.Windows.Forms.CheckBox chkbxStrictFiltering;
+		private System.Windows.Forms.CheckBox chkbxContextSensitive;
+		private System.Windows.Forms.GroupBox groupBox1;
+		private System.Windows.Forms.GroupBox groupBox2;
+		private System.Windows.Forms.GroupBox groupBox3;
+		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+		private System.Windows.Forms.CheckBox chkbxSunday;
+		private System.Windows.Forms.CheckBox chkbxMonday;
+		private System.Windows.Forms.CheckBox chkbxTuesday;
+		private System.Windows.Forms.CheckBox chkbxWednesday;
+		private System.Windows.Forms.CheckBox chkbxThursday;
+		private System.Windows.Forms.CheckBox chkbxFriday;
+		private System.Windows.Forms.CheckBox chkbxSaturday;
+		private System.Windows.Forms.Panel panel2;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.TextBox txtRepeatWeeks;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.Panel panel1;
+		private System.Windows.Forms.RadioButton radioPm;
+		private System.Windows.Forms.TextBox txtTimeOfDayHour;
+		private System.Windows.Forms.RadioButton radioAm;
+		private System.Windows.Forms.TextBox txtTimeOfDayMinute;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.GroupBox groupBox4;
 	}
 }
