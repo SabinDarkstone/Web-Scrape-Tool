@@ -12,6 +12,7 @@ using Visco_Web_Scrape_v2.Properties;
 using Visco_Web_Scrape_v2.Scripts;
 using Visco_Web_Scrape_v2.Scripts.Helpers;
 using Visco_Web_Scrape_v2.Search.Items;
+using static Visco_Web_Scrape_v2.Search.Items.WebsiteResults;
 
 namespace Visco_Web_Scrape_v2.Search.Process {
 
@@ -30,13 +31,33 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 		private readonly CancellationTokenSource cancelMe;
 		private readonly Progress currentProgress;
 
+		/// <summary>
+		/// Contains information about hits on page
+		/// </summary>
 		[Serializable]
 		public struct KeywordMatch {
 
+			/// <summary>
+			/// Keyword found on page
+			/// </summary>
 			public Keyword Keyword { get; }
+
+			/// <summary>
+			/// Text that the keyword appeared in
+			/// </summary>
 			public string Context { get; }
+
+			/// <summary>
+			/// Whether the result was found in a link
+			/// </summary>
 			public bool IsLink { get; }
 
+			/// <summary>
+			/// Save the data from the webpage about the hit on the page
+			/// </summary>
+			/// <param name="keyword">Keyword found on page</param>
+			/// <param name="context">Surrounding text the keyword was found in</param>
+			/// <param name="isLink">Whether the result is a link</param>
 			public KeywordMatch(Keyword keyword, string context, bool isLink) {
 				Keyword = keyword;
 				Context = context;
@@ -124,14 +145,14 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 
 			// Cancellation requested
 			if (cancelMe.IsCancellationRequested || crawlResults.ErrorOccurred) {
-				Results.WebsiteStatus = WebsiteResults.Status.Interrupted;
+				Results.WebsiteStatus = Status.Interrupted;
 				currentProgress.SearchStatus = Progress.Status.Cancelling;
 			}
 
 			// Crawl ran to completion
 			if (!crawlResults.ErrorOccurred) {
 				LogHelper.Debug("Reached domain page crawl limit or crawl is completed.");
-				Results.WebsiteStatus = WebsiteResults.Status.Completed;
+				Results.WebsiteStatus = Status.Completed;
 			}
 
 			// Regardless of result, send the results off to the parent form so nothing is lost
@@ -180,8 +201,8 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 			return output;
 		}
 
-		public WebsiteResults.PageCounts GetPageCounts() {
-			return new WebsiteResults.PageCounts {
+		public PageCounts GetPageCounts() {
+			return new PageCounts {
 				IgnoredPages = currentProgress.IgnoredPages,
 				SearchPages = currentProgress.SearchedPages
 			};
