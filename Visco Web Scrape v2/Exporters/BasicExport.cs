@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Visco_Web_Scrape_v2.Scripts;
 using Visco_Web_Scrape_v2.Scripts.Helpers;
 using Visco_Web_Scrape_v2.Search.Items;
@@ -69,7 +68,7 @@ namespace Visco_Web_Scrape_v2.Exporters {
 					}
 
 					// Remove pages with only links as results (if option is selected)
-					if (Config.EnableStrictFilter && page.IsLinkResult()) {
+					if (Config.EnableLinkResultFilter && page.IsLinkResult()) {
 						LogHelper.Debug(page + " contains only links as results, removing from exported results");
 						website.ResultList.Remove(page);
 						continue;
@@ -94,9 +93,8 @@ namespace Visco_Web_Scrape_v2.Exporters {
 
 			LogHelper.Debug("Getting keywords for " + result.PageUrl);
 			foreach (var matchInfo in result.Hits) {
-//				LogHelper.Debug(matchInfo.Keyword);
 
-				if (Config.EnableStrictFilter && matchInfo.IsLink) {
+				if (Config.EnableLinkResultFilter && matchInfo.IsLink) {
 					continue;
 				}
 
