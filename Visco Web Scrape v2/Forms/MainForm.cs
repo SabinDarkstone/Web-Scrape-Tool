@@ -30,74 +30,97 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 		public MainForm() {
 			InitializeComponent();
-
-			InitializeTrayIcon();
 		}
 
-		private void InitializeTrayIcon() {
-			notifyIcon.BalloonTipText = "The searcher is still running...";
-			notifyIcon.BalloonTipTitle = "VISCO, Inc. Web Scraper";
-			notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
-		}
-
+		#region FormEvents
 		private void Form1_Shown(object sender, EventArgs e) {
+			LoadSettings();
+		}
+
+		private void btnWebsiteList_Click(object sender, EventArgs e) {
+			EditWebsites();
+		}
+
+		private void btnKeywordList_Click(object sender, EventArgs e) {
+			EditKeywords();
+		}
+
+		private void btnBeginSearch_Click(object sender, EventArgs e) {
+			StartSearch(false);
+		}
+
+		private void btnViewResults_Click(object sender, EventArgs e) {
+			ShowResults();
+		}
+
+		private void btnHelp_Click(object sender, EventArgs e) {
+			ViewHelp();
+		}
+
+		private void btnSendEmail_Click(object sender, EventArgs e) {
+			SendEmail();
+		}
+
+		private void btnManageEmails_Click(object sender, EventArgs e) {
+			EditEmailAddresses();
+		}
+
+		private void btnChangeSettings_Click(object sender, EventArgs e) {
+			OpenSettings();
+		}
+
+		private void MainForm_Load(object sender, EventArgs e) {
+			lblVersion.Text = Resources.Version;
+			LoadSettings();
+		}
+
+		private void scheduleTimer_Tick(object sender, EventArgs e) {
+			if (IsCorrectDay() && IsCorrectHour()) {
+				StartSearch(true);
+			}
+		}
+		#endregion
+
+		/// <summary>
+		/// Load settings and results from binary files
+		/// </summary>
+		private void LoadSettings() {
 			// Load Settings File
 			MasterConfig = FileHelper.LoadConfiguration() ?? new Configuration();
 			MasterResults = FileHelper.LoadResults() ?? new CombinedResults();
 
-			PrintDebugInfo();
-
-			/* UNDONE: Temporarys
-			// Copy over settings
-			var keywords = MasterConfig.PageWords;
-			var websites = MasterConfig.Websites;
-			MasterConfig = new Configuration {
-				PageWords = keywords,
-				Websites = websites
-			};
-			FileHelper.SaveConfiguration(MasterConfig);
-			
-			// Manually assign all results as strict
-			foreach (var website in MasterResults.AllResults) {
-				foreach (var result in website.ResultList) {
-					result.IsStrict = true;
-				}
-			}
-
-			// Set all current website to grant source
-			foreach (var website in MasterConfig.Websites) {
-				website.IsGrantSource = true;
-			}
-			*/
+			if (MasterConfig.EnableScheduler)
+				scheduleTimer.Enabled = true;
 		}
 
-		private void PrintDebugInfo() {
-			LogHelper.Debug("Number of websites in results file: " + MasterResults.AllResults.Count);
-			foreach (var website in MasterResults.AllResults) {
-				LogHelper.Debug(website.RootWebsite.Name + " " + website.RootWebsite.Url);
-				website.RootWebsite.IsEnabled = true;
-			}
-
-			FileHelper.SaveConfiguration(MasterConfig);
-			FileHelper.SaveResults(MasterResults);
+		/// <summary>
+		/// Open result viewer to export results to excel file
+		/// </summary>
+		private void ShowResults() {
+			var resultViewer = new ResultViewer(MasterConfig, MasterResults, false);
+			resultViewer.ShowDialog();
 		}
 
-		private void btnWebsiteList_Click(object sender, EventArgs e) {
-			// Open website list editor window
-			var websiteEditor = new WebsiteList(MasterConfig);
-			websiteEditor.ShowDialog();
-
-			// Check to see if the websites need to be saved
-			if (websiteEditor.DialogResult == DialogResult.OK) {
-				// Save changes to settings file
-				MasterConfig.Websites = websiteEditor.CurrentWebsites;
-				FileHelper.SaveConfiguration(MasterConfig);
-				websiteEditor.Close();
-			}
+		/// <summary>
+		/// Send an email with the results
+		/// </summary>
+		private void SendEmail() {
+			var emailSender = new EmailProgress(MasterConfig, MasterResults, false);
+			emailSender.ShowDialog();
 		}
 
-		private void btnKeywordList_Click(object sender, EventArgs e) {
-			// Open keyword editor window
+		/// <summary>
+		/// Open the about window
+		/// </summary>
+		private void ViewHelp() {
+			var about = new AboutHelp();
+			about.ShowDialog();
+		}
+
+		/// <summary>
+		/// Open keyword list editor
+		/// </summary>
+		private void EditKeywords() {
 			var keywordEditor = new KeywordList(MasterConfig);
 			keywordEditor.ShowDialog();
 
@@ -111,27 +134,42 @@ namespace Visco_Web_Scrape_v2.Forms {
 			}
 		}
 
-		private void btnBeginSearch_Click(object sender, EventArgs e) {
-			// Open grant search window
+		/// <summary>
+		/// Open website list editor
+		/// </summary>
+		private void EditWebsites() {
+			var websiteEditor = new WebsiteList(MasterConfig);
+			websiteEditor.ShowDialog();
+
+			// Check to see if the websites need to be saved
+			if (websiteEditor.DialogResult == DialogResult.OK) {
+				// Save changes to settings file
+				MasterConfig.Websites = websiteEditor.CurrentWebsites;
+				FileHelper.SaveConfiguration(MasterConfig);
+				websiteEditor.Close();
+			}
+		}
+
+		/// <summary>
+		/// Start web scrape and grant search
+		/// </summary>
+		/// <param name="isScheduled">Whether the search is initiated by the scheduler</param>
+		private void StartSearch(bool isScheduled) {
 			isSearchRunning = true;
-			var grantSearch = new GrantSearch(MasterConfig, MasterResults, new Job(MasterConfig.Websites, MasterConfig.PageWords), this);
+			var grantSearch = new GrantSearch(MasterConfig, MasterResults, new Job(MasterConfig.Websites, MasterConfig.PageWords, MasterConfig.UrlWords), this);
 			grantSearch.ShowDialog();
 
 			// Check to see if the results need to be saved
 			if (grantSearch.DialogResult == DialogResult.OK) {
 
 				// Save results to settings file
-				LogHelper.Debug("Retrieving results from search");
 				MasterResults = grantSearch.Results;
-				LogHelper.Debug("Results retrieved");
-				LogHelper.Debug("Sending command to save results");
 				FileHelper.SaveResults(MasterResults);
-				LogHelper.Debug("Command sent");
 				grantSearch.Close();
 
 				// Send Email if requested
 				if (MasterConfig.EnableSendEmail) {
-					var emailSender = new EmailProgress(MasterConfig, MasterResults);
+					var emailSender = new EmailProgress(MasterConfig, MasterResults, false);
 					emailSender.ShowDialog();
 				}
 			}
@@ -141,32 +179,10 @@ namespace Visco_Web_Scrape_v2.Forms {
 			isSearchRunning = false;
 		}
 
-		private void btnViewResults_Click(object sender, EventArgs e) {
-			// Open result viewer window
-			var resultViewer = new ResultViewer(MasterConfig, MasterResults);
-			resultViewer.ShowDialog();
-		}
-
-		private void btnHelp_Click(object sender, EventArgs e) {
-			// Open about window
-			var about = new AboutHelp();
-			about.ShowDialog();
-		}
-
-		private void MainForm_Load(object sender, EventArgs e) {
-			lblVersion.Text = Resources.Version;
-		}
-
-		private void btnGrantTrack_Click(object sender, EventArgs e) {
-			MessageBox.Show(Resources.FeatureNotImplemented, Resources.HeadsUp, MessageBoxButtons.OK, MessageBoxIcon.Stop);
-
-			// Open track grants windows
-			var grantTracker = new GrantTracker();
-			grantTracker.ShowDialog();
-		}
-
-		private void btnChangeSettings_Click(object sender, EventArgs e) {
-			// Open settings window
+		/// <summary>
+		/// Open settings window
+		/// </summary>
+		private void OpenSettings() {
 			var settings = new AdjustSettings(MasterConfig, MasterResults);
 			settings.ShowDialog();
 
@@ -179,8 +195,10 @@ namespace Visco_Web_Scrape_v2.Forms {
 			}
 		}
 
-		private void btnManageEmails_Click(object sender, EventArgs e) {
-			// Open email editor window
+		/// <summary>
+		/// Open email address list editor
+		/// </summary>
+		private void EditEmailAddresses() {
 			var emailEditor = new EmailListEditor(MasterConfig);
 			emailEditor.ShowDialog();
 
@@ -191,44 +209,20 @@ namespace Visco_Web_Scrape_v2.Forms {
 			}
 		}
 
-		private void btnSendEmail_Click(object sender, EventArgs e) {
-			var emailSender = new EmailProgress(MasterConfig, MasterResults);
-			emailSender.ShowDialog();
+		/// <summary>
+		/// Checks if "today" is one of the days of the week
+		/// </summary>
+		/// <returns>Whether it is the correct day of the weekkk</returns>
+		private bool IsCorrectDay() {
+			return MasterConfig.ScheduleDaysOfWeek.Where(i => i.Value).Any(day => DateTime.Today.DayOfWeek.Equals(day.Key));
 		}
 
-		private void MainForm_Resize(object sender, EventArgs e) {
-			if (WindowState == FormWindowState.Minimized) {
-				notifyIcon.Visible = true;
-				notifyIcon.ShowBalloonTip(500);
-				Hide();
-			} else if (WindowState == FormWindowState.Normal) {
-				notifyIcon.Visible = false;
-			}
-		}
-
-		private void notifyIcon_DoubleClick(object sender, EventArgs e) {
-
-		}
-
-		private void notifyIcon_Click(object sender, EventArgs e) {
-			if (isSearchRunning) {
-				notifyIcon.BalloonTipTitle = "VISCO Search Progress";
-				notifyIcon.BalloonTipText = "Search Running:\n" + Math.Round(PercentSearchComplete, 2) + "% Complete";
-				notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
-				notifyIcon.ShowBalloonTip(1000);
-			} else {
-				notifyIcon.BalloonTipTitle = "VISCO Search Program";
-				notifyIcon.BalloonTipText = "Program is currently idle";
-				notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
-				notifyIcon.ShowBalloonTip(1000);
-			}
-		}
-		
-		private void notifyIcon_BalloonTipClicked(object sender, EventArgs e) {
-			// TODO: Make this come to front
-			notifyIcon.Visible = false;
-			this.Show();
-			this.BringToFront();
+		/// <summary>
+		/// Check if it is the correct hour of the day
+		/// </summary>
+		/// <returns>Whether it is currently or after the current hour</returns>
+		private bool IsCorrectHour() {
+			return MasterConfig.SearchHour <= DateTime.Now.Hour;
 		}
 	}
 

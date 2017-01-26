@@ -32,13 +32,12 @@
 			this.btnBeginSearch = new System.Windows.Forms.Button();
 			this.btnViewResults = new System.Windows.Forms.Button();
 			this.btnSendEmail = new System.Windows.Forms.Button();
-			this.btnGrantTrack = new System.Windows.Forms.Button();
 			this.btnChangeSettings = new System.Windows.Forms.Button();
 			this.btnHelp = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
 			this.lblVersion = new System.Windows.Forms.Label();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
-			this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+			this.scheduleTimer = new System.Windows.Forms.Timer(this.components);
 			this.flowLayoutPanel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
@@ -51,7 +50,6 @@
 			this.flowLayoutPanel1.Controls.Add(this.btnBeginSearch);
 			this.flowLayoutPanel1.Controls.Add(this.btnViewResults);
 			this.flowLayoutPanel1.Controls.Add(this.btnSendEmail);
-			this.flowLayoutPanel1.Controls.Add(this.btnGrantTrack);
 			this.flowLayoutPanel1.Controls.Add(this.btnChangeSettings);
 			this.flowLayoutPanel1.Controls.Add(this.btnHelp);
 			this.flowLayoutPanel1.Location = new System.Drawing.Point(12, 157);
@@ -130,7 +128,7 @@
 			this.btnViewResults.Name = "btnViewResults";
 			this.btnViewResults.Size = new System.Drawing.Size(90, 90);
 			this.btnViewResults.TabIndex = 3;
-			this.btnViewResults.Text = "View Search Results";
+			this.btnViewResults.Text = "Export Search Results";
 			this.btnViewResults.UseVisualStyleBackColor = true;
 			this.btnViewResults.Click += new System.EventHandler(this.btnViewResults_Click);
 			// 
@@ -149,22 +147,6 @@
 			this.btnSendEmail.UseVisualStyleBackColor = true;
 			this.btnSendEmail.Click += new System.EventHandler(this.btnSendEmail_Click);
 			// 
-			// btnGrantTrack
-			// 
-			this.btnGrantTrack.Enabled = false;
-			this.btnGrantTrack.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.btnGrantTrack.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(61)))), ((int)(((byte)(29)))));
-			this.btnGrantTrack.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(126)))), ((int)(((byte)(176)))), ((int)(((byte)(127)))));
-			this.btnGrantTrack.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btnGrantTrack.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.btnGrantTrack.Location = new System.Drawing.Point(3, 195);
-			this.btnGrantTrack.Name = "btnGrantTrack";
-			this.btnGrantTrack.Size = new System.Drawing.Size(90, 90);
-			this.btnGrantTrack.TabIndex = 4;
-			this.btnGrantTrack.Text = "Track Grants";
-			this.btnGrantTrack.UseVisualStyleBackColor = true;
-			this.btnGrantTrack.Click += new System.EventHandler(this.btnGrantTrack_Click);
-			// 
 			// btnChangeSettings
 			// 
 			this.btnChangeSettings.FlatAppearance.BorderColor = System.Drawing.Color.Black;
@@ -172,7 +154,7 @@
 			this.btnChangeSettings.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(126)))), ((int)(((byte)(176)))), ((int)(((byte)(127)))));
 			this.btnChangeSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnChangeSettings.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.btnChangeSettings.Location = new System.Drawing.Point(99, 195);
+			this.btnChangeSettings.Location = new System.Drawing.Point(3, 195);
 			this.btnChangeSettings.Name = "btnChangeSettings";
 			this.btnChangeSettings.Size = new System.Drawing.Size(90, 90);
 			this.btnChangeSettings.TabIndex = 6;
@@ -187,7 +169,7 @@
 			this.btnHelp.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(126)))), ((int)(((byte)(176)))), ((int)(((byte)(127)))));
 			this.btnHelp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnHelp.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.btnHelp.Location = new System.Drawing.Point(195, 195);
+			this.btnHelp.Location = new System.Drawing.Point(99, 195);
 			this.btnHelp.Name = "btnHelp";
 			this.btnHelp.Size = new System.Drawing.Size(90, 90);
 			this.btnHelp.TabIndex = 5;
@@ -227,14 +209,10 @@
 			this.pictureBox1.TabIndex = 1;
 			this.pictureBox1.TabStop = false;
 			// 
-			// notifyIcon
+			// scheduleTimer
 			// 
-			this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
-			this.notifyIcon.Text = "NotifyIcon";
-			this.notifyIcon.Visible = true;
-			this.notifyIcon.BalloonTipClicked += new System.EventHandler(this.notifyIcon_BalloonTipClicked);
-			this.notifyIcon.Click += new System.EventHandler(this.notifyIcon_Click);
-			this.notifyIcon.DoubleClick += new System.EventHandler(this.notifyIcon_DoubleClick);
+			this.scheduleTimer.Interval = 3600000;
+			this.scheduleTimer.Tick += new System.EventHandler(this.scheduleTimer_Tick);
 			// 
 			// MainForm
 			// 
@@ -248,10 +226,9 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "MainForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "Visco Grant Search";
+			this.Text = "Visco Web Scrape";
 			this.Load += new System.EventHandler(this.MainForm_Load);
 			this.Shown += new System.EventHandler(this.Form1_Shown);
-			this.Resize += new System.EventHandler(this.MainForm_Resize);
 			this.flowLayoutPanel1.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.ResumeLayout(false);
@@ -266,14 +243,13 @@
 		private System.Windows.Forms.Button btnKeywordList;
 		private System.Windows.Forms.Button btnBeginSearch;
 		private System.Windows.Forms.Button btnViewResults;
-		private System.Windows.Forms.Button btnGrantTrack;
 		private System.Windows.Forms.Button btnHelp;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label lblVersion;
 		private System.Windows.Forms.Button btnChangeSettings;
 		private System.Windows.Forms.Button btnManageEmails;
 		private System.Windows.Forms.Button btnSendEmail;
-		private System.Windows.Forms.NotifyIcon notifyIcon;
+		private System.Windows.Forms.Timer scheduleTimer;
 	}
 }
 
