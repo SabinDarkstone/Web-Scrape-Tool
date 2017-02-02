@@ -12,6 +12,11 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 		public class PageCounts {
 			public int SearchPages { get; set; }
 			public int IgnoredPages { get; set; }
+			
+			public void Reset() {
+				SearchPages = 0;
+				IgnoredPages = 0;
+			}
 		}
 
 		public enum Status {

@@ -25,10 +25,6 @@ namespace Visco_Web_Scrape_v2.Forms {
 			this.results = results;
 			this.Filenames = filenames;
 			this.IsForEmail = email;
-
-			if (filenames == null) {
-				this.Filenames = new[] { "Grants", "Other" };
-			}
 		}
 
 		private void ResultViewer_Shown(object sender, EventArgs e) {

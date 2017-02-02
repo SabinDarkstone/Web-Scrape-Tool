@@ -68,8 +68,14 @@ namespace Visco_Web_Scrape_v2.Exporters {
 			GenerateFiles();
 
 			// Save the workbooks
-			SaveFile(BookType.Grants, parentForm.Filenames[0]);
-			SaveFile(BookType.Other, parentForm.Filenames[1]);
+			if (parentForm.Filenames != null) {
+				SaveFile(BookType.Grants, parentForm.Filenames[0]);
+				SaveFile(BookType.Other, parentForm.Filenames[1]);
+			} else
+			{
+				excel.Visible = true;
+			}
+
 
 			// Unblock thread
 			LogHelper.Debug(Completion.Set());
@@ -96,7 +102,7 @@ namespace Visco_Web_Scrape_v2.Exporters {
 			// Iterate through websites and write information to them
 			foreach (var website in myResults) {
 				// Website was skipped during search
-				if (website.WebsiteStatus == Status.Skipped) {
+				if ((website.WebsiteStatus == Status.Skipped && (Config.OnlyNewResults && website.ResultList.Count(i => i.IsNewResult) > 0))) {
 					LogHelper.Debug("Because " + website.RootWebsite +
 						" was skipped during search, it does not get its own results sheet.");
 					// Report progress and continue along the list
@@ -284,7 +290,7 @@ namespace Visco_Web_Scrape_v2.Exporters {
 		private int ListWebsites(Excel.Worksheet sheet, BookType type) {
 			sheet.Cells[8, 1] = "Websites Searched";
 			sheet.Cells[9, 1] = "Name";
-			sheet.Cells[9, 2] = "Results";
+			sheet.Cells[9, 2] = "New Results";
 			sheet.Cells[9, 3] = "Searched";
 			sheet.Cells[9, 4] = "Ignored";
 			sheet.Cells[9, 5] = "Elapsed Time";
@@ -296,10 +302,20 @@ namespace Visco_Web_Scrape_v2.Exporters {
 				// Grant websites
 				if (type == BookType.Grants && website.RootWebsite.IsGrantSource) {
 					excelRow++;
+
+					if (website.WebsiteStatus == Status.Skipped)
+					{
+						sheet.Cells[excelRow, 3] = "NA";
+						sheet.Cells[excelRow, 4] = "NA";
+						sheet.Cells[excelRow, 5] = "NA";
+					} else
+					{
+						sheet.Cells[excelRow, 3] = website.Counts.SearchPages;
+						sheet.Cells[excelRow, 4] = website.Counts.IgnoredPages;
+						sheet.Cells[excelRow, 5] = website.SearchTime.ToString();
+					}
+
 					sheet.Cells[excelRow, 1] = website.RootWebsite.Name;
-					sheet.Cells[excelRow, 3] = website.Counts.SearchPages;
-					sheet.Cells[excelRow, 4] = website.Counts.IgnoredPages;
-					sheet.Cells[excelRow, 5] = website.SearchTime.ToString();
 
 					if (website.RootWebsite.IsEnabled) {
 						sheet.Cells[excelRow, 6] = website.WebsiteStatus.ToString();
@@ -313,10 +329,21 @@ namespace Visco_Web_Scrape_v2.Exporters {
 				// Other websites
 				if (type == BookType.Other && !website.RootWebsite.IsGrantSource) {
 					excelRow++;
+
+					if (website.WebsiteStatus == Status.Skipped)
+					{
+						sheet.Cells[excelRow, 3] = "NA";
+						sheet.Cells[excelRow, 4] = "NA";
+						sheet.Cells[excelRow, 5] = "NA";
+					}
+					else
+					{
+						sheet.Cells[excelRow, 3] = website.Counts.SearchPages;
+						sheet.Cells[excelRow, 4] = website.Counts.IgnoredPages;
+						sheet.Cells[excelRow, 5] = website.SearchTime.ToString();
+					}
+
 					sheet.Cells[excelRow, 1] = website.RootWebsite.Name;
-					sheet.Cells[excelRow, 3] = website.Counts.SearchPages;
-					sheet.Cells[excelRow, 4] = website.Counts.IgnoredPages;
-					sheet.Cells[excelRow, 5] = website.SearchTime.ToString();
 
 					if (website.RootWebsite.IsEnabled) {
 						sheet.Cells[excelRow, 6] = website.WebsiteStatus.ToString();
@@ -324,7 +351,13 @@ namespace Visco_Web_Scrape_v2.Exporters {
 						sheet.Cells[excelRow, 6] = "Disabled";
 					}
 
-					sheet.Cells[excelRow, 2] = website.ResultList.Count;
+					if (Config.OnlyNewResults)
+					{
+						sheet.Cells[excelRow, 2] = website.ResultList.Count(i => !i.IsNewResult);
+					} else
+					{
+						sheet.Cells[excelRow, 2] = website.ResultList.Count();
+					}
 				}
 			}
 

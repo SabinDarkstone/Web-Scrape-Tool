@@ -187,6 +187,7 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 			var keywordNodes = document.SelectNodes(xpathOfTag);
 
 			var output = new List<KeywordMatch>();
+			if (keywordNodes == null) return new List<KeywordMatch>();
 			foreach (var node in keywordNodes) {
 				if (node.OuterHtml.Contains("<a")) {
 					output.Add(new KeywordMatch(keyword, node.InnerText, true));

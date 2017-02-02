@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ConfirmCancelCrawl" xml:space="preserve">
-    <value>Are you sure you want to cancel the search? If you save the results after canceling early, results so far will potenitally overwrite existing results.</value>
+    <value>Are you sure you want to cancel the search? Doing so will cause unexpected behavior during results export.  It is strongly recommended you do not save the results if you choose to cancel to search.</value>
   </data>
   <data name="ConfirmClearResults" xml:space="preserve">
     <value>Are you sure you want to clear the results of previous web crawls?</value>

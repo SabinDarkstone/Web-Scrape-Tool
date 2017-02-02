@@ -43,6 +43,8 @@ namespace Visco_Web_Scrape_v2.Search.Items {
 		public void Begin() {
 			startTime = DateTime.UtcNow;
 			foreach (var website in AllResults) {
+				website.Counts.Reset();
+				website.SearchTime = TimeSpan.Zero;
 				foreach (var result in website.ResultList) {
 					result.IsNewResult = false;
 				}

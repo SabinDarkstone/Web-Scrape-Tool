@@ -107,7 +107,6 @@
     <Compile Include="Exporters\ExcelExport.cs" />
     <Compile Include="Exporters\ExportProgress.cs" />
     <Compile Include="Exporters\IExportable.cs" />
-    <Compile Include="Exporters\XmlExport.cs" />
     <Compile Include="Forms\AboutHelp.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -131,12 +130,6 @@
     </Compile>
     <Compile Include="Forms\EmailProgress.Designer.cs">
       <DependentUpon>EmailProgress.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\GrantTracker.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\GrantTracker.Designer.cs">
-      <DependentUpon>GrantTracker.cs</DependentUpon>
     </Compile>
     <Compile Include="Scripts\Configuration.cs" />
     <Compile Include="Scripts\Helpers\Comparisons.cs" />
@@ -200,9 +193,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\EmailProgress.resx">
       <DependentUpon>EmailProgress.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\GrantTracker.resx">
-      <DependentUpon>GrantTracker.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

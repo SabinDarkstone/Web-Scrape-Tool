@@ -110,10 +110,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 			var myWorker = sender as BackgroundWorker;
 			Results.Begin();
 
-			double i = 0;
 			foreach (var website in myJob.WebsitesToCrawl) {
-				i++;
-				parent.PercentSearchComplete = (i / myJob.WebsitesToCrawl.Count) * 100;
 				progressbar.Invoke(new MethodInvoker(
 					delegate { progressbar.Value = jobToRun.WebsitesToCrawl.ToList().IndexOf(website) + 1; }));
 				CurrentDomain = TimeSpan.Zero;
@@ -121,14 +118,15 @@ namespace Visco_Web_Scrape_v2.Forms {
 				// Check for cancellation
 				if (Cts.IsCancellationRequested) {
 					LogHelper.Debug("Cancellation requested, skipping " + website.Name);
-					var skippedResults = new WebsiteResults(website) {WebsiteStatus = WebsiteResults.Status.Skipped};
-					if (Results.AllResults.Any(site => site.RootWebsite.Url.Equals(website.Url))) {
-						var firstOrDefault = Results.AllResults.FirstOrDefault(j => j.RootWebsite.Url.Equals(website.Url));
-						if (firstOrDefault != null)
-							firstOrDefault.WebsiteStatus = WebsiteResults.Status.Skipped;
-					} else {
-						Results.AllResults.Add(skippedResults);
-					}
+					//var skippedResults = new WebsiteResults(website) {WebsiteStatus = WebsiteResults.Status.Skipped};
+					//if (Results.AllResults.Any(site => site.RootWebsite.Url.Equals(website.Url))) {
+					//	var firstOrDefault = Results.AllResults.FirstOrDefault(j => j.RootWebsite.Url.Equals(website.Url));
+					//	if (firstOrDefault != null)
+					//		firstOrDefault.WebsiteStatus = WebsiteResults.Status.Skipped;
+					//} else {
+					//	Results.AllResults.Add(skippedResults);
+					//}
+					Results.AllResults.First(i => i.RootWebsite.Url.Equals(website.Url)).WebsiteStatus = WebsiteResults.Status.Skipped;
 					continue;
 				}
 

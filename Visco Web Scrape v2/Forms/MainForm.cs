@@ -35,6 +35,16 @@ namespace Visco_Web_Scrape_v2.Forms {
 		#region FormEvents
 		private void Form1_Shown(object sender, EventArgs e) {
 			LoadSettings();
+
+			int count = 0;
+			foreach (var website in MasterResults.AllResults)
+			{
+				foreach (var result in website.ResultList)
+				{
+					count++;
+				}
+			}
+			LogHelper.Debug("Number of results found: " + count);
 		}
 
 		private void btnWebsiteList_Click(object sender, EventArgs e) {
