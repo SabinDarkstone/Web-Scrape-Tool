@@ -6,6 +6,11 @@
 *.user
 *.userosscache
 *.sln.docstates
+Installer/
+Setup/
+Testing/
+CrawlTesting/
+Visco Web Scrape/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
