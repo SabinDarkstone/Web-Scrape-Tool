@@ -5,8 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Visco_Web_Scrape_v2.Forms;
 using Visco_Web_Scrape_v2.Scripts;
@@ -23,7 +21,8 @@ namespace Visco_Web_Scrape_v2.Exporters {
 	public class ExcelExport : BasicExport, IExportable {
 
 		public enum BookType {
-			Grants, Other
+			Grants,
+			Other
 		}
 
 		public bool IsCompleted { get; private set; }
@@ -36,7 +35,8 @@ namespace Visco_Web_Scrape_v2.Exporters {
 		private readonly BackgroundWorker worker;
 		private int currentSheet;
 
-		public ExcelExport(Configuration configuration, CombinedResults results, ResultViewer resultViewer) : base(configuration, results) {
+		public ExcelExport(Configuration configuration, CombinedResults results, ResultViewer resultViewer)
+			: base(configuration, results) {
 			parentForm = resultViewer;
 			LogHelper.Info("Beginning excel export process");
 
@@ -56,13 +56,13 @@ namespace Visco_Web_Scrape_v2.Exporters {
 
 		private void Worker_OnProgressChanged(object sender, ProgressChangedEventArgs e) {
 			if (parentForm.Visible) {
-				parentForm.progressBook.BeginInvoke((MethodInvoker)delegate { parentForm.progressBook.Value = currentSheet; });
+				parentForm.progressBook.BeginInvoke((MethodInvoker) delegate { parentForm.progressBook.Value = currentSheet; });
 			}
 		}
 
 		private void Worker_DoWork(object sender, DoWorkEventArgs e) {
 			// Prepare excel
-			excel = new Excel.Application { Visible = false };
+			excel = new Excel.Application {Visible = false};
 
 			// Setup progress tracker
 			if (parentForm.Visible) {
@@ -77,8 +77,7 @@ namespace Visco_Web_Scrape_v2.Exporters {
 			if (parentForm.Filenames != null) {
 				SaveFile(BookType.Grants, parentForm.Filenames[0]);
 				SaveFile(BookType.Other, parentForm.Filenames[1]);
-			} else
-			{
+			} else {
 				excel.Visible = true;
 			}
 
@@ -108,7 +107,8 @@ namespace Visco_Web_Scrape_v2.Exporters {
 			// Iterate through websites and write information to them
 			foreach (var website in myResults) {
 				// Website was skipped during search
-				if ((website.WebsiteStatus == Status.Skipped && (Config.OnlyNewResults && website.ResultList.Count(i => i.IsNewResult) > 0))) {
+				if ((website.WebsiteStatus == Status.Skipped &&
+					(Config.OnlyNewResults && website.ResultList.Count(i => i.IsNewResult) > 0))) {
 					LogHelper.Debug("Because " + website.RootWebsite +
 						" was skipped during search, it does not get its own results sheet.");
 					// Report progress and continue along the list
@@ -297,13 +297,11 @@ namespace Visco_Web_Scrape_v2.Exporters {
 				if (type == BookType.Grants && website.RootWebsite.IsGrantSource) {
 					excelRow++;
 
-					if (website.WebsiteStatus == Status.Skipped)
-					{
+					if (website.WebsiteStatus == Status.Skipped) {
 						sheet.Cells[excelRow, 3] = "NA";
 						sheet.Cells[excelRow, 4] = "NA";
 						sheet.Cells[excelRow, 5] = "NA";
-					} else
-					{
+					} else {
 						sheet.Cells[excelRow, 3] = website.Counts.SearchPages;
 						sheet.Cells[excelRow, 4] = website.Counts.IgnoredPages;
 						sheet.Cells[excelRow, 5] = website.SearchTime.ToString();
@@ -324,14 +322,11 @@ namespace Visco_Web_Scrape_v2.Exporters {
 				if (type == BookType.Other && !website.RootWebsite.IsGrantSource) {
 					excelRow++;
 
-					if (website.WebsiteStatus == Status.Skipped)
-					{
+					if (website.WebsiteStatus == Status.Skipped) {
 						sheet.Cells[excelRow, 3] = "NA";
 						sheet.Cells[excelRow, 4] = "NA";
 						sheet.Cells[excelRow, 5] = "NA";
-					}
-					else
-					{
+					} else {
 						sheet.Cells[excelRow, 3] = website.Counts.SearchPages;
 						sheet.Cells[excelRow, 4] = website.Counts.IgnoredPages;
 						sheet.Cells[excelRow, 5] = website.SearchTime.ToString();
@@ -345,11 +340,9 @@ namespace Visco_Web_Scrape_v2.Exporters {
 						sheet.Cells[excelRow, 6] = "Disabled";
 					}
 
-					if (Config.OnlyNewResults)
-					{
+					if (Config.OnlyNewResults) {
 						sheet.Cells[excelRow, 2] = website.ResultList.Count(i => !i.IsNewResult);
-					} else
-					{
+					} else {
 						sheet.Cells[excelRow, 2] = website.ResultList.Count();
 					}
 				}
@@ -378,4 +371,5 @@ namespace Visco_Web_Scrape_v2.Exporters {
 			Marshal.ReleaseComObject(excel);
 		}
 	}
+
 }

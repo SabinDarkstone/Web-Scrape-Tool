@@ -22,6 +22,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 		private BackgroundWorker worker;
 		private readonly Job jobToRun;
 		private readonly MainForm parent;
+		private bool isCancelled;
 
 		public GrantSearch(Configuration configuration, CombinedResults results, Job job, MainForm parent) {
 			InitializeComponent();
@@ -66,6 +67,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 				if (confirm == DialogResult.No) return;
 
 				worker.CancelAsync();
+				isCancelled = true;
 				timerTotal.Enabled = false;
 			} else {
 				Close();
@@ -145,7 +147,11 @@ namespace Visco_Web_Scrape_v2.Forms {
 				LogHelper.Debug("Finished writing results of " + resultsToAdd.RootWebsite.Name + " to master list");
 			}
 
-			worker.ReportProgress(100, new Progress(Progress.Status.Completed));
+			if (isCancelled) {
+				worker.ReportProgress(0, new Progress(Progress.Status.Cancelled));
+			} else {
+				worker.ReportProgress(100, new Progress(Progress.Status.Completed));
+			}
 		}
 
 		private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e) {

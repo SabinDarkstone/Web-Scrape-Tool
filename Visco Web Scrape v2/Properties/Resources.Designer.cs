@@ -115,7 +115,7 @@ namespace Visco_Web_Scrape_v2.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to cancel the search? If you save the results after canceling early, results so far will potenitally overwrite existing results..
+        ///   Looks up a localized string similar to Are you sure you want to cancel the search? Doing so will cause unexpected behavior during results export.  It is strongly recommended you do not save the results if you choose to cancel to search..
         /// </summary>
         internal static string ConfirmCancelCrawl {
             get {
@@ -363,7 +363,7 @@ namespace Visco_Web_Scrape_v2.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 0.10.0 beta.
+        ///   Looks up a localized string similar to 0.10.2 beta.
         /// </summary>
         internal static string Version {
             get {
