@@ -107,7 +107,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 		/// Open result viewer to export results to excel file
 		/// </summary>
 		private void ShowResults() {
-			var resultViewer = new ResultViewer(MasterConfig, MasterResults, false);
+			var resultViewer = new ResultViewer(MasterConfig, MasterResults, true);
 			resultViewer.ShowDialog();
 		}
 

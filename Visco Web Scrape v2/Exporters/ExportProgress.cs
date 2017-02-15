@@ -8,8 +8,6 @@
 
 		public int CurrentSheet { get; set; }
 		public int SheetCount { get; }
-		public int CurrentRow { get; set; }
-		public int RowCount { get; set; }
 	}
 
 }

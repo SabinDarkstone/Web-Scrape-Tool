@@ -6,6 +6,8 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using Visco_Web_Scrape_v2.Forms;
 using Visco_Web_Scrape_v2.Scripts;
 using Visco_Web_Scrape_v2.Scripts.Helpers;
@@ -25,15 +27,14 @@ namespace Visco_Web_Scrape_v2.Exporters {
 		}
 
 		public bool IsCompleted { get; private set; }
-		public AutoResetEvent Completion = new AutoResetEvent(false);
 
 		private Excel.Application excel;
 		private Excel.Workbook grantWorkbook;
 		private Excel.Workbook otherWorkbook;
 
-		private ExportProgress progress;
 		private readonly ResultViewer parentForm;
 		private readonly BackgroundWorker worker;
+		private int currentSheet;
 
 		public ExcelExport(Configuration configuration, CombinedResults results, ResultViewer resultViewer) : base(configuration, results) {
 			parentForm = resultViewer;
@@ -54,7 +55,9 @@ namespace Visco_Web_Scrape_v2.Exporters {
 		}
 
 		private void Worker_OnProgressChanged(object sender, ProgressChangedEventArgs e) {
-			parentForm.ProgressUpdate(progress);
+			if (parentForm.Visible) {
+				parentForm.progressBook.BeginInvoke((MethodInvoker)delegate { parentForm.progressBook.Value = currentSheet; });
+			}
 		}
 
 		private void Worker_DoWork(object sender, DoWorkEventArgs e) {
@@ -62,7 +65,10 @@ namespace Visco_Web_Scrape_v2.Exporters {
 			excel = new Excel.Application { Visible = false };
 
 			// Setup progress tracker
-			progress = new ExportProgress(ResultsToExport.AllResults.Count);
+			if (parentForm.Visible) {
+				parentForm.progressBook.BeginInvoke(
+					(MethodInvoker) delegate { parentForm.progressBook.Maximum = ResultsToExport.AllResults.Count; });
+			}
 
 			// Create the workbooks
 			GenerateFiles();
@@ -76,9 +82,9 @@ namespace Visco_Web_Scrape_v2.Exporters {
 				excel.Visible = true;
 			}
 
-
 			// Unblock thread
-			LogHelper.Debug(Completion.Set());
+			// LogHelper.Debug(Completion.Set());
+			parentForm.IsCompleted = true;
 		}
 
 		private void GenerateFiles() {
@@ -106,15 +112,9 @@ namespace Visco_Web_Scrape_v2.Exporters {
 					LogHelper.Debug("Because " + website.RootWebsite +
 						" was skipped during search, it does not get its own results sheet.");
 					// Report progress and continue along the list
-					progress.CurrentSheet++;
-					worker.ReportProgress(0, progress);
+					worker.ReportProgress(++currentSheet);
 					continue;
 				}
-
-				// Get the number of rows needed for the sheet
-				progress.RowCount = website.ResultList.Count;
-				// ...and reset the counter
-				progress.CurrentRow = 0;
 
 				// Add a new sheet to the workbook
 				Excel.Worksheet websiteSheet = book.Worksheets.Add(Missing.Value);
@@ -126,16 +126,14 @@ namespace Visco_Web_Scrape_v2.Exporters {
 
 				// Insert sheet headers
 				if (!SetSheetHeadings(websiteSheet, website)) {
-					progress.CurrentSheet++;
-					worker.ReportProgress(0, progress);
+					worker.ReportProgress(++currentSheet);
 					continue;
 				}
 
 				// Fill in results
 				FillSheetResults(websiteSheet, website);
 
-				progress.CurrentSheet++;
-				worker.ReportProgress(0, progress);
+				worker.ReportProgress(++currentSheet);
 			}
 
 			// Create summary sheet
@@ -167,7 +165,6 @@ namespace Visco_Web_Scrape_v2.Exporters {
 				LogHelper.Fatal(ex.Message);
 				LogHelper.Trace(ex.StackTrace);
 			}
-
 		}
 
 		private void SetSheetTitle(Excel.Worksheet sheet, string title) {
@@ -244,9 +241,6 @@ namespace Visco_Web_Scrape_v2.Exporters {
 				if (Config.IncludeDate) {
 					sheet.Cells[excelRow, 3] = result.DiscoveryTimeUtc.ToLocalTime().ToShortDateString();
 				}
-
-				progress.CurrentRow++;
-				worker.ReportProgress(0, progress);
 			}
 
 			sheet.Range["A1:J1"].Merge();

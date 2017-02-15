@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Visco_Web_Scrape_v2.Exporters;
 using Visco_Web_Scrape_v2.Scripts;
@@ -12,8 +12,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 		public string[] Filenames;
 		public bool IsForEmail;
-		public bool IsCompleted { get; private set; }
-		public AutoResetEvent Completion;
+		public bool IsCompleted { get; set; }
 
 		private readonly Configuration config;
 		private readonly CombinedResults results;
@@ -32,22 +31,16 @@ namespace Visco_Web_Scrape_v2.Forms {
 		}
 
 		public void ProgressUpdate(ExportProgress progress) {
-			progressBook.Maximum = progress.SheetCount;
-			progressBook.Value = progress.CurrentSheet;
-
-			progressSheet.Maximum = progress.RowCount;
-			progressSheet.Value = progress.CurrentRow;
+			LogHelper.Debug("Progress update here!");
 		}
 
-		public void StartExport() {
+		public async Task StartExport() {
 			IExportable exporter;
 
 			switch (config.ExportMethod) {
 				case Configuration.ExportType.Excel:
 					exporter = new ExcelExport(config, results, this);
-
 					LogHelper.Debug("Waiting for background process to finish");
-					((ExcelExport) exporter).Completion.WaitOne();
 					IsCompleted = ((ExcelExport) exporter).IsCompleted;
 					LogHelper.Debug("Background process finished");
 					break;
@@ -56,5 +49,9 @@ namespace Visco_Web_Scrape_v2.Forms {
 			}
 		}
 
+		private void ResultViewer_Load(object sender, EventArgs e)
+		{
+
+		}
 	}
 }

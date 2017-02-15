@@ -144,10 +144,8 @@ namespace Visco_Web_Scrape_v2.Forms {
 				Results.UpdateResults(resultsToAdd);
 				LogHelper.Debug("Finished writing results of " + resultsToAdd.RootWebsite.Name + " to master list");
 			}
-			
-			Results.End();
 
-			worker.ReportProgress(0, new Progress(Progress.Status.Cancelled));
+			worker.ReportProgress(100, new Progress(Progress.Status.Completed));
 		}
 
 		private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
@@ -169,6 +167,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 			btnCancelCrawl.Enabled = true;
 			btnCancelCrawl.Text = Resources.ButtonCloseText;
 			btnSaveResults.Enabled = true;
+			Results.LastRan = DateTime.Now;
 
 			if (jobToRun.IsScheduledJob) {
 				LogHelper.Debug("Automated search complete");

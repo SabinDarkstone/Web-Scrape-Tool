@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Visco_Web_Scrape_v2.Properties;
 using Visco_Web_Scrape_v2.Scripts;
@@ -19,7 +20,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 		public CombinedResults Results;
 
 		private string[] filenames;
-		private bool isScheduled;
+		private readonly bool isScheduled;
 
 		private SmtpClient emailClient;
 
@@ -37,9 +38,9 @@ namespace Visco_Web_Scrape_v2.Forms {
 			isScheduled = isScheduledEmail;
 		}
 
-		private bool PrepareExcelDocument() {
-			var grantWorkbookName = string.Format("Grants_{0}{1}{2}.xlsx", DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Year);
-			var otherWorkbookName = string.Format("Others_{0}{1}{2}.xlsx", DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Year);
+		private async Task<bool> PrepareExcelDocument() {
+			var grantWorkbookName = string.Format("Grants_{0}-{1}-{2}.xlsx", DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Year);
+			var otherWorkbookName = string.Format("Others_{0}-{1}-{2}.xlsx", DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Year);
 
 			filenames = new[] {
 				grantWorkbookName, otherWorkbookName
@@ -51,7 +52,7 @@ namespace Visco_Web_Scrape_v2.Forms {
 			} else {
 				lblCurrentStatus.Text = "Generating files...";
 				var exporter = new ResultViewer(Config, Results, true, filenames);
-				exporter.StartExport();
+				await exporter.StartExport();
 
 				return File.Exists(Reference.Files.ExportDirectory + grantWorkbookName) &&
 					File.Exists(Reference.Files.ExportDirectory + otherWorkbookName);
@@ -122,8 +123,8 @@ namespace Visco_Web_Scrape_v2.Forms {
 			}
 		}
 
-		private void EmailProgress_Shown(object sender, EventArgs e) {
-			if (PrepareExcelDocument()) {
+		private async void EmailProgress_Shown(object sender, EventArgs e) {
+			if (await PrepareExcelDocument()) {
 				SendEmail();
 
 				if (isScheduled) {

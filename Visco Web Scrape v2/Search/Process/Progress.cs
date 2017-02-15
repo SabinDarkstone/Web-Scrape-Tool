@@ -10,7 +10,8 @@ namespace Visco_Web_Scrape_v2.Search.Process {
 			Searching,		// The current page's text is being search for keywords
 			Scanning,		// Current Url is being examined after page is searched
 			Cancelling,		// Cancellation is pending, not all operations have finished cancellation
-			Cancelled		// Search is completely halted, okay to save
+			Cancelled,		// Search is completely halted, okay to save
+			Completed
 		}
 
 		public enum PageType {

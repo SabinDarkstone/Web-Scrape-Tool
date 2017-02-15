@@ -134,6 +134,7 @@
 			// 
 			// btnSendEmail
 			// 
+			this.btnSendEmail.Enabled = false;
 			this.btnSendEmail.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.btnSendEmail.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(61)))), ((int)(((byte)(29)))));
 			this.btnSendEmail.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(126)))), ((int)(((byte)(176)))), ((int)(((byte)(127)))));
