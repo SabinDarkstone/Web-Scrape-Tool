@@ -21,16 +21,14 @@ namespace Visco_Web_Scrape_v2.Forms {
 
 		private BackgroundWorker worker;
 		private readonly Job jobToRun;
-		private readonly MainForm parent;
 		private bool isCancelled;
 
-		public GrantSearch(Configuration configuration, CombinedResults results, Job job, MainForm parent) {
+		public GrantSearch(Configuration configuration, CombinedResults results, Job job) {
 			InitializeComponent();
 
 			Config = configuration;
 			Results = results;
 			jobToRun = job;
-			this.parent = parent;
 		}
 
 		private void UpdateFields(Progress progress) {
@@ -45,7 +43,6 @@ namespace Visco_Web_Scrape_v2.Forms {
 				LogHelper.Fatal(e.Message);
 				LogHelper.Trace(e.StackTrace);
 			}
-
 		}
 
 		public void Stop(DoWorkEventArgs e) {

@@ -170,6 +170,7 @@
     </Compile>
     <Compile Include="Scripts\Helpers\CrawlHelper.cs" />
     <Compile Include="Search\Items\Result.cs" />
+    <Compile Include="Search\Items\SessionManager.cs" />
     <Compile Include="Search\Items\WebsiteResults.cs" />
     <Compile Include="Search\Process\GrantCrawler.cs" />
     <Compile Include="Search\Process\Job.cs" />
