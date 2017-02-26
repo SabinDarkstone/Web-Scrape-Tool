@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26020.0
+VisualStudioVersion = 15.0.26206.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Visco Web Scrape v2", "Visco Web Scrape v2\Visco Web Scrape v2.csproj", "{1FF3B18D-4ADD-4F49-8702-D2BB52DD3236}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console Scraper", "Console Scraper\Console Scraper.csproj", "{1CC27415-9A2B-4F3A-A1E8-236A334562E7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,22 @@ Global
 		{1FF3B18D-4ADD-4F49-8702-D2BB52DD3236}.Release|x64.Build.0 = Release|Any CPU
 		{1FF3B18D-4ADD-4F49-8702-D2BB52DD3236}.Release|x86.ActiveCfg = Release|Any CPU
 		{1FF3B18D-4ADD-4F49-8702-D2BB52DD3236}.Release|x86.Build.0 = Release|Any CPU
+		{1CC27415-9A2B-4F3A-A1E8-236A334562E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CC27415-9A2B-4F3A-A1E8-236A334562E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CC27415-9A2B-4F3A-A1E8-236A334562E7}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{1CC27415-9A2B-4F3A-A1E8-236A334562E7}.Debug|ARM.Build.0 = Debug|Any CPU
+		{1CC27415-9A2B-4F3A-A1E8-236A334562E7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1CC27415-9A2B-4F3A-A1E8-236A334562E7}.Debug|x64.Build.0 = Debug|Any CPU
+		{1CC27415-9A2B-4F3A-A1E8-236A334562E7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1CC27415-9A2B-4F3A-A1E8-236A334562E7}.Debug|x86.Build.0 = Debug|Any CPU
+		{1CC27415-9A2B-4F3A-A1E8-236A334562E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CC27415-9A2B-4F3A-A1E8-236A334562E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CC27415-9A2B-4F3A-A1E8-236A334562E7}.Release|ARM.ActiveCfg = Release|Any CPU
+		{1CC27415-9A2B-4F3A-A1E8-236A334562E7}.Release|ARM.Build.0 = Release|Any CPU
+		{1CC27415-9A2B-4F3A-A1E8-236A334562E7}.Release|x64.ActiveCfg = Release|Any CPU
+		{1CC27415-9A2B-4F3A-A1E8-236A334562E7}.Release|x64.Build.0 = Release|Any CPU
+		{1CC27415-9A2B-4F3A-A1E8-236A334562E7}.Release|x86.ActiveCfg = Release|Any CPU
+		{1CC27415-9A2B-4F3A-A1E8-236A334562E7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
