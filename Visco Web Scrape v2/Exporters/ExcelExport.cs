@@ -21,8 +21,10 @@ namespace Visco_Web_Scrape_v2.Exporters {
 	public class ExcelExport : BasicExport, IExportable {
 
 		public enum BookType {
+
 			Grants,
 			Other
+
 		}
 
 		public bool IsCompleted { get; private set; }
@@ -110,7 +112,7 @@ namespace Visco_Web_Scrape_v2.Exporters {
 				if ((website.WebsiteStatus == Status.Skipped &&
 					(Config.OnlyNewResults && website.ResultList.Count(i => i.IsNewResult) > 0))) {
 					LogHelper.Debug("Because " + website.RootWebsite +
-						" was skipped during search, it does not get its own results sheet.");
+									" was skipped during search, it does not get its own results sheet.");
 					// Report progress and continue along the list
 					worker.ReportProgress(++currentSheet);
 					continue;
@@ -308,14 +310,16 @@ namespace Visco_Web_Scrape_v2.Exporters {
 					}
 
 					sheet.Cells[excelRow, 1] = website.RootWebsite.Name;
-
 					if (website.RootWebsite.IsEnabled) {
 						sheet.Cells[excelRow, 6] = website.WebsiteStatus.ToString();
+						if (Config.OnlyNewResults) {
+							sheet.Cells[excelRow, 2] = website.ResultList.Count(i => i.IsNewResult);
+						} else {
+							sheet.Cells[excelRow, 2] = website.ResultList.Count();
+						}
 					} else {
 						sheet.Cells[excelRow, 6] = "Disabled";
 					}
-
-					sheet.Cells[excelRow, 2] = website.ResultList.Count;
 				}
 
 				// Other websites
@@ -336,14 +340,13 @@ namespace Visco_Web_Scrape_v2.Exporters {
 
 					if (website.RootWebsite.IsEnabled) {
 						sheet.Cells[excelRow, 6] = website.WebsiteStatus.ToString();
+						if (Config.OnlyNewResults) {
+							sheet.Cells[excelRow, 2] = website.ResultList.Count(i => i.IsNewResult);
+						} else {
+							sheet.Cells[excelRow, 2] = website.ResultList.Count();
+						}
 					} else {
 						sheet.Cells[excelRow, 6] = "Disabled";
-					}
-
-					if (Config.OnlyNewResults) {
-						sheet.Cells[excelRow, 2] = website.ResultList.Count(i => !i.IsNewResult);
-					} else {
-						sheet.Cells[excelRow, 2] = website.ResultList.Count();
 					}
 				}
 			}
@@ -370,6 +373,7 @@ namespace Visco_Web_Scrape_v2.Exporters {
 			Marshal.ReleaseComObject(otherWorkbook);
 			Marshal.ReleaseComObject(excel);
 		}
+
 	}
 
 }

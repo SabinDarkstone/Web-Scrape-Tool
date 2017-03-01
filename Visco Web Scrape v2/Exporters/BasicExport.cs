@@ -27,7 +27,7 @@ namespace Visco_Web_Scrape_v2.Exporters {
 			ResultsToExport = PrepareResults(results);
 
 			// Fill in the allocated spots with the requisite data
-			ResultsToExport = FilterResults(ResultsToExport, results);
+			ResultsToExport = FilterResults(ResultsToExport);
 		}
 
 		private CombinedResults PrepareResults(CombinedResults unfilteredResults) {
@@ -42,7 +42,7 @@ namespace Visco_Web_Scrape_v2.Exporters {
 			return myResults;
 		}
 
-		private CombinedResults FilterResults(CombinedResults blankResults, CombinedResults unfilteredResults) {
+		private CombinedResults FilterResults(CombinedResults blankResults) {
 			LogHelper.Debug("Filling in CombinedResults with properly filtered data");
 			var myResults = blankResults;
 

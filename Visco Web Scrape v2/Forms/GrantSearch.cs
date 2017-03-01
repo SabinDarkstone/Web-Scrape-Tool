@@ -149,6 +149,8 @@ namespace Visco_Web_Scrape_v2.Forms {
 			} else {
 				worker.ReportProgress(100, new Progress(Progress.Status.Completed));
 			}
+
+			Results.End();
 		}
 
 		private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
@@ -170,7 +172,6 @@ namespace Visco_Web_Scrape_v2.Forms {
 			btnCancelCrawl.Enabled = true;
 			btnCancelCrawl.Text = Resources.ButtonCloseText;
 			btnSaveResults.Enabled = true;
-			Results.LastRan = DateTime.Now;
 
 			if (jobToRun.IsScheduledJob) {
 				LogHelper.Debug("Automated search complete");

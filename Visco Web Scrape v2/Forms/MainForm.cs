@@ -166,7 +166,8 @@ namespace Visco_Web_Scrape_v2.Forms {
 		/// <param name="isScheduled">Whether the search is initiated by the scheduler</param>
 		private void StartSearch(bool isScheduled) {
 			isSearchRunning = true;
-			var grantSearch = new GrantSearch(MasterConfig, MasterResults, new Job(MasterConfig.Websites, MasterConfig.PageWords, MasterConfig.UrlWords), this);
+			var grantSearch = new GrantSearch(MasterConfig, MasterResults,
+				new Job(MasterConfig.Websites, MasterConfig.PageWords, MasterConfig.UrlWords));
 			grantSearch.ShowDialog();
 
 			// Check to see if the results need to be saved
